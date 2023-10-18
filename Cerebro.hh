@@ -16,6 +16,10 @@ class Cerebro{
 		
 		//
 		bool playing;
+		//
+		char* actualTetrinomio;
+		char* nextTetrinomio;
+		
 		
 		void initializeVariables();
 		void initWindow(sf::RenderWindow*&); 
@@ -25,12 +29,12 @@ class Cerebro{
 		Cerebro(sf::RenderWindow*&);
 		virtual ~Cerebro();
 		
-		
 		bool finishedGame() const; 
 		
-		 
+		void drawMatriz();
+		
 		//Funtions
-		void pollEvents();
+		void startGame();
 		void update();
 		void render();
 	
