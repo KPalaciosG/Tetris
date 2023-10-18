@@ -150,17 +150,7 @@ getBlock:
 	
 ;---------- end getBlock-----------
 
-;----------limpiarBloque-----------
-cleanBlock:
 
-xor r8, r8
-xor r9, r9
-xor r10, r10
-xor r11, r11
-
-ret
-
-;----------limpiarBloque-----------
 
 ;-----------moveRight---------------
 ;mover hacia la derecha
@@ -177,27 +167,23 @@ moveRight:
 	ret
 
 	;verifica si los dos bloques de la derecha tienen un 0, sino, no lo mueve
-	mov ecx, 4 				
-	cmp [r9+1], 0
-	jne ret 
+				
+	cmp byte[r9+1], 0
+	jne end
 
-	cmp [r11+1], 0
-	jne ret
+	cmp byte[r11+1], 0
+	jne end
 
 
 	startMoveRight:
 	mov [r11+1], rsi
-	mov [r11], 0
+	mov byte[r11], 0
 	mov [r10+1], rsi
-	mov [r10], 0
+	mov byte[r10], 0
 	mov [r9+1], rsi
-	mov [r9],0
+	mov byte[r9],0
 	mov [r8+1], rsi
-	mov [r8], 0
-
-	loopRight: 
-
-		loop startMoveRight	
+	mov byte[r8], 0
 
 	dec r12    ;le resta 1 al límite derecho
 	inc r13    ;incrementa el limite izquierdo
@@ -207,25 +193,16 @@ moveRight:
 ;-----------moveLeft-----------------
 ;mover hacia la izquierda
 ;el ciclo va desde el principio de la matriz hasta el final
-cmp r13, 0
-je end
+
 
 moveLeft:
-	mov ecx, 200
-	mov rbx, matrix
-	mov rsi, 0  		;contador
+	cmp r13, 0
+	je end
 
-	startMoveLeft:
-	cmp byte[rbx+rsi], 0   ;si es 0 en la matriz no hace nada
-	je loopLeft
+	
 
-	mov dl, byte[rbx+rsi]  ;si no es 0, mueve
-	mov byte[rbx+rsi], 0
-	mov byte[rbx+rsi-1], dl
 
-	loopLeft:
-		inc rsi
-		loop startMoveLeft
+	
 
 	dec r13    ;le resta 1 al límite derecho
 	inc r12    ;incrementa el limite izquierdo
@@ -242,6 +219,16 @@ moveLeft:
 ;rotar
 
 ;verificar estado
+
+;----------limpiarBloque-----------
+cleanBlock:
+
+	xor r8, r8
+	xor r9, r9
+	xor r10, r10
+	xor r11, r11
+
+;----------limpiarBloque-----------
 
 end:
 	mov rax, 60
