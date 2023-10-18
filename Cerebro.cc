@@ -1,4 +1,8 @@
 #include "Cerebro.hh"
+//Prueba
+const int rows = 20;
+const int cols = 10;
+const int blockSize = 30;
 
 void Cerebro::initializeVariables(){
 	this->window = nullptr;
@@ -36,11 +40,15 @@ void Cerebro::startGame(){
 				
 			case sf::Event::KeyPressed:
 				if(this->event.key.code == sf::Keyboard::Left){
-					this->playing = false;
+					this->matrix[5][9] = 0;
+					this->matrix[6][9] = 0;
+					this->matrix[7][9] = 0;
 				}
 				
 				else if(this->event.key.code == sf::Keyboard::Right){
-					this->playing = false;
+					this->matrix[5][9] = 2;
+					this->matrix[6][9] = 2;
+					this->matrix[7][9] = 2;
 				}
 				
 				else if(this->event.key.code == sf::Keyboard::Up){
@@ -78,15 +86,53 @@ void Cerebro::startGame(){
 }
 
 //Funtions
+
 void Cerebro::update(){
 	this->startGame();
 }
 
+//Render
 void Cerebro::render(){
 	this->window->clear();
 	//poner background
 	//dibujar matriz
+	this->drawMatrix();
 	this->window->display();
+}
+
+void Cerebro::drawMatrix(){
+	double centroX = 3;
+	double centroY = 6.7;
+	
+	for (int i = 0; i < rows; ++i) {
+		// i es la altura -> i + centroX para centrar
+        for (int j = 0; j < cols; ++j) {
+			//j es el ancho -> j + centroY para centrar
+            sf::RectangleShape block(sf::Vector2f(blockSize, blockSize));
+            block.setPosition((j + centroY) * blockSize, (i + centroX) * blockSize);
+
+            switch (this->matrix[i][j]) {
+                case 0:
+                    block.setFillColor(sf::Color::Black);
+                    break;
+                case 1:
+                    block.setFillColor(sf::Color::Red);
+                    break;
+                case 2:
+                    block.setFillColor(sf::Color::Green);
+                    break;
+                case 3:
+                    block.setFillColor(sf::Color::Blue);
+                    break;
+                default:
+                    // Color predeterminado
+                    block.setFillColor(sf::Color::White);
+                    break;
+            }
+
+            this->window->draw(block);
+        }
+    }
 }
 
 
