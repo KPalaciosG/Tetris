@@ -1,26 +1,56 @@
 #include "Game.hh"
-
+#include "Cerebro.hh"
+#include "ScoresScreen.hh"
+/*
+	@return void
+	Initializes all the variables of the class
+*/
 void Game::initializeVariables(){
 	this->window = nullptr;
 }
+
+
+/*
+	@return void
+	Creates the window on the center of the desktop window:
+		height: 800
+		width: 700
+		
+*/
 void Game::initWindow(){
 	this->videoMode.height = 800;
 	this->videoMode.width = 700;
 	
 	this->window = new sf::RenderWindow(this->videoMode, "Tetris", sf::Style::Close);
 	this->window->setFramerateLimit(60);
+	
+	//Gets the screen size
+	sf::VideoMode desktopMode = sf::VideoMode::getDesktopMode();
+
+    //Calculate the position to center the window
+    int xPos = (desktopMode.width - videoMode.width) / 2;
+    int yPos = (desktopMode.height - videoMode.height) / 2;
+
+    //Set the position of the window
+    window->setPosition(sf::Vector2i(xPos, yPos));
 }
 
+
+/*
+	@return void
+	Creates all the buttons of the main menu with their sprites:
+		playButton -> playButtonTexture
+		scoresButton -> scoresButtonTexture
+		exitButton -> exitButtonTexture
+	Also it handle the errors if there's not a sprite
+*/
 void Game::initButtons(){
-	//playButton -> playButtonTexture
-	//scoresButton -> scoresButtonTexture
-	//exitButton -> exitButtonTexture
 	if(!this->playButtonTexture.loadFromFile("play.jpg")){
 		std::cerr << "Falta imagen de boton de play" << std::endl;
 		this->window->close();
 	}
 
-	this->playButton.setPosition(280.f, 150.f);
+	this->playButton.setPosition(270.f, 150.f);
 	this->playButton.setSize(sf::Vector2f(350.f, 250.f));
     this->playButton.setScale(sf::Vector2f(0.5f, 0.5f));
     this->playButton.setTexture(&playButtonTexture);
@@ -31,7 +61,7 @@ void Game::initButtons(){
 		this->window->close();
 	}
 
-	this->scoresButton.setPosition(280.f, 350.f);
+	this->scoresButton.setPosition(270.f, 350.f);
 	this->scoresButton.setSize(sf::Vector2f(350.f, 250.f));
     this->scoresButton.setScale(sf::Vector2f(0.5f, 0.5f));
     this->scoresButton.setTexture(&scoresButtonTexture);
@@ -42,21 +72,28 @@ void Game::initButtons(){
 		this->window->close();
 	}
 
-	this->exitButton.setPosition(280.f, 550.f);
+	this->exitButton.setPosition(270.f, 550.f);
 	this->exitButton.setSize(sf::Vector2f(350.f, 250.f));
     this->exitButton.setScale(sf::Vector2f(0.5f, 0.5f));
     this->exitButton.setTexture(&exitButtonTexture);
 	
 }
 
+/*
+	@return void
+	It creates and adds the background sprite
+	Also it handle the error if there's not the sprite
+*/
 void Game::initBackground(){
-	if (!backgroundTexture.loadFromFile("Fondo.jpg")) {
+	if (!this->backgroundTexture.loadFromFile("Fondo.jpg")) {
         std::cerr << "Falta imagen de boton fondo" << std::endl;
 		this->window->close();
     }
 	
-    background.setTexture(backgroundTexture);
+    this->background.setTexture(backgroundTexture);
 }
+
+
 
 //Constructor and Destructor
 Game::Game(){
@@ -71,21 +108,65 @@ Game::~Game(){
 }
 
 
-bool Game::playing() const{
+
+//Funtions
+/*
+	@return bool
+	Verify if the window is still open
+*/
+bool Game::windowOpen() const{
 	return this->window->isOpen();
 }
 
+//Principal Menu Loop
 void Game::pollEvents(){
 	while(this->window->pollEvent(this->event)){
 		switch(this->event.type){
 			case sf::Event::Closed:
 				this->window->close();
 				break;
+				
 			case sf::Event::KeyPressed:
 				if(this->event.key.code == sf::Keyboard::Escape){
 					this->window->close();
 				}
 				break;	
+				
+			/*
+				Cases for the menu
+				when it's pressed it gets the position x and y of left mouse button and compared with bounds of each button to verify if the user want to to another screen.
+			*/
+			case sf::Event::MouseButtonPressed:
+                if(this->event.mouseButton.button == sf::Mouse::Left) {
+                    sf::Vector2f mousePos = sf::Vector2f(sf::Mouse::getPosition(*this->window).x, sf::Mouse::getPosition(*this->window).y);
+
+                    if (this->playButton.getGlobalBounds().contains(mousePos)) {
+                        //window->clear(sf::Color::Black);
+						Cerebro partida = Cerebro(this->window);
+						while(partida.finishedGame()){
+							//Update
+							partida.update();
+							
+							//Render
+							partida.render();
+						}
+						
+                        
+                    } else if(scoresButton.getGlobalBounds().contains(mousePos)) {
+                        ScoresScreen scoresScreen = ScoresScreen(this->window);
+						while(scoresScreen.finishedGame()){
+							//Update
+							scoresScreen.update();
+							
+							//Render
+							scoresScreen.render();
+						}
+                        
+                    } else if (exitButton.getGlobalBounds().contains(mousePos)) {
+                        window->close();
+                    }
+                }
+            
 		}
 	}	
 }

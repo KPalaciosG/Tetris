@@ -5,7 +5,7 @@ LIBS = -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio
 all: compile
 
 compile: main.cc
-	$(CXX) $(CXXFLAGS) main.cc Game.cc -o ejecutable $(LIBS)
+	$(CXX) $(CXXFLAGS) main.cc Game.cc Cerebro.cc ScoresScreen.cc -o ejecutable $(LIBS)
 
 execute: 
 	./ejecutable

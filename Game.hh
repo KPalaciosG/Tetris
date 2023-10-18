@@ -7,6 +7,8 @@
 #include <SFML/Window.hpp>
 #include <SFML/Audio.hpp>
 #include <SFML/Network.hpp>
+#include "Cerebro.hh"
+#include "ScoresScreen.hh"
 
 class Game{
 	private:
@@ -37,10 +39,9 @@ class Game{
 		//Constructor and Destructor
 		Game();
 		virtual ~Game();
-		 
-		bool playing() const; 
 		
-		 
+		bool windowOpen() const; 
+		
 		//Funtions
 		void pollEvents();
 		void update();

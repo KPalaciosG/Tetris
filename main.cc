@@ -5,7 +5,7 @@ int main(){
 	//
 	Game tetris;
 	
-	while(tetris.playing()){
+	while(tetris.windowOpen()){
 		//Update
 		tetris.update();
 		
