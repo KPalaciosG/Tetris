@@ -22,6 +22,13 @@ mov byte[rbx+3], '1'
 mov byte[rbx+4], '1'
 mov byte[rbx+5], '1'
 mov byte[rbx+6], '1'
+
+;direcciones del bloque
+lea r8, [rbx+3]
+lea r9, [rbx+4]
+lea r10, [rbx+5]
+lea r11, [rbx+6]
+
 mov r12, 3 	; limite de movimientos hacia derecha 
 mov r13, 3 	; limite de movimientos hacia la izquierda
 mov r14, 19 ; limite de movimientos hacia abajo
@@ -34,6 +41,13 @@ mov byte[rbx+4], '2'
 mov byte[rbx+5], '2'
 mov byte[rbx+14], '2'
 mov byte[rbx+15], '2'
+
+;direcciones del bloque
+lea r8, [rbx+4]
+lea r9, [rbx+5]
+lea r10, [rbx+14]
+lea r11, [rbx+15]
+
 mov r12, 4 	; limite de movimientos hacia derecha 
 mov r13, 4 	; limite de movimientos hacia la izquierda
 mov r14, 18 ; limite de movimientos hacia abajo
@@ -46,6 +60,13 @@ mov byte[rbx+5], '3'
 mov byte[rbx+14], '3'
 mov byte[rbx+15], '3'
 mov byte[rbx+16], '3'
+
+;direcciones del bloque
+lea r9, [rbx+5]
+lea r8, [rbx+14]
+lea r10, [rbx+15]
+lea r11, [rbx+16]
+
 mov r12, 3 	; limite de movimientos hacia derecha 
 mov r13, 4 	; limite de movimientos hacia la izquierda
 mov r14, 18 ; limite de movimientos hacia abajo
@@ -57,6 +78,13 @@ mov byte[rbx+4], '4'
 mov byte[rbx+5], '4'
 mov byte[rbx+13], '4'
 mov byte[rbx+14], '4'
+
+;direcciones del bloque
+lea r8, [rbx+4]
+lea r9, [rbx+5]
+lea r10, [rbx+13]
+lea r11, [rbx+14]
+
 mov r12, 4  ; limite de movimientos hacia derecha 
 mov r13, 3  ; limite de movimientos hacia la izquierda
 mov r14, 18 ; limite de movimientos hacia abajo
@@ -68,6 +96,13 @@ mov byte[rbx+4], '5'
 mov byte[rbx+5], '5'
 mov byte[rbx+15], '5'
 mov byte[rbx+16], '5'
+
+;direcciones del bloque
+lea r8, [rbx+4]
+lea r9, [rbx+5]
+lea r10, [rbx+15]
+lea r11, [rbx+16]
+
 mov r12, 3  ; limite de movimientos hacia derecha 
 mov r13, 4  ; limite de movimientos hacia la izquierda
 mov r14, 18 ; limite de movimientos hacia abajo
@@ -79,6 +114,13 @@ mov byte[rbx+4], '6'
 mov byte[rbx+14], '6'
 mov byte[rbx+15], '6'
 mov byte[rbx+16], '6'
+
+;direcciones del bloque
+lea r9, [rbx+4]
+lea r8, [rbx+14]
+lea r10, [rbx+15]
+lea r11, [rbx+16]
+
 mov r12, 3  ; limite de movimientos hacia derecha 
 mov r13, 4  ; limite de movimientos hacia la izquierda
 mov r14, 18 ; limite de movimientos hacia abajo
@@ -90,6 +132,13 @@ mov byte[rbx+6], '7'
 mov byte[rbx+14], '7'
 mov byte[rbx+15], '7'
 mov byte[rbx+16], '7'
+
+;direcciones del bloque
+lea r9, [rbx+6]
+lea r8, [rbx+14]
+lea r10, [rbx+15]
+lea r11, [rbx+16]
+
 mov r12, 3  ; limite de movimientos hacia derecha 
 mov r13, 4  ; limite de movimientos hacia la izquierda
 mov r14, 18 ; limite de movimientos hacia abajo
@@ -97,39 +146,55 @@ mov r14, 18 ; limite de movimientos hacia abajo
 
 ;----------get block-----------
 getBlock:
-	mov sil, byte[rbx]
-	cmp sil, 0
-	je increase
-
-	mov rax, rsi ;muevo a rax el tipo de bloque (1:I, 2:O, 3:T etc)
-	jmp end
-
-	increase: 
-	inc rbx
-	loop getBlock
+	mov sil, byte[r8]
+	
 ;---------- end getBlock-----------
+
+;----------limpiarBloque-----------
+cleanBlock:
+
+xor r8, r8
+xor r9, r9
+xor r10, r10
+xor r11, r11
+
+ret
+
+;----------limpiarBloque-----------
 
 ;-----------moveRight---------------
 ;mover hacia la derecha
-;+1 para mover hacia la derecha, se empieza desde abajo de la matriz hacia arriba
+;+1 para mover hacia la derecha
 
-;verificar si se puede mover a la derecha
-cmp r12, 0
-je final
+
+
+;verificar si los espacios para donde se mueven están vacios
 	
 moveRight:
-	
-	mov ecx, 200 				;comenzamos al final de la matriz
-	mov rbx, matrix
+	;verificar si se puede mover a la derecha
+
+	cmp r12, 0 ; se verifica límite derecho
+	ret
+
+	;verifica si los dos bloques de la derecha tienen un 0, sino, no lo mueve
+	mov ecx, 4 				
+	cmp [r9+1], 0
+	jne ret 
+
+	cmp [r11+1], 0
+	jne ret
+
 
 	startMoveRight:
-	cmp byte[rbx+rcx], 0         ;si lo que hay en la matriz es 0, no hace nada
-	je loopRight
+	mov [r11+1], rsi
+	mov [r11], 0
+	mov [r10+1], rsi
+	mov [r10], 0
+	mov [r9+1], rsi
+	mov [r9],0
+	mov [r8+1], rsi
+	mov [r8], 0
 
-	mov dl, byte[rbx+rcx]       ;si es diferente de 0, va moviendo hacia la derecha
-	mov byte[rbx+rcx], 0
-	mov byte[rbx+rcx+1], dl
-	
 	loopRight: 
 
 		loop startMoveRight	
@@ -143,7 +208,7 @@ moveRight:
 ;mover hacia la izquierda
 ;el ciclo va desde el principio de la matriz hasta el final
 cmp r13, 0
-je final
+je end
 
 moveLeft:
 	mov ecx, 200
