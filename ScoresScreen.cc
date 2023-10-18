@@ -35,7 +35,9 @@ void ScoresScreen::pollEvents(){
 				if(this->event.key.code == sf::Keyboard::Escape){
 					this->playing = false;
 				}
-				break;  
+				break;
+			default:
+				break;
 		}
 	}	
 }

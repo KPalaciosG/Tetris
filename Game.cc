@@ -18,8 +18,8 @@ void Game::initializeVariables(){
 		
 */
 void Game::initWindow(){
-	this->videoMode.height = 800;
-	this->videoMode.width = 700;
+	this->videoMode.height = 900;
+	this->videoMode.width = 1000;
 	
 	this->window = new sf::RenderWindow(this->videoMode, "Tetris", sf::Style::Close);
 	this->window->setFramerateLimit(60);
@@ -51,7 +51,7 @@ void Game::initButtons(){
 	}
 
 	this->playButton.setPosition(270.f, 150.f);
-	this->playButton.setSize(sf::Vector2f(350.f, 250.f));
+	this->playButton.setSize(sf::Vector2f(600.f, 350.f));
     this->playButton.setScale(sf::Vector2f(0.5f, 0.5f));
     this->playButton.setTexture(&playButtonTexture);
 	
@@ -62,7 +62,7 @@ void Game::initButtons(){
 	}
 
 	this->scoresButton.setPosition(270.f, 350.f);
-	this->scoresButton.setSize(sf::Vector2f(350.f, 250.f));
+	this->scoresButton.setSize(sf::Vector2f(600.f, 350.f));
     this->scoresButton.setScale(sf::Vector2f(0.5f, 0.5f));
     this->scoresButton.setTexture(&scoresButtonTexture);
 	
@@ -73,7 +73,7 @@ void Game::initButtons(){
 	}
 
 	this->exitButton.setPosition(270.f, 550.f);
-	this->exitButton.setSize(sf::Vector2f(350.f, 250.f));
+	this->exitButton.setSize(sf::Vector2f(600.f, 350.f));
     this->exitButton.setScale(sf::Vector2f(0.5f, 0.5f));
     this->exitButton.setTexture(&exitButtonTexture);
 	
@@ -122,10 +122,12 @@ bool Game::windowOpen() const{
 void Game::pollEvents(){
 	while(this->window->pollEvent(this->event)){
 		switch(this->event.type){
+			
 			case sf::Event::Closed:
 				this->window->close();
 				break;
 				
+			//Close the game and delete the window
 			case sf::Event::KeyPressed:
 				if(this->event.key.code == sf::Keyboard::Escape){
 					this->window->close();
@@ -166,12 +168,20 @@ void Game::pollEvents(){
                         window->close();
                     }
                 }
-            
+				break;
+				
+			default:
+				break;
 		}
 	}	
 }
 
 //Funtions
+
+/*
+	@return void
+	This call the funtion that handle all the cases posible in the game.
+*/
 void Game::update(){
 	this->pollEvents();
 	//RElative to the screen
@@ -183,6 +193,11 @@ void Game::update(){
 	
 }
 
+
+/*
+	@return void
+	Prepares all the things that will be shown in the window
+*/
 void Game::render(){
 	this->window->clear();
 	

@@ -13,55 +13,57 @@ class Cerebro{
 		//Window
 		sf::RenderWindow* window;
 		sf::Event event;
-		//prueba
-		std::vector<std::vector<int>> matrix = {
-			{1, 2, 3, 0, 1, 2, 3, 0, 1, 2},
-			{0, 1, 2, 3, 0, 1, 2, 3, 0, 1},
-			{3, 0, 1, 2, 3, 0, 1, 2, 3, 0},
-			{2, 3, 0, 1, 2, 3, 0, 1, 2, 3},
-			{1, 2, 3, 0, 1, 2, 3, 0, 1, 2},
-			{0, 1, 2, 3, 0, 1, 2, 3, 0, 1},
-			{3, 0, 1, 2, 3, 0, 1, 2, 3, 0},
-			{2, 3, 0, 1, 2, 3, 0, 1, 2, 3},
-			{1, 2, 3, 0, 1, 2, 3, 0, 1, 2},
-			{0, 1, 2, 3, 0, 1, 2, 3, 0, 1},
-			{3, 0, 1, 2, 3, 0, 1, 2, 3, 0},
-			{2, 3, 0, 1, 2, 3, 0, 1, 2, 3},
-			{1, 2, 3, 0, 1, 2, 3, 0, 1, 2},
-			{0, 1, 2, 3, 0, 1, 2, 3, 0, 1},
-			{3, 0, 1, 2, 3, 0, 1, 2, 3, 0},
-			{2, 3, 0, 1, 2, 3, 0, 1, 2, 3},
-			{1, 2, 3, 0, 1, 2, 3, 0, 1, 2},
-			{0, 1, 2, 3, 0, 1, 2, 3, 0, 1},
-			{3, 0, 1, 2, 3, 0, 1, 2, 3, 0},
-			{2, 3, 0, 1, 2, 3, 0, 1, 2, 3}
-		};
+		
+		//GameArea
+		char shadowMatrix[20][10]; //It's not real matrix, it is only used to show it in the game easier
 		const int rows = 20;
-		const int cols = 10;
-		const int blockSize = 30;
-		//
+		const int columns = 10;
+		const int blockSize = 40;
+		
+		//Score things
+		int currentScore;
+		
+		sf::Font retroFont; 
+		
+		sf::Text score;
+		
+		
+		//Playing 
 		bool playing;
-		//
-		char* actualTetrinomio;
-		char* nextTetrinomio;
 		
-		
+		//Iniatialize all
 		void initializeVariables();
-		void initWindow(sf::RenderWindow*&); 
+		void initWindow(sf::RenderWindow*&);
+		
+		void initGameArea();
+		void initScore();
+		
+		//To see the game area
+		void getGameArea();
+
 		
 	public:
 		//Constructor and Destructor
 		Cerebro(sf::RenderWindow*&);
 		virtual ~Cerebro();
 		
+		//Funtions
+		//Gets
 		bool finishedGame() const; 
 		
-		void drawMatrix();
-		
-		//Funtions
+		//Run game
+		//Main loop for the game
 		void startGame();
+		
+		
+		//Principal interface funtions
 		void update();
 		void render();
+		
+		//Draw funtions
+		void drawMatrix();
+		void drawScore();
+		
 	
 };
 

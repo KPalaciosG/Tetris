@@ -29,7 +29,7 @@ class Game{
 		sf::RectangleShape exitButton;
 		sf::Texture exitButtonTexture;
 		
-		
+		//Iniatialize all
 		void initializeVariables();
 		void initWindow(); 
 		void initButtons();
@@ -40,6 +40,7 @@ class Game{
 		Game();
 		virtual ~Game();
 		
+		//Gets
 		bool windowOpen() const; 
 		
 		//Funtions
