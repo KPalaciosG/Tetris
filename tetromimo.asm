@@ -160,30 +160,45 @@ getBlock:
 
 ;verificar si los espacios para donde se mueven están vacios
 	
+;-----------moveRight---------------
+;mover hacia la derecha
+;+1 para mover hacia la derecha
+
+
+
+;verificar si los espacios para donde se mueven están vacios
+	
 moveRight:
 	;verificar si se puede mover a la derecha
 
 	cmp r12, 0 ; se verifica límite derecho
-	ret
+	je end
 
 	;verifica si los dos bloques de la derecha tienen un 0, sino, no lo mueve
-				
-	cmp byte[r9+1], 0
-	jne end
-
 	cmp byte[r11+1], 0
 	jne end
 
+	cmp byte[r11], '1'	;si el bloque es I solo necesita verificar la última dirección
+	je startMoveRight
 
+	cmp byte[r9+1], 0
+	jne end
+	
 	startMoveRight:
-	mov [r11+1], rsi
+	mov [r11+1], sil
 	mov byte[r11], 0
-	mov [r10+1], rsi
+	mov [r10+1], sil
 	mov byte[r10], 0
-	mov [r9+1], rsi
+	mov [r9+1], sil
 	mov byte[r9],0
-	mov [r8+1], rsi
+	mov [r8+1], sil
 	mov byte[r8], 0
+
+	;nuevas direcciones de memoria del bloque
+	inc r11
+	inc r10
+	inc r9
+	inc r8
 
 	dec r12    ;le resta 1 al límite derecho
 	inc r13    ;incrementa el limite izquierdo
