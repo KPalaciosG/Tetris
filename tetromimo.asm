@@ -245,6 +245,52 @@ moveLeft:
 
 ;----------end moveLeft-------------------
 
+;----------moveDown----------------
+moveDown:
+	;verificar si se puede mover hacia abajo
+	cmp r14, 0
+	je end
+
+	;todos deben verificar estos 2
+	cmp byte[r10+10], 0 
+	jne end
+
+	cmp byte[r11+10], 0 
+	jne end
+
+	cmp byte[r11], '2'	;si el bloque es O solo verifica estos 2
+	je startMoveDown
+
+	cmp byte[r11], '4'	;si el bloque es S necesita verificar r9
+	je verificacion3
+	
+	cmp byte[r8+10], 0 ; bloque I, T, Z, J y L
+	jne end
+	cmp byte[r11], '1'	;si el bloque I tengo que verificar todos
+	je verificacion3
+	jmp startMoveDown
+
+	verificacion3:
+	cmp byte[r9+10], 0 
+	jne end
+	
+	startMoveDown:
+	mov [r11+10], sil
+	mov byte[r11], 0
+	mov [r10+10], sil
+	mov byte[r10], 0
+	mov [r9+10], sil
+	mov byte[r9],0
+	mov [r8+10], sil
+	mov byte[r8], 0
+
+	;nuevas direcciones de memoria del bloque
+	add r11, 10
+	add r10, 10
+	add r9, 10
+	add r8, 10
+
+;---------endMoveDown-------------------
 
 
 ;generacion de bloques
@@ -255,6 +301,8 @@ moveLeft:
 ;rotar
 
 ;verificar estado
+verificarEstado:
+
 
 ;----------limpiarBloque-----------
 cleanBlock:
