@@ -150,24 +150,11 @@ getBlock:
 	
 ;---------- end getBlock-----------
 
-
-
-;-----------moveRight---------------
-;mover hacia la derecha
-;+1 para mover hacia la derecha
-
-
-
-;verificar si los espacios para donde se mueven están vacios
 	
 ;-----------moveRight---------------
 ;mover hacia la derecha
 ;+1 para mover hacia la derecha
 
-
-
-;verificar si los espacios para donde se mueven están vacios
-	
 moveRight:
 	;verificar si se puede mover a la derecha
 
@@ -207,17 +194,51 @@ moveRight:
 
 ;-----------moveLeft-----------------
 ;mover hacia la izquierda
-;el ciclo va desde el principio de la matriz hasta el final
-
 
 moveLeft:
+	;verificar si se puede mover a la izquierda
 	cmp r13, 0
 	je end
 
-	
+	;verifica si los dos bloques de la derecha de tienen un 0, sino, no lo mueve
+	cmp byte[r8-1], 0 
+	jne end
 
+	cmp byte[r11], '1'	;si el bloque es I solo necesita verificar la primera dirección
+	je startMoveLeft
 
-	
+	;verificacion solo para los bloques O, S y Z
+	cmp sil, '3'
+	je verificacion2
+	cmp sil, '6'
+	je verificacion2
+	cmp sil, '7'
+	je verificacion2
+
+	cmp byte[r10-1], 0 
+	jne end
+	jmp startMoveLeft
+
+	verificacion2: 
+	;verificacion para los bloques T, J y L
+	cmp byte[r9-1], 0 
+	jne end
+
+	startMoveLeft:
+	mov [r8-1], sil
+	mov byte[r8], 0
+	mov [r9-1], sil
+	mov byte[r9], 0
+	mov [r10-1], sil
+	mov byte[r10],0
+	mov [r11-1], sil
+	mov byte[r11], 0
+
+	;nuevas direcciones de memoria del bloque
+	dec r11
+	dec r10
+	dec r9
+	dec r8
 
 	dec r13    ;le resta 1 al límite derecho
 	inc r12    ;incrementa el limite izquierdo
