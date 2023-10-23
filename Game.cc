@@ -50,9 +50,9 @@ void Game::initButtons(){
 		this->window->close();
 	}
 
-	this->playButton.setPosition(325.f, 450.f);
-	this->playButton.setSize(sf::Vector2f(300.f, 130.f));
-    this->playButton.setScale(sf::Vector2f(1.0f, 1.0f));
+	this->playButton.setPosition(350.f, 450.f);
+	this->playButton.setSize(sf::Vector2f(600.f, 208.f));
+    this->playButton.setScale(sf::Vector2f(0.5f, 0.5f));
     this->playButton.setTexture(&playButtonTexture);
 	
 	
@@ -61,9 +61,9 @@ void Game::initButtons(){
 		this->window->close();
 	}
 
-	this->scoresButton.setPosition(325.f, 600.f);
-	this->scoresButton.setSize(sf::Vector2f(300.f, 125.f));
-    this->scoresButton.setScale(sf::Vector2f(1.0f, 1.0f));
+	this->scoresButton.setPosition(350.f, 600.f);
+	this->scoresButton.setSize(sf::Vector2f(600.f, 208.f));
+    this->scoresButton.setScale(sf::Vector2f(0.5f, 0.5f));
     this->scoresButton.setTexture(&scoresButtonTexture);
 	
 	
@@ -72,9 +72,9 @@ void Game::initButtons(){
 		this->window->close();
 	}
 
-	this->exitButton.setPosition(325.f, 750.f);
-	this->exitButton.setSize(sf::Vector2f(300.f, 125.f));
-    this->exitButton.setScale(sf::Vector2f(1.0f, 1.0f));
+	this->exitButton.setPosition(350.f, 750.f);
+	this->exitButton.setSize(sf::Vector2f(600.f, 208.f));
+    this->exitButton.setScale(sf::Vector2f(0.5f, 0.5f));
     this->exitButton.setTexture(&exitButtonTexture);
 	
 }
@@ -85,7 +85,7 @@ void Game::initButtons(){
 	Also it handle the error if there's not the sprite
 */
 void Game::initBackground(){
-	if (!this->backgroundTexture.loadFromFile("./Backgrounds/MenuBackground.png")) {
+	if (!this->backgroundTexture.loadFromFile("./Backgrounds/MenuBackground.jpg")) {
         std::cerr << "Falta imagen de boton fondo" << std::endl;
 		this->window->close();
     }
