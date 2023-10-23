@@ -45,36 +45,36 @@ void Game::initWindow(){
 	Also it handle the errors if there's not a sprite
 */
 void Game::initButtons(){
-	if(!this->playButtonTexture.loadFromFile("play.jpg")){
+	if(!this->playButtonTexture.loadFromFile("./Buttons/PlayButton.png")){
 		std::cerr << "Falta imagen de boton de play" << std::endl;
 		this->window->close();
 	}
 
-	this->playButton.setPosition(270.f, 150.f);
-	this->playButton.setSize(sf::Vector2f(600.f, 350.f));
-    this->playButton.setScale(sf::Vector2f(0.5f, 0.5f));
+	this->playButton.setPosition(325.f, 450.f);
+	this->playButton.setSize(sf::Vector2f(300.f, 130.f));
+    this->playButton.setScale(sf::Vector2f(1.0f, 1.0f));
     this->playButton.setTexture(&playButtonTexture);
 	
 	
-	if(!this->scoresButtonTexture.loadFromFile("scores.jpg")){
+	if(!this->scoresButtonTexture.loadFromFile("./Buttons/MenuButton.png")){
 		std::cerr << "Falta imagen de boton de scores" << std::endl;
 		this->window->close();
 	}
 
-	this->scoresButton.setPosition(270.f, 350.f);
-	this->scoresButton.setSize(sf::Vector2f(600.f, 350.f));
-    this->scoresButton.setScale(sf::Vector2f(0.5f, 0.5f));
+	this->scoresButton.setPosition(325.f, 600.f);
+	this->scoresButton.setSize(sf::Vector2f(300.f, 125.f));
+    this->scoresButton.setScale(sf::Vector2f(1.0f, 1.0f));
     this->scoresButton.setTexture(&scoresButtonTexture);
 	
 	
-	if(!this->exitButtonTexture.loadFromFile("exit.jpg")){
+	if(!this->exitButtonTexture.loadFromFile("./Buttons/ExitButton.png")){
 		std::cerr << "Falta imagen de boton de exit" << std::endl;
 		this->window->close();
 	}
 
-	this->exitButton.setPosition(270.f, 550.f);
-	this->exitButton.setSize(sf::Vector2f(600.f, 350.f));
-    this->exitButton.setScale(sf::Vector2f(0.5f, 0.5f));
+	this->exitButton.setPosition(325.f, 750.f);
+	this->exitButton.setSize(sf::Vector2f(300.f, 125.f));
+    this->exitButton.setScale(sf::Vector2f(1.0f, 1.0f));
     this->exitButton.setTexture(&exitButtonTexture);
 	
 }
@@ -85,7 +85,7 @@ void Game::initButtons(){
 	Also it handle the error if there's not the sprite
 */
 void Game::initBackground(){
-	if (!this->backgroundTexture.loadFromFile("Fondo.jpg")) {
+	if (!this->backgroundTexture.loadFromFile("./Backgrounds/MenuBackground.png")) {
         std::cerr << "Falta imagen de boton fondo" << std::endl;
 		this->window->close();
     }
