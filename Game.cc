@@ -18,7 +18,7 @@ void Game::initializeVariables(){
 		
 */
 void Game::initWindow(){
-	this->videoMode.height = 900;
+	this->videoMode.height = 960;
 	this->videoMode.width = 1000;
 	
 	this->window = new sf::RenderWindow(this->videoMode, "Tetris", sf::Style::Close);

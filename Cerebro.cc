@@ -2,7 +2,8 @@
 
 //Funtions from assembly
 extern "C" char* getMatrix();
-extern "C" void crearBloque();
+extern "C" void getBlock();
+extern "C" void rotateTetrinomio(int, char);
 
 /*
 	@return void
@@ -107,13 +108,16 @@ void Cerebro::startGame(){
 					This call the funtion that's going to move the current Tetrinomio to the Right
 				*/
 				else if(this->event.key.code == sf::Keyboard::Right){
-					crearBloque();
+					getBlock();
 				}
 				
 				/*
 					This call the funtion that's going to turn to right the current Tetrinomio
 				*/
 				else if(this->event.key.code == sf::Keyboard::Up){
+					++amountOfMoves;
+					rotateTetrinomio(amountOfMoves, currentTetrinomio);
+					this->prueba();
 				}
 				
 				/*
@@ -190,8 +194,8 @@ void Cerebro::drawMatrix(){
 	getGameArea();
 	
 	//Use it to center the game area
-	double centerX = 3;
-	double centerY = 6.7;
+	double centerX = 7.5;
+	double centerY = 2;
 	
 	//Loops to show the shadowMatrix values
 	for (int i = 0; i < rows; ++i) { // CenterX = i + centerX -> height
@@ -201,13 +205,13 @@ void Cerebro::drawMatrix(){
             sf::RectangleShape block(sf::Vector2f(blockSize, blockSize));
 			
 			//Sets the relative position of each block
-            block.setPosition((j + centerY) * blockSize, (i + centerX) * blockSize);
+            block.setPosition((j + centerX) * blockSize, (i + centerY) * blockSize);
 
 			//Verify the value of each cell of the matrix to assing the color of the block
             switch (this->shadowMatrix[i][j]) {
 				// 0 = empty
                 case '0':
-                    block.setFillColor(sf::Color::Black);
+                    block.setFillColor(sf::Color::White);
                     break;
 				// 1 = red
                 case '1':
@@ -254,4 +258,9 @@ void Cerebro::drawMatrix(){
 void Cerebro::drawScore(){
 	this->score.setString("Score: " + std::to_string(currentScore));
 	this->window->draw(score);
+}
+
+void Cerebro::prueba(){
+	
+	
 }
