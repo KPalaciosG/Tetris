@@ -23,27 +23,27 @@ getMatrix:
 	
 getBlock:
 	mov r9, matrix
-	add r9, 38
+	add r9, 205
 	mov byte[r9], '1'
 	mov qword[currentTetrinomio], r9
 	
 	mov r9, matrix
-	add r9, 46
+	add r9, 206
 	mov byte[r9], '1'
 	mov qword[currentTetrinomio+8], r9
 	
 	mov r9, matrix
-	add r9, 47
+	add r9, 207
 	mov byte[r9], '1'
 	mov qword[currentTetrinomio+16], r9
 	
 	mov r9, matrix
-	add r9, 48
+	add r9, 208
 	mov byte[r9], '1'
 	mov qword[currentTetrinomio+24], r9
 	
 	mov r9, matrix
-	add r9, 36
+	add r9, 206
 	mov qword[currentTetrinomio+32], r9
 	
 	mov byte[color], '1'
@@ -61,7 +61,7 @@ rotateTetrinomio:
 	call getTypeMove
 	mov rdi, rax ;manda como parametro el movimiento que debe hacer
 	call getMoves ;retorna los movimientos del caso
-	
+	call borderCases
 	call validMove ;verificar si no hay nada ahi y se puede mover, tambien los bordes
 	cmp al, 0
 	je return
@@ -179,7 +179,7 @@ moveT3:
 	
 ;------------------------------------------------
 ;movimientos de la S
-getMovesS:	;se puede reducir a 2 movimientos
+getMovesS:	
 	cmp rdi, 0
 	je moveS0
 	cmp rdi, 1
@@ -189,7 +189,7 @@ getMovesS:	;se puede reducir a 2 movimientos
 	cmp rdi, 3
 	je moveS1
 
-moveS0:	;el ultimo que hace, vuelve a la forma original
+moveS0:	;vuelve a la forma inicial
 	;	[]	  	  	  [][]
 	;	[][]	->	[][]
 	;	  []
@@ -228,7 +228,7 @@ moveS1:
 	
 ;------------------------------------------------
 ;movimientos de la Z
-getMovesZ:	;se puede reducir a 2 movimientos
+getMovesZ:
 	cmp rdi, 0
 	je moveZ0
 	cmp rdi, 1
@@ -238,7 +238,7 @@ getMovesZ:	;se puede reducir a 2 movimientos
 	cmp rdi, 3
 	je moveZ1
 
-moveZ0:	;el ultimo que hace, vuelve a la forma original
+moveZ0:	;vuelve a la inicial
 	;	  []		[][]
 	;	[][]	->	  [][]
 	;	[]
@@ -277,7 +277,7 @@ moveZ1:
 	
 ;------------------------------------------------
 ;movimientos de la Z
-getMovesJ:	;se puede reducir a 2 movimientos
+getMovesJ:
 	cmp rdi, 0
 	je moveJ0
 	cmp rdi, 1
@@ -287,7 +287,7 @@ getMovesJ:	;se puede reducir a 2 movimientos
 	cmp rdi, 3
 	je moveJ3
 
-moveJ0:	;el ultimo que hace, vuelve a la forma original
+moveJ0:	;vuelve a la forma inicial
 	mov qword[moves], -2
 	mov qword[moves + 8], 9
 	mov qword[moves + 16], 0
@@ -319,7 +319,7 @@ moveJ3:
 
 ;------------------------------------------------
 ;movimientos de la L
-getMovesL:	;se puede reducir a 2 movimientos
+getMovesL:
 	cmp rdi, 0
 	je moveL0
 	cmp rdi, 1
@@ -329,7 +329,7 @@ getMovesL:	;se puede reducir a 2 movimientos
 	cmp rdi, 3
 	je moveL3
 
-moveL0:	;el ultimo que hace, vuelve a la forma original
+moveL0:	;vuelve a la forma inicial
 	mov qword[moves], 2
 	mov qword[moves + 8], -11
 	mov qword[moves + 16], 0
@@ -358,7 +358,7 @@ moveL3:
 	jmp return	
 	
 	
-
+;---------------------------
 validMove:
 	mov r10, 0
 	mov al, 1
@@ -383,7 +383,56 @@ isNotEmpty: ;hay algun bloque donde se iba a mover
 	je return
 	
 	
+;-----------------
+borderCases:
+	;Verifica si el pivote esta en una posicion particular cuando se intenta girar
+	;en caso de que sea asi, modifica los futuros movimientos, para que se verifiquen tambien si son validos
+	mov r8, array
+	mov r9, qword[currentTetrinomio + 32] ;pivote
 	
+	;Case Left Border
+	;Si el pivote esta en el borde izquierdo, para girar necesita correr 1 a la derecha el tetrinomio, eso hace
+	mov rax, r9
+	div r8
+	cmp rdx, 0
+	mov rax, 1
+	je changeMoves
+	
+	;Case Right Border
+	;Si el pivote esta en el borde derecho, para girar necesita correr 1 a la izquierda el tetrinomio, eso hace
+	mov rax, r9
+	add r8, 9
+	div r8
+	cmp rdx, 0
+	mov rax, -1
+	je changeMoves
+	
+	;Case Up Border
+	;Si el pivote esta en el borde de arriba, para girar necesita bajar el tetrinomio, eso hace
+	cmp r9, r8
+	mov rax, 20
+	jl changeMoves
+	
+	;Case Bottom Border
+	;Si el pivote esta en el borde de abajo, para girar necesita subir el tetrinomio, eso hace
+	cmp r9, array+200
+	mov rax, -10
+	jg changeMoves
+	
+	ret
+	
+changeMoves:
+	mov r10, 0
+changeMoveLoop:
+	add qword[moves + 8*r10], rax
+	inc r10
+	cmp r10, 4
+	jle changeMoveLoop
+	ret
+	
+	
+	
+;-----------------------------	
 deleteTetrinomio:
 	mov r10, 0
 deleteLoop:
@@ -394,7 +443,8 @@ deleteLoop:
 	jl deleteLoop
 	ret
 
-rotate: ; to do hacer esto en un ciclo ; cambiar el pivote
+;-----------------------------
+rotate:
 	mov r10, 0
 	
 rotateLoop:
@@ -406,6 +456,11 @@ rotateLoop:
 	inc r10
 	cmp r10, 4
 	jl rotateLoop
+	
+	;Actualizar el pivote
+	mov r9, qword[currentTetrinomio + 8*r10]
+	add r9, qword[moves + 8*r10]
+	mov qword[currentTetrinomio + 8*r10], r9
 	
 	ret
 	
