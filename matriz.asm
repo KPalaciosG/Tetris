@@ -13,6 +13,8 @@ section .text
     global getMatrix
 	global getBlock
 	global rotateTetrinomio
+	global moveRight
+	global moveLeft
 
 getMatrix:
 	mov r8, array
