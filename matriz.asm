@@ -50,7 +50,14 @@ getBlock:
 	mov byte[color], '1'
 	
 	ret
+;rotar el tetronimo a la derecha
+;rdi = cantidad de movimientos
+;rsi = tipo de tetrinomio
+moveRight:
+	cmp rsi, 'O' ;no debe hacer nada
+	je return
 
+	ret
 
 ;rdi = cantidad de movimientos
 ;rsi = tipo de tetrinomio
