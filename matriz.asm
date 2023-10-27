@@ -13,8 +13,6 @@ section .text
     global getMatrix
 	global getBlock
 	global rotateTetrinomio
-	global moveRight
-	global moveLeft
 
 getMatrix:
 	mov r8, array
@@ -23,29 +21,30 @@ getMatrix:
     ret
 	
 	
-getBlock:
+getBlock: 
+;Pivote del Tetrinomio I es el 2 bloque
 	mov r9, matrix
-	add r9, 205
+	add r9, 34
 	mov byte[r9], '1'
 	mov qword[currentTetrinomio], r9
 	
 	mov r9, matrix
-	add r9, 206
+	add r9, 35
 	mov byte[r9], '1'
 	mov qword[currentTetrinomio+8], r9
 	
 	mov r9, matrix
-	add r9, 207
+	add r9, 36
 	mov byte[r9], '1'
 	mov qword[currentTetrinomio+16], r9
 	
 	mov r9, matrix
-	add r9, 208
+	add r9, 37
 	mov byte[r9], '1'
 	mov qword[currentTetrinomio+24], r9
 	
 	mov r9, matrix
-	add r9, 206
+	add r9, 35
 	mov qword[currentTetrinomio+32], r9
 	
 	mov byte[color], '1'

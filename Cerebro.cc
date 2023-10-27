@@ -117,7 +117,6 @@ void Cerebro::startGame(){
 				else if(this->event.key.code == sf::Keyboard::Up){
 					++amountOfMoves;
 					rotateTetrinomio(amountOfMoves, currentTetrinomio);
-					this->prueba();
 				}
 				
 				/*
@@ -260,7 +259,3 @@ void Cerebro::drawScore(){
 	this->window->draw(score);
 }
 
-void Cerebro::prueba(){
-	
-	
-}

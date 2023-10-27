@@ -20,7 +20,7 @@ class Cerebro{
 		const int columns = 10;
 		const int blockSize = 40;
 		
-		char currentTetrinomio = 'L';
+		char currentTetrinomio = 'I';
 		int amountOfMoves = 0;
 		//Score things
 		int currentScore;
