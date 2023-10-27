@@ -4,6 +4,7 @@
 extern "C" char* getMatrix();
 extern "C" void getBlock();
 extern "C" void rotateTetrinomio(int, char);
+extern "C" void moveRight(int, char);
 
 /*
 	@return void
