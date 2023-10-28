@@ -6,81 +6,89 @@ currentTetrinomio: times 5 dq 0
 color: db 0
 
 moves: times 5 dq 0
+row: db, 21
 
 empty: equ '0'
 
 section .text
-    global getMatrix
-    global getBlock
-    global rotateTetrinomio
-    global moveRight
+    	global getMatrix
+	global getBlock
+	global rotateTetrinomio
+	global moveRight
 
 getMatrix:
-    mov r8, array
-    add r8, 10
-    mov rax, r8  ; Dirección base de la matrix
-    ret
+	mov r8, array
+	add r8, 10
+	mov rax, r8  ; Dirección base de la matrix
+	ret
 
 
 getBlock:
-;Pivote del Tetrinomio I es el 2 bloque
-mov r9, matrix
-add r9, 34
-mov byte[r9], '1'
-mov qword[currentTetrinomio], r9
+	;Pivote del Tetrinomio I es el 2 bloque
+	mov r9, matrix
+	add r9, 34
+	mov byte[r9], '1'
+	mov qword[currentTetrinomio], r9
 
-mov r9, matrix
-add r9, 35
-mov byte[r9], '1'
-mov qword[currentTetrinomio+8], r9
+	mov r9, matrix
+	add r9, 35
+	mov byte[r9], '1'
+	mov qword[currentTetrinomio+8], r9
 
-mov r9, matrix
-add r9, 36
-mov byte[r9], '1'
-mov qword[currentTetrinomio+16], r9
+	mov r9, matrix
+	add r9, 36
+	mov byte[r9], '1'
+	mov qword[currentTetrinomio+16], r9
 
-mov r9, matrix
-add r9, 37
-mov byte[r9], '1'
-mov qword[currentTetrinomio+24], r9
+	mov r9, matrix
+	add r9, 37
+	mov byte[r9], '1'
+	mov qword[currentTetrinomio+24], r9
 
-mov r9, matrix
-add r9, 35
-mov qword[currentTetrinomio+32], r9
+	mov r9, matrix
+	add r9, 35
+	mov qword[currentTetrinomio+32], r9
 
-mov byte[color], '1'
+	mov byte[color], '1'
 
-ret
+	ret
 
-;rotar el tetronimo a la derecha
+;mover el tetronimo a la derecha
 ;rsi = tipo de tetrinomio
 moveRight:
-cmp rsi, 'O' ;no debe hacer nada
-je return
+	cmp rsi, 'O' ;no debe hacer nada
+	je return
+	
+	call validMove
+	cmp al, 0
+	je return
 
-call deleteTetrinomio ;limpia la matriz
-call movingRight
+	call deleteTetrinomio ;limpia la matriz
+	call movingRight
 
-ret
+	ret
+
+;checkBorders:
+	;mov r10, 0	
 
 ;rdi = cantidad de movimientos
 ;rsi = tipo de tetrinomio
 rotateTetrinomio:
-cmp rsi, 'O' ;no debe hacer nada
-je return
+	cmp rsi, 'O' ;no debe hacer nada
+	je return
 
-mov rdi, rdi ;cantidad de movimientos
-call getTypeMove
-mov rdi, rax ;manda como parametro el movimiento que debe hacer
-call getMoves ;retorna los movimientos del caso
-call borderCases
-call validMove ;verificar si no hay nada ahi y se puede mover, tambien los bordes
-cmp al, 0
-je return
+	mov rdi, rdi ;cantidad de movimientos
+	call getTypeMove
+	mov rdi, rax ;manda como parametro el movimiento que debe hacer
+	call getMoves ;retorna los movimientos del caso
+	call borderCases
+	call validMove ;verificar si no hay nada ahi y se puede mover, tambien los bordes
+	cmp al, 0
+	je return
 
-call deleteTetrinomio ;limpia la matriz
-call rotate ;dibuja en la matriz en las nuevas posiciones y las guarda en currentTetrinomio
-ret
+	call deleteTetrinomio ;limpia la matriz
+	call rotate ;dibuja en la matriz en las nuevas posiciones y las guarda en currentTetrinomio
+	ret
 
 
 getTypeMove:
@@ -372,27 +380,27 @@ jmp return
 
 ;---------------------------
 validMove:
-mov r10, 0
-mov al, 1
+	mov r10, 0
+	mov al, 1
 
-validMoveLoop:
-cmp al, 0
-je return
+	validMoveLoop:
+		cmp al, 0
+		je return
 
-mov r9, qword[currentTetrinomio + 8*r10]
-add r9, qword[moves + 8*r10]
-cmp r9, empty
-jne isNotEmpty
+		mov r9, qword[currentTetrinomio + 8*r10]
+		add r9, qword[moves + 8*r10]
+		cmp r9, empty
+		jne isNotEmpty
 
-inc r10
-cmp r10, 4
-jl validMoveLoop
+		inc r10
+		cmp r10, 4
+		jl validMoveLoop
 
-je return
+	je return
 
-isNotEmpty: ;hay algun bloque donde se iba a mover
-mov al, 0
-je return
+	isNotEmpty: ;hay algun bloque donde se iba a mover
+	mov al, 0
+	je return
 
 
 ;-----------------
@@ -434,25 +442,25 @@ jg changeMoves
 ret
 
 changeMoves:
-mov r10, 0
-changeMoveLoop:
-add qword[moves + 8*r10], rax
-inc r10
-cmp r10, 4
-jle changeMoveLoop
-ret
+	mov r10, 0
+	changeMoveLoop:
+		add qword[moves + 8*r10], rax
+		inc r10
+		cmp r10, 4
+		jle changeMoveLoop
+	ret
 
 
 
 ;-----------------------------
 deleteTetrinomio:
-mov r10, 0
-deleteLoop:
-mov r9, qword[currentTetrinomio + 8*r10]
-mov byte[r9], empty
-inc r10
-cmp r10, 4
-jl deleteLoop
+	mov r10, 0
+	deleteLoop:
+		mov r9, qword[currentTetrinomio + 8*r10]
+		mov byte[r9], empty
+		inc r10
+		cmp r10, 4
+		jl deleteLoop
 ret
 
 ;-----------------------------
@@ -477,16 +485,16 @@ mov qword[currentTetrinomio + 8*r10], r9
 ret
 
 movingRight:
-mov r10, 0
-mRloop:
-mov r9, qword[currentTetrinomio + 8*r10]
-add r9, 1
-mov r12b, byte[color]
-mov byte[r9], r12b
-mov qword[currentTetrinomio + 8*r10], r9
-inc r10
-cmp r10, 4
-       jl mRloop
+	mov r10, 0
+	mRloop:
+		mov r9, qword[currentTetrinomio + 8*r10]
+		add r9, 1
+		mov r12b, byte[color]
+		mov byte[r9], r12b
+		mov qword[currentTetrinomio + 8*r10], r9
+		inc r10
+		cmp r10, 4
+	       jl mRloop
 
 ret
 
