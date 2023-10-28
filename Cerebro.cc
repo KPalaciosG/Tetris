@@ -5,6 +5,8 @@ extern "C" char* getMatrix();
 extern "C" void getBlock();
 extern "C" void rotateTetrinomio(int, char);
 extern "C" void moveRight(char);
+extern "C" void moveLeft(char);
+extern "C" void moveDown(char);
 
 /*
 	@return void
@@ -101,19 +103,23 @@ void Cerebro::startGame(){
 				/*
 					This call the funtion that's going to move the current Tetrinomio to the Left
 				*/
-				if(this->event.key.code == sf::Keyboard::Left){
-					++this->currentScore;
-					getBlock();
+				if(this->event.key.code == sf::Keyboard::Right)
+				{	getBlock();
+					//++amountOfMoves;
+					//moveRight(currentTetrinomio);
+					
+					
+					
+					
+					
 				}
 				
 				/*
 					This call the funtion that's going to move the current Tetrinomio to the Right
 				*/
-				else if(this->event.key.code == sf::Keyboard::Right){
-	
-					++amountOfMoves;
-					moveRight(currentTetrinomio);
-					
+				else if(this->event.key.code == sf::Keyboard::Left){
+					//++this->currentScore;
+					//moveLeft(currentTetrinomio);
 				}
 				
 				/*
@@ -128,6 +134,7 @@ void Cerebro::startGame(){
 					This call the funtion that's going to get down faster the Tetrinomio
 				*/
 				else if(this->event.key.code == sf::Keyboard::Down){
+					moveDown(currentTetrinomio);
 				}
 				
 				/*
