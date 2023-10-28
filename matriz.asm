@@ -11,13 +11,13 @@ empty: equ '0'
 
 section .text
     global getMatrix
-global getBlock
-global rotateTetrinomio
-global moveRight
+    global getBlock
+    global rotateTetrinomio
+    global moveRight
 
 getMatrix:
-mov r8, array
-add r8, 10
+    mov r8, array
+    add r8, 10
     mov rax, r8  ; Dirección base de la matrix
     ret
 
