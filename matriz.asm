@@ -61,8 +61,8 @@ moveRight:
 	je return
 	
 	call validMove
-	;cmp al, 0
-	;je return
+	cmp al, 0
+	je return
 	
 	call checkBorders
 	cmp al, 0
@@ -75,13 +75,34 @@ moveRight:
 
 checkBorders:
 	mov al, 1
-	
 	dec byte[pivotRight]
 	inc byte[pivotLeft]
+	;mov r8, array
+	;mov r9, qword[currentTetrinomio + 24] ;pivote
+
+	;Case Right Border
+	;mov rax, r9
+	;add r8, 9
+	;div r8
+	;cmp rdx, 0
+	;mov al, 1
+	;jne return
+	;mov al, 0
 	
-	cmp byte[pivotRight], 0
-	jne return
-	mov al, 0
+	cmp byte[pivotRight], 1
+	je return
+	cmp byte[pivotRight], 2
+	je return
+	cmp byte[pivotRight], 3
+	je return
+	cmp byte[pivotRight], 4
+	je return
+	cmp byte[pivotRight], 5
+	je return
+	cmp byte[pivotRight], 6
+	je return
+	
+	mov al, 0 
 	
 	ret 	
 
