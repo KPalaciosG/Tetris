@@ -110,7 +110,10 @@ void Cerebro::startGame(){
 					This call the funtion that's going to move the current Tetrinomio to the Right
 				*/
 				else if(this->event.key.code == sf::Keyboard::Right){
+	
+					++amountOfMoves;
 					moveRight(currentTetrinomio);
+					
 				}
 				
 				/*
@@ -260,4 +263,3 @@ void Cerebro::drawScore(){
 	this->score.setString("Score: " + std::to_string(currentScore));
 	this->window->draw(score);
 }
-
