@@ -117,8 +117,8 @@ void Cerebro::startGame(){
 					This call the funtion that's going to turn to right the current Tetrinomio
 				*/
 				else if(this->event.key.code == sf::Keyboard::Up){
-					++amountOfMoves;
-					rotateTetrinomio(amountOfMoves, currentTetrinomio);
+					//++amountOfMoves;
+					//rotateTetrinomio(amountOfMoves, currentTetrinomio);
 				}
 				
 				/*
