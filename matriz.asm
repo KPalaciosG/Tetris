@@ -6,8 +6,8 @@ currentTetrinomio: times 5 dq 0
 color: db 0
 
 moves: times 5 dq 0
-pivotRight: db 3
-pivotLeft: db 3
+;pivotRight: db 3
+;pivotLeft: db 3
 
 empty: equ '0'
 
@@ -16,7 +16,9 @@ section .text
 	global getBlock
 	global rotateTetrinomio
 	global moveRight
-
+	global moveLeft
+	global moveDown
+	
 getMatrix:
 	mov r8, array
 	add r8, 10
@@ -72,37 +74,83 @@ moveRight:
 	call movingRight
 
 	ret
+;mover el tetronimo a la izquierda
+;rsi = tipo de tetrinomio
+moveLeft:
+	cmp rsi, 'O' ;no debe hacer nada
+	je return
+	
+	;call validMove
+	;cmp al, 0
+	;je return
+	
+	call checkBorders
+	cmp al, 0
+	je return
+
+	call deleteTetrinomio ;limpia la matriz
+	call movingLeft
+
+	ret
+
+;rsi = tipo de tetrinomio
+moveDown:
+	cmp rsi, 'O' ;no debe hacer nada
+	je return
+	
+	;call validMove
+	;cmp al, 0
+	;je return
+	
+	;call checkBorders
+	;cmp al, 0
+	;je return
+
+	call deleteTetrinomio ;limpia la matriz
+	call movingDown
+
+	ret
 
 checkBorders:
 	mov al, 1
-	dec byte[pivotRight]
-	inc byte[pivotLeft]
-	;mov r8, array
-	;mov r9, qword[currentTetrinomio + 24] ;pivote
+	;;dec byte[pivotRight]
+	;inc byte[pivotLeft]
+	mov r8, array
+	mov r9, qword[currentTetrinomio + 32] ;pivote
+	mov rdx, 0
 
+	;Case left Border
+	mov rax, r9
+	add r8, 9
+	div r8
+	cmp rdx, 0
+	mov al, 1
+	jne return
+	mov al, 0
+	
 	;Case Right Border
-	;mov rax, r9
-	;add r8, 9
-	;div r8
-	;cmp rdx, 0
-	;mov al, 1
-	;jne return
-	;mov al, 0
+	mov rax, r9
+	add r8, 9
+	div r8
+	cmp rdx, 0
+	mov al, 1
+	jne return
+	mov al, 0
 	
-	cmp byte[pivotRight], 1
-	je return
-	cmp byte[pivotRight], 2
-	je return
-	cmp byte[pivotRight], 3
-	je return
-	cmp byte[pivotRight], 4
-	je return
-	cmp byte[pivotRight], 5
-	je return
-	cmp byte[pivotRight], 6
-	je return
+	;cmp byte[pivotRight], 1
+	;je return
+	;cmp byte[pivotRight], 2
+	;je return
+	;cmp byte[pivotRight], 3
+	;je return
+	;cmp byte[pivotRight], 4
+	;je return
+	;cmp byte[pivotRight], 5
+	;je return
+	;cmp byte[pivotRight], 6
+	;je return
 	
-	mov al, 0 
+	;mov al, 0 
 	
 	ret 	
 
@@ -532,6 +580,35 @@ movingRight:
 	       jl mRloop
 
 ret
+
+movingLeft:
+	mov r10, 0
+	mLloop:
+		mov r9, qword[currentTetrinomio + 8*r10]
+		add r9, -1
+		mov r12b, byte[color]
+		mov byte[r9], r12b
+		mov qword[currentTetrinomio + 8*r10], r9
+		inc r10
+		cmp r10, 4
+	       jl mLloop
+
+ret
+
+movingDown:
+	mov r10, 0
+	mDloop:
+		mov r9, qword[currentTetrinomio + 8*r10]
+		add r9, 10
+		mov r12b, byte[color]
+		mov byte[r9], r12b
+		mov qword[currentTetrinomio + 8*r10], r9
+		inc r10
+		cmp r10, 4
+	       jl mDloop
+
+ret
+
 
 
 
