@@ -34,22 +34,22 @@ getBlock:
 	mov qword[currentTetrinomio], r9
 
 	mov r9, matrix
-	add r9, 35
+	add r9, 44
 	mov byte[r9], '1'
 	mov qword[currentTetrinomio+8], r9
 
 	mov r9, matrix
-	add r9, 36
+	add r9, 54
 	mov byte[r9], '1'
 	mov qword[currentTetrinomio+16], r9
 
 	mov r9, matrix
-	add r9, 37
+	add r9, 64
 	mov byte[r9], '1'
 	mov qword[currentTetrinomio+24], r9
 
 	mov r9, matrix
-	add r9, 35
+	add r9, 44
 	mov qword[currentTetrinomio+32], r9
 
 	mov byte[color], '1'
@@ -62,9 +62,9 @@ moveRight:
 	cmp rsi, 'O' ;no debe hacer nada
 	je return
 	
-	call validMove
-	cmp al, 0
-	je return
+	;call validMove
+	;cmp al, 0
+	;je return
 	
 	call checkBorders
 	cmp al, 0
@@ -112,47 +112,30 @@ moveDown:
 	ret
 
 checkBorders:
+	mov rdx, 0
 	mov al, 1
-	;;dec byte[pivotRight]
-	;inc byte[pivotLeft]
 	mov r8, array
 	mov r9, qword[currentTetrinomio + 32] ;pivote
-	mov rdx, 0
 
-	;Case left Border
+	;Case Left Border
 	mov rax, r9
-	add r8, 9
 	div r8
 	cmp rdx, 0
-	mov al, 1
-	jne return
-	mov al, 0
-	
+	je noMov
+	jmp return
+
 	;Case Right Border
 	mov rax, r9
 	add r8, 9
 	div r8
 	cmp rdx, 0
-	mov al, 1
-	jne return
+	je noMov
+	jmp return
+	
+	noMov:
 	mov al, 0
-	
-	;cmp byte[pivotRight], 1
-	;je return
-	;cmp byte[pivotRight], 2
-	;je return
-	;cmp byte[pivotRight], 3
-	;je return
-	;cmp byte[pivotRight], 4
-	;je return
-	;cmp byte[pivotRight], 5
-	;je return
-	;cmp byte[pivotRight], 6
-	;je return
-	
-	;mov al, 0 
-	
-	ret 	
+	ret
+		
 
 ;rdi = cantidad de movimientos
 ;rsi = tipo de tetrinomio
