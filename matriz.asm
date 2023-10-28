@@ -13,6 +13,7 @@ section .text
     global getMatrix
 	global getBlock
 	global rotateTetrinomio
+	global moveRight
 
 getMatrix:
 	mov r8, array
@@ -50,12 +51,16 @@ getBlock:
 	mov byte[color], '1'
 	
 	ret
-;rotar el tetronimo a la derecha
+
+;mover el tetronimo a la derecha
 ;rdi = cantidad de movimientos
 ;rsi = tipo de tetrinomio
 moveRight:
 	cmp rsi, 'O' ;no debe hacer nada
 	je return
+
+	call deleteTetrinomio ;limpia la matriz
+	call movingRight
 
 	ret
 
@@ -471,7 +476,19 @@ rotateLoop:
 	mov qword[currentTetrinomio + 8*r10], r9
 	
 	ret
-	
+
+movingRight:
+	mov r10, 0
+	moveRightLoop
+		mov r9, qword[currentTetrinomio + 8*r10]
+		add r9, 1
+		mov r12b, byte[color]
+		mov byte[r9], r12b
+		mov qword[currentTetrinomio + 8*r10], r9
+		inc r10
+		cmp r10, 4
+		jl moveRightLoop
+	ret
 	
 return:
 	ret
