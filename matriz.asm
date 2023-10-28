@@ -6,7 +6,8 @@ currentTetrinomio: times 5 dq 0
 color: db 0
 
 moves: times 5 dq 0
-row: db, 21
+pivotRight: db 3
+pivotLeft: db 3
 
 empty: equ '0'
 
@@ -60,6 +61,10 @@ moveRight:
 	je return
 	
 	call validMove
+	;cmp al, 0
+	;je return
+	
+	call checkBorders
 	cmp al, 0
 	je return
 
@@ -68,8 +73,17 @@ moveRight:
 
 	ret
 
-;checkBorders:
-	;mov r10, 0	
+checkBorders:
+	mov al, 1
+	
+	dec byte[pivotRight]
+	inc byte[pivotLeft]
+	
+	cmp byte[pivotRight], 0
+	jne return
+	mov al, 0
+	
+	ret 	
 
 ;rdi = cantidad de movimientos
 ;rsi = tipo de tetrinomio
