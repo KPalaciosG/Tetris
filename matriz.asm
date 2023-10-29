@@ -29,27 +29,27 @@ getMatrix:
 getBlock:
 	;Pivote del Tetrinomio I es el 2 bloque
 	mov r9, matrix
-	add r9, 204
+	add r9, 34
 	mov byte[r9], '1'
 	mov qword[currentTetrinomio], r9
 
 	mov r9, matrix
-	add r9, 205
+	add r9, 35
 	mov byte[r9], '1'
 	mov qword[currentTetrinomio+8], r9
 
 	mov r9, matrix
-	add r9, 206
+	add r9, 36
 	mov byte[r9], '1'
 	mov qword[currentTetrinomio+16], r9
 
 	mov r9, matrix
-	add r9, 207
+	add r9, 37
 	mov byte[r9], '1'
 	mov qword[currentTetrinomio+24], r9
 
 	mov r9, matrix
-	add r9, 205
+	add r9, 35
 	mov qword[currentTetrinomio+32], r9
 
 	mov byte[color], '1'
@@ -61,12 +61,8 @@ getBlock:
 moveRight:
 	cmp rsi, 'O' ;no debe hacer nada
 	je return
-	
-	;call validMove
-	;cmp al, 0
-	;je return
-	
-	call checkBorders
+
+	call checkRightBorder
 	cmp al, 0
 	je return
 
@@ -80,11 +76,7 @@ moveLeft:
 	cmp rsi, 'O' ;no debe hacer nada
 	je return
 	
-	;call validMove
-	;cmp al, 0
-	;je return
-	
-	call checkBorders
+	call checkLeftBorder
 	cmp al, 0
 	je return
 
@@ -111,31 +103,55 @@ moveDown:
 
 	ret
 
-checkBorders:
-	mov rdx, 0
-	mov al, 1
+checkLeftBorder:
 	mov r8, array
 	mov r9, qword[currentTetrinomio + 32] ;pivote
-
-	;Case Left Border
-	mov rax, r9
-	div r8
-	cmp rdx, 0
-	je noMov
-	jmp return
-
-	;Case Right Border
-	mov rax, r9
-	add r8, 9
-	div r8
-	cmp rdx, 0
-	je noMov
-	jmp return
 	
-	noMov:
+	mov al, 1
+	mov r10, 0
+	leftBorderLoop:
+		mov rdx, 0
+		mov rax, qword[currentTetrinomio + 8*r10]
+		sub rax, r8
+		
+		mov r11, 10
+		div r11
+		cmp rdx, 0
+		je cantMove
+		
+		inc r10
+		cmp r10, 4
+		jl leftBorderLoop
+		
+	ret
+	
+checkRightBorder:
+	mov r8, array
+	add r8, 9
+	mov r9, qword[currentTetrinomio + 32] ;pivote
+	
+	mov al, 1
+	mov r10, 0
+	rightBorderLoop:
+		mov rdx, 0
+		mov rax, qword[currentTetrinomio + 8*r10]
+		sub rax, r8
+		
+		mov r11, 10
+		div r11
+		cmp rdx, 0
+		je cantMove
+		
+		inc r10
+		cmp r10, 4
+		jl rightBorderLoop
+		
+	ret
+	
+cantMove:
 	mov al, 0
 	ret
-		
+
 
 ;rdi = cantidad de movimientos
 ;rsi = tipo de tetrinomio
