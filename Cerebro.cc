@@ -7,7 +7,7 @@ extern "C" void rotateTetrinomio(int, char);
 extern "C" void moveRight(char);
 extern "C" void moveLeft(char);
 extern "C" void moveDown(char);
-
+extern "C" bool checkTetrinomioState();
 
 /*
 	@return void
@@ -18,7 +18,7 @@ void Cerebro::initializeVariables(){
 	this->playing = true;
 	this->currentScore = 0;
 	this->retroFont.loadFromFile("ARCADECLASSIC.ttf");
-	
+	getBlock();
 	//this->currentTetrinomio = getBlock()
 	//this->nextTetrinomio = getBlock()
 }
@@ -120,7 +120,7 @@ void Cerebro::startGame(){
 					This call the funtion that's going to turn to right the current Tetrinomio
 				*/
 				else if(this->event.key.code == sf::Keyboard::Up){
-					++amountOfMoves;
+					++this->amountOfMoves;
 					rotateTetrinomio(amountOfMoves, currentTetrinomio);
 				}
 				
@@ -142,7 +142,6 @@ void Cerebro::startGame(){
 			//Mouse Cases
 			case sf::Event::MouseButtonPressed:
 				if(this->event.mouseButton.button == sf::Mouse::Left) {
-					getBlock();
 				}
 				break;
 				
@@ -165,7 +164,14 @@ void Cerebro::startGame(){
 		//playing = checkMatriz();
 	}	
 	
-	moveDown(currentTetrinomio);
+	if(!checkTetrinomioState()){ //Osea no puede seguir bajando
+		getBlock();
+		this->amountOfMoves = 0;
+	}
+	else{
+		//sf::sleep(sf::seconds(0.5));
+		moveDown(currentTetrinomio);
+	}
 }
 
 //Funcion que limipie la matriz

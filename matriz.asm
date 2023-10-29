@@ -19,6 +19,8 @@ section .text
 	global moveLeft
 	global moveDown
 	
+	global checkTetrinomioState
+	
 getMatrix:
 	mov r8, array
 	add r8, 10
@@ -104,7 +106,14 @@ moveDown:
 
 	ret
 
-
+checkTetrinomioState:
+	call cleanMoves
+	call checkBottomBorder
+	mov rdi, 10
+	call saveMove
+	call validMove
+	ret
+	
 checkLeftBorder:
 	mov r8, array
 
@@ -185,7 +194,7 @@ rotateTetrinomio:
 	call getRotateMoves ;retorna los movimientos del caso
 	call borderCases ;Verifica si se quiere realizar una rotacion pegado a un borde
 	
-	;call validMove ;verificar si no hay nada ahi y se puede mover, tambien los bordes
+	;call validMove ;verificar si no hay nada ahi y se puede mover
 	;cmp al, 0
 	;je return
 
@@ -404,34 +413,36 @@ validMove:
 		add r9, qword[moves + 8*r8]
 		
 		mov r10, 0
-		mov bl, 1 ;encontro la posicion
+		mov bl, 0 ;encontro la posicion = false
 		
 		findDiferentBlock:
 			cmp r10, 4
 			jge verifyValidMove
 			
 			cmp r9, qword[currentTetrinomio + 8*r10]
+			je encontrada
 			jne nextMove
-			mov bl, 0
+			
+			encontrada:
+				mov bl, 1
+				jmp siguiente
+				
 			nextMove:
 				inc r10
+				jmp findDiferentBlock
 			
-			cmp bl, 1
-			je findDiferentBlock
+			verifyValidMove:
+				cmp bl, 0
+				je isAnEmptyBlock
 		
-		verifyValidMove:
-			cmp bl, 1
-			je isAnEmptyBlock
-			
-		isAnEmptyBlock:
-			cmp byte[r9], empty
-			je siguiente
-			mov al, 0
-			
-		siguiente:
-			inc r8
-			jmp innerLoop
-			
+			isAnEmptyBlock:
+				cmp byte[r9], empty
+				je siguiente
+				mov al, 0
+		
+			siguiente:
+				inc r8
+				jmp innerLoop
 			
 return:
 ret
