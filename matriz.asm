@@ -59,6 +59,7 @@ getBlock:
 ;mover el tetronimo a la derecha
 ;rsi = tipo de tetrinomio
 moveRight:
+	call cleanMoves
 	cmp rsi, 'O' ;no debe hacer nada
 	je return
 
@@ -73,6 +74,7 @@ moveRight:
 ;mover el tetronimo a la izquierda
 ;rsi = tipo de tetrinomio
 moveLeft:
+	call cleanMoves
 	cmp rsi, 'O' ;no debe hacer nada
 	je return
 	
@@ -87,26 +89,25 @@ moveLeft:
 
 ;rsi = tipo de tetrinomio
 moveDown:
-	cmp rsi, 'O' ;no debe hacer nada
+	call cleanMoves
+	
+	call checkBottomBorder
+	cmp al, 0
+	je return
+	call movingDown
+	call validMove
+	cmp al, 0
 	je return
 	
-	;call validMove
-	;cmp al, 0
-	;je return
-	
-	;call checkBorders
-	;cmp al, 0
-	;je return
-
 	call deleteTetrinomio ;limpia la matriz
-	call movingDown
+	call move
 
 	ret
 
+
 checkLeftBorder:
 	mov r8, array
-	mov r9, qword[currentTetrinomio + 32] ;pivote
-	
+
 	mov al, 1
 	mov r10, 0
 	leftBorderLoop:
@@ -128,7 +129,6 @@ checkLeftBorder:
 checkRightBorder:
 	mov r8, array
 	add r8, 9
-	mov r9, qword[currentTetrinomio + 32] ;pivote
 	
 	mov al, 1
 	mov r10, 0
@@ -145,6 +145,24 @@ checkRightBorder:
 		inc r10
 		cmp r10, 4
 		jl rightBorderLoop
+		
+	ret
+	
+checkBottomBorder:
+	mov r8, array
+	add r8, 200
+
+	mov al, 1
+	mov r10, 0
+	bottomBorderLoop:
+		mov rax, qword[currentTetrinomio + 8*r10]
+		
+		cmp rax, r8
+		jg cantMove
+		
+		inc r10
+		cmp r10, 4
+		jl bottomBorderLoop
 		
 	ret
 	
@@ -326,7 +344,6 @@ movingDown:
 	mov rdi, 10
 	call cleanMoves
 	call saveMove
-	call move
 	ret
 
 ;Katherine
@@ -373,6 +390,49 @@ movingDown:
 ;ret
 
 
+validMove:
+	mov r8, 0
+	mov al, 1
+	
+	innerLoop:
+		cmp r8, 4
+		jge return
+		cmp al, 0
+		je return
+		
+		mov r9, qword[currentTetrinomio + 8*r8]
+		add r9, qword[moves + 8*r8]
+		
+		mov r10, 0
+		mov bl, 1 ;encontro la posicion
+		
+		findDiferentBlock:
+			cmp r10, 4
+			jge verifyValidMove
+			
+			cmp r9, qword[currentTetrinomio + 8*r10]
+			jne nextMove
+			mov bl, 0
+			nextMove:
+				inc r10
+			
+			cmp bl, 1
+			je findDiferentBlock
+		
+		verifyValidMove:
+			cmp bl, 1
+			je isAnEmptyBlock
+			
+		isAnEmptyBlock:
+			cmp byte[r9], empty
+			je siguiente
+			mov al, 0
+			
+		siguiente:
+			inc r8
+			jmp innerLoop
+			
+			
 return:
 ret
 

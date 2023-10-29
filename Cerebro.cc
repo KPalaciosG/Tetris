@@ -8,6 +8,7 @@ extern "C" void moveRight(char);
 extern "C" void moveLeft(char);
 extern "C" void moveDown(char);
 
+
 /*
 	@return void
 	Initializes all the variables of the class
@@ -16,7 +17,7 @@ void Cerebro::initializeVariables(){
 	this->window = nullptr;
 	this->playing = true;
 	this->currentScore = 0;
-	this->retroFont.loadFromFile("retro.ttf");
+	this->retroFont.loadFromFile("ARCADECLASSIC.ttf");
 	
 	//this->currentTetrinomio = getBlock()
 	//this->nextTetrinomio = getBlock()
@@ -104,14 +105,7 @@ void Cerebro::startGame(){
 					This call the funtion that's going to move the current Tetrinomio to the Left
 				*/
 				if(this->event.key.code == sf::Keyboard::Right){	
-					//getBlock();
-					//++amountOfMoves;
-					moveRight(currentTetrinomio);
-					
-					
-					
-					
-					
+					moveRight(currentTetrinomio);	
 				}
 				
 				/*
@@ -154,6 +148,8 @@ void Cerebro::startGame(){
 				
 			default:
 				break;
+				
+		
 		}
 		/*
 		if(checkState(currentTetrinomio) == false){
@@ -168,6 +164,8 @@ void Cerebro::startGame(){
 		
 		//playing = checkMatriz();
 	}	
+	
+	moveDown(currentTetrinomio);
 }
 
 //Funcion que limipie la matriz

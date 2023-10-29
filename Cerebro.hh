@@ -7,6 +7,8 @@
 #include <SFML/Window.hpp>
 #include <SFML/Audio.hpp>
 #include <SFML/Network.hpp>
+#include <SFML/System/Clock.hpp>
+#include <SFML/System/Time.hpp>
 
 class Cerebro{
 	private:
@@ -43,7 +45,6 @@ class Cerebro{
 		//To see the game area
 		void getGameArea();
 
-		
 	public:
 		//Constructor and Destructor
 		Cerebro(sf::RenderWindow*&);
