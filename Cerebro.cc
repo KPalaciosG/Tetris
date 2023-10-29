@@ -103,10 +103,10 @@ void Cerebro::startGame(){
 				/*
 					This call the funtion that's going to move the current Tetrinomio to the Left
 				*/
-				if(this->event.key.code == sf::Keyboard::Right)
-				{	getBlock();
+				if(this->event.key.code == sf::Keyboard::Right){	
+					//getBlock();
 					//++amountOfMoves;
-					//moveRight(currentTetrinomio);
+					moveRight(currentTetrinomio);
 					
 					
 					
@@ -119,15 +119,15 @@ void Cerebro::startGame(){
 				*/
 				else if(this->event.key.code == sf::Keyboard::Left){
 					//++this->currentScore;
-					//moveLeft(currentTetrinomio);
+					moveLeft(currentTetrinomio);
 				}
 				
 				/*
 					This call the funtion that's going to turn to right the current Tetrinomio
 				*/
 				else if(this->event.key.code == sf::Keyboard::Up){
-					//++amountOfMoves;
-					//rotateTetrinomio(amountOfMoves, currentTetrinomio);
+					++amountOfMoves;
+					rotateTetrinomio(amountOfMoves, currentTetrinomio);
 				}
 				
 				/*
@@ -148,7 +148,7 @@ void Cerebro::startGame(){
 			//Mouse Cases
 			case sf::Event::MouseButtonPressed:
 				if(this->event.mouseButton.button == sf::Mouse::Left) {
-				  
+					getBlock();
 				}
 				break;
 				
