@@ -29,27 +29,27 @@ getMatrix:
 getBlock:
 	;Pivote del Tetrinomio I es el 2 bloque
 	mov r9, matrix
-	add r9, 34
+	add r9, 204
 	mov byte[r9], '1'
 	mov qword[currentTetrinomio], r9
 
 	mov r9, matrix
-	add r9, 35
+	add r9, 205
 	mov byte[r9], '1'
 	mov qword[currentTetrinomio+8], r9
 
 	mov r9, matrix
-	add r9, 36
+	add r9, 206
 	mov byte[r9], '1'
 	mov qword[currentTetrinomio+16], r9
 
 	mov r9, matrix
-	add r9, 37
+	add r9, 207
 	mov byte[r9], '1'
 	mov qword[currentTetrinomio+24], r9
 
 	mov r9, matrix
-	add r9, 35
+	add r9, 205
 	mov qword[currentTetrinomio+32], r9
 
 	mov byte[color], '1'
@@ -140,6 +140,7 @@ checkBorders:
 ;rdi = cantidad de movimientos
 ;rsi = tipo de tetrinomio
 rotateTetrinomio:
+	call cleanMoves
 	cmp rsi, 'O' ;no debe hacer nada
 	je return
 
@@ -150,9 +151,9 @@ rotateTetrinomio:
 	call getRotateMoves ;retorna los movimientos del caso
 	call borderCases ;Verifica si se quiere realizar una rotacion pegado a un borde
 	
-	call validMove ;verificar si no hay nada ahi y se puede mover, tambien los bordes
-	cmp al, 0
-	je return
+	;call validMove ;verificar si no hay nada ahi y se puede mover, tambien los bordes
+	;cmp al, 0
+	;je return
 
 	call deleteTetrinomio ;limpia la matriz
 	call move ;dibuja en la matriz en las nuevas posiciones y las guarda en currentTetrinomio
@@ -189,28 +190,7 @@ getRotateMoves:
 	je rotateL
 
 ;---------------------------
-validMove:
-	mov r10, 0
-	mov al, 1
-
-	validMoveLoop:
-		cmp al, 0
-		je return
-
-		mov r9, qword[currentTetrinomio + 8*r10]
-		add r9, qword[moves + 8*r10]
-		cmp r9, empty
-		jne isNotEmpty
-
-		inc r10
-		cmp r10, 4
-		jl validMoveLoop
-
-	je return
-
-	isNotEmpty: ;hay algun bloque donde se iba a mover
-	mov al, 0
-	je return
+;to do.. valid move
 
 
 
@@ -224,36 +204,49 @@ borderCases:
 	;Case Left Border
 	;Si el pivote esta en el borde izquierdo, para girar necesita correr 1 a la derecha el tetrinomio, eso hace
 	mov rax, r9
-	div r8
-	cmp rdx, 0
+	sub rax, r8
+	
+	mov rdx, 0
+	mov r10, 10
+	div r10
 	mov rdi, 1
-	je changeMoves
+	cmp rdx, 0
+	je saveMove
 
 	;Case Right Border
 	;Si el pivote esta en el borde derecho, para girar necesita correr 1 a la izquierda el tetrinomio, eso hace
 	mov rax, r9
 	add r8, 9
-	div r8
-	cmp rdx, 0
+	sub rax, r8
+	
+	mov rdx, 0
+	mov r10, 10
+	div r10
 	mov rdi, -1
-	je changeMoves
+	cmp rsi, 'I'
+	jne oneLeft
+		mov rdi, -2
+	oneLeft:
+	cmp rdx, 0
+	je saveMove
+	
 
 	;Case Up Border
 	;Si el pivote esta en el borde de arriba, para girar necesita bajar el tetrinomio, eso hace
 	cmp r9, r8
 	mov rdi, 20
-	jl changeMoves
+	jl saveMove
 
 	;Case Bottom Border
 	;Si el pivote esta en el borde de abajo, para girar necesita subir el tetrinomio, eso hace
-	cmp r9, array+200
 	mov rdi, -10
-	jg changeMoves
+	cmp rsi, 'I'
+	jne oneUp
+		mov rdi, -20
+	oneUp:
+	cmp r9, array+200
+	jg saveMove
 
-	ret
-
-changeMoves:
-	call saveMove
 	ret
 	
 saveMove:
@@ -306,6 +299,19 @@ movingRight:
 	call move
 	ret
 
+movingLeft:
+	mov rdi, -1
+	call cleanMoves
+	call saveMove
+	call move
+	ret
+
+movingDown:
+	mov rdi, 10
+	call cleanMoves
+	call saveMove
+	call move
+	ret
 
 ;Katherine
 ;movingRight:
@@ -322,33 +328,33 @@ movingRight:
 
 ;ret
 
-movingLeft:
-	mov r10, 0
-	mLloop:
-		mov r9, qword[currentTetrinomio + 8*r10]
-		add r9, -1
-		mov r12b, byte[color]
-		mov byte[r9], r12b
-		mov qword[currentTetrinomio + 8*r10], r9
-		inc r10
-		cmp r10, 4
-	       jle mLloop
+;movingLeft:
+;	mov r10, 0
+;	mLloop:
+;		mov r9, qword[currentTetrinomio + 8*r10]
+;		add r9, -1
+;		mov r12b, byte[color]
+;		mov byte[r9], r12b
+;		mov qword[currentTetrinomio + 8*r10], r9
+;		inc r10
+;		cmp r10, 4
+;	       jle mLloop
+;
+;ret
 
-ret
-
-movingDown:
-	mov r10, 0
-	mDloop:
-		mov r9, qword[currentTetrinomio + 8*r10]
-		add r9, 10
-		mov r12b, byte[color]
-		mov byte[r9], r12b
-		mov qword[currentTetrinomio + 8*r10], r9
-		inc r10
-		cmp r10, 4
-	       jle mDloop
-
-ret
+;movingDown:
+;	mov r10, 0
+;	mDloop:
+;		mov r9, qword[currentTetrinomio + 8*r10]
+;		add r9, 10
+;		mov r12b, byte[color]
+;		mov byte[r9], r12b
+;		mov qword[currentTetrinomio + 8*r10], r9
+;		inc r10
+;		cmp r10, 4
+;	       jle mDloop
+;
+;ret
 
 
 return:
