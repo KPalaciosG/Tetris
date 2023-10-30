@@ -1,97 +1,143 @@
 section .data
-    matrix: db 21, 10  ; Dimensiones de la matrix (filas, columnas)
-    array:  times 210 db '0'  ; matrix de 21x10 inicializada con ceros
+    matrix:  times 210 db '0'  ; matrix de 21x10 inicializada con ceros
 
-currentTetrinomio: times 5 dq 0
-color: db 0
+	currentTetrinomio: times 5 dq 0
+	color: db 0
 
-moves: times 5 dq 0
-;pivotRight: db 3
-;pivotLeft: db 3
+	moves: times 5 dq 0
 
-empty: equ '0'
+	empty: equ '0'
 
 section .text
+	;Gets: lines 29-74
     global getMatrix
 	global getBlock
+	
+	;Moves
 	global rotateTetrinomio
 	global moveRight
 	global moveLeft
 	global moveDown
 	
+	;Verifications
 	global checkTetrinomioState
+	global checkMatrixState
 	
+	;Auxiliar
+	global clearRows
+	
+; @return char*
+; Returns tha matrix that is need it to be display
 getMatrix:
-	mov r8, array
+	mov r8, matrix
 	add r8, 10
-	mov rax, r8  ; Dirección base de la matrix
+	mov rax, r8  
 	ret
 
-
+;to do..
+; @param rdi = char
+; @return void
+;
+; This funtion will compare a char that represents the current tetrinomio, and will puts some values in the matrix (a number)
+; that represents a color and in currentTetrinomio will put the addresses of each block that contains a color
 getBlock:
 	;Pivote del Tetrinomio I es el 2 bloque
 	mov r9, matrix
-	add r9, 34
-	mov byte[r9], '1'
-	mov qword[currentTetrinomio], r9
+	add r9, 4 ;Position of the first block
+	mov byte[r9], '1' ;color
+	mov qword[currentTetrinomio], r9 ;save the address
 
 	mov r9, matrix
-	add r9, 35
+	add r9, 5
 	mov byte[r9], '1'
 	mov qword[currentTetrinomio+8], r9
 
 	mov r9, matrix
-	add r9, 36
+	add r9, 6
 	mov byte[r9], '1'
 	mov qword[currentTetrinomio+16], r9
 
 	mov r9, matrix
-	add r9, 37
+	add r9, 7
 	mov byte[r9], '1'
 	mov qword[currentTetrinomio+24], r9
 
 	mov r9, matrix
-	add r9, 35
+	add r9, 5
 	mov qword[currentTetrinomio+32], r9
 
-	mov byte[color], '1'
+	mov byte[color], '1' ; save the color of the currentTetrinomio
 
 	ret
 
-;mover el tetronimo a la derecha
-;rsi = tipo de tetrinomio
+
+
+;---------------------------
+; MOVES
+;---------------------------
+
+; @param rdi = char (currentTetrinomio)
+; @return void
+;
+; This funtion moves the current tetrinomio to the right
 moveRight:
-	call cleanMoves
-	cmp rsi, 'O' ;no debe hacer nada
+	call clearMoves 
+
+	call checkRightBorder ; verify if the tetrinomio is in the left border
+	cmp al, 0 ; 0 = can't move to the right and 1 = can move right
+	je return
+	
+	call movingRight ; calculates the future moves, and save them
+	call validMove ; verify if the future moves, won't be done above another block
+	cmp al, 0 ; 0 = found something in the new positions, 1 = can move it, it's clean
 	je return
 
-	call checkRightBorder
-	cmp al, 0
-	je return
-
-	call deleteTetrinomio ;limpia la matriz
-	call movingRight
+	call deleteTetrinomio ; clean the positions of the current tetrinomio
+	call move ; puts the color of the current tetrinomio in the new positions and update the currentTetrinomio
 
 	ret
-;mover el tetronimo a la izquierda
-;rsi = tipo de tetrinomio
+	
+movingRight:
+	mov rdi, 1
+	call clearMoves
+	call saveMove
+	ret
+
+; @param rdi = char (currentTetrinomio)
+; @return void
+;
+; This funtion moves the current tetrinomio to the left
+; Note: it's the same logic has "moveRight"
 moveLeft:
-	call cleanMoves
-	cmp rsi, 'O' ;no debe hacer nada
-	je return
+	call clearMoves 
 	
 	call checkLeftBorder
 	cmp al, 0
 	je return
-
-	call deleteTetrinomio ;limpia la matriz
+	
 	call movingLeft
+	call validMove
+	cmp al, 0
+	je return
+
+	call deleteTetrinomio 
+	call move
 
 	ret
 
-;rsi = tipo de tetrinomio
+movingLeft:
+	mov rdi, -1
+	call clearMoves
+	call saveMove
+	ret
+
+; @param rdi = char (currentTetrinomio)
+; @return void
+;
+; This funtion moves the current tetrinomio one block down
+; Note: it's the same logic has "moveRight"
 moveDown:
-	call cleanMoves
+	call clearMoves
 	
 	call checkBottomBorder
 	cmp al, 0
@@ -105,108 +151,43 @@ moveDown:
 	call move
 
 	ret
-
-checkTetrinomioState:
-	call cleanMoves
-	call checkBottomBorder
+	
+movingDown:
 	mov rdi, 10
+	call clearMoves
 	call saveMove
-	call validMove
 	ret
 	
-checkLeftBorder:
-	mov r8, array
+; @param rdi = int (amount of rotations) and rsi = char (currentTetrinomio)
+; @return void
+;
+; This funtion rotate the currentTetrinomio
 
-	mov al, 1
-	mov r10, 0
-	leftBorderLoop:
-		mov rdx, 0
-		mov rax, qword[currentTetrinomio + 8*r10]
-		sub rax, r8
-		
-		mov r11, 10
-		div r11
-		cmp rdx, 0
-		je cantMove
-		
-		inc r10
-		cmp r10, 4
-		jl leftBorderLoop
-		
-	ret
-	
-checkRightBorder:
-	mov r8, array
-	add r8, 9
-	
-	mov al, 1
-	mov r10, 0
-	rightBorderLoop:
-		mov rdx, 0
-		mov rax, qword[currentTetrinomio + 8*r10]
-		sub rax, r8
-		
-		mov r11, 10
-		div r11
-		cmp rdx, 0
-		je cantMove
-		
-		inc r10
-		cmp r10, 4
-		jl rightBorderLoop
-		
-	ret
-	
-checkBottomBorder:
-	mov r8, array
-	add r8, 200
-
-	mov al, 1
-	mov r10, 0
-	bottomBorderLoop:
-		mov rax, qword[currentTetrinomio + 8*r10]
-		
-		cmp rax, r8
-		jg cantMove
-		
-		inc r10
-		cmp r10, 4
-		jl bottomBorderLoop
-		
-	ret
-	
-cantMove:
-	mov al, 0
-	ret
-
-
-;rdi = cantidad de movimientos
-;rsi = tipo de tetrinomio
 rotateTetrinomio:
-	call cleanMoves
-	cmp rsi, 'O' ;no debe hacer nada
+	call clearMoves
+	cmp rsi, 'O' ; this don't rotate
 	je return
-
-	mov rdi, rdi ;cantidad de movimientos
+	
+	;rdi = amount of rotations
 	call getRotateType
 	
-	mov rdi, rax ;manda como parametro el movimiento que debe hacer
-	call getRotateMoves ;retorna los movimientos del caso
-	call borderCases ;Verifica si se quiere realizar una rotacion pegado a un borde
+	;rax = the rotation that has to be done
+	mov rdi, rax 
+	call getRotateMoves ; calculates the future moves if rotates
+	call borderCases ;Verify if want's to rotate while the tetrinomio is in one border
 	
-	;call validMove ;verificar si no hay nada ahi y se puede mover
-	;cmp al, 0
-	;je return
+	call validMove ; verify if the future moves, won't be done above another block
+	cmp al, 0
+	je return
 
-	call deleteTetrinomio ;limpia la matriz
-	call move ;dibuja en la matriz en las nuevas posiciones y las guarda en currentTetrinomio
+	call deleteTetrinomio ; clean the positions of the current tetrinomio
+	call move ; puts the color of the current tetrinomio in the new positions and update the currentTetrinomio
 	ret
-
 
 getRotateType:
 	; y el movimiento es la cantidad de movimientos que lleva % 4
 	mov rdx, 0
-	mov rax, rdi ; se puede hacer con 32
+	mov rax, rdi 
 	mov r8, 4
 	div r8
 	mov rax, rdx
@@ -232,16 +213,206 @@ getRotateMoves:
 	cmp rsi, 'L'
 	je rotateL
 
-;---------------------------
-;to do.. valid move
 
+deleteTetrinomio:
+	mov r10, 0
+	deleteLoop:
+		mov r9, qword[currentTetrinomio + 8*r10]
+		mov byte[r9], empty
+		inc r10
+		cmp r10, 4
+		jl deleteLoop
+ret
+
+
+	
+saveMove:
+	mov r10, 0
+	saveMoveLoop:
+		add qword[moves + 8*r10], rdi
+		inc r10
+		cmp r10, 4
+		jle saveMoveLoop
+	ret
+
+
+move:
+	mov r10, 0
+	moveLoop:
+		mov r9, qword[currentTetrinomio + 8*r10]
+		add r9, qword[moves + 8*r10]
+		mov r12b, byte[color]
+		mov byte[r9], r12b
+		mov qword[currentTetrinomio + 8*r10], r9
+		inc r10
+		cmp r10, 4
+		jl moveLoop
+
+		;Actualizar el pivote
+		mov r9, qword[currentTetrinomio + 8*r10]
+		add r9, qword[moves + 8*r10]
+		mov qword[currentTetrinomio + 8*r10], r9
+
+		ret
+
+
+validMove:
+	mov r8, 0
+	mov al, 1
+	
+	validMoveLoop:
+		cmp r8, 4
+		jge return
+		cmp al, 0
+		je return
+		
+		mov r9, qword[currentTetrinomio + 8*r8]
+		add r9, qword[moves + 8*r8]
+		
+		mov r10, 0
+		mov bl, 0 ;encontro la posicion = false
+		
+		findDifferentAddress:
+			cmp r10, 4
+			jge verifyValidMove
+			
+			cmp r9, qword[currentTetrinomio + 8*r10]
+			je found
+			jne nextMove
+			
+			found:
+				mov bl, 1
+				jmp nextPossibleMove
+				
+			nextMove:
+				inc r10
+				jmp findDifferentAddress
+			
+			verifyValidMove:
+				cmp bl, 0
+				je isAnEmptyBlock
+		
+			isAnEmptyBlock:
+				cmp byte[r9], empty
+				je nextPossibleMove
+				mov al, 0
+		
+		nextPossibleMove:
+			inc r8
+			jmp validMoveLoop	
+
+
+;---------------------------
+;VERIFICATIONS
+;---------------------------
+
+
+; @param 
+; @return bool 
+;
+; This funtion verify if the currentTetrinomio can still go down
+; It "moves" the tetrinomio down and verify if it could, and returns a bool for each case
+checkTetrinomioState:
+	call clearMoves
+	call checkBottomBorder ; is it in the bottom?
+	mov rdi, 10
+	call saveMove
+	call validMove ; can still go down?
+	ret
+	
+; @param 
+; @return bool 
+;
+; This funtion verify if the currentTetrinomio can still go down
+; It "moves" the tetrinomio down and verify if it could, and returns a bool for each case	
+checkMatrixState:
+	mov r8, 0
+	mov al, 1
+	checkMatrixStateLoop:
+		mov r9, qword[currentTetrinomio + 8*r8]
+		cmp r9, matrix + 10
+		jl finishedGame
+		inc r8
+		cmp r8, 4
+		jl checkMatrixStateLoop
+		ret
+	
+	finishedGame:
+		mov al, 0
+		ret
+	
+	
+checkLeftBorder:
+	mov r8, matrix
+
+	mov al, 1
+	mov r10, 0
+	leftBorderLoop:
+		mov rdx, 0
+		mov rax, qword[currentTetrinomio + 8*r10]
+		sub rax, r8
+		
+		mov r11, 10
+		div r11
+		cmp rdx, 0
+		je cantMove
+		
+		inc r10
+		cmp r10, 4
+		jl leftBorderLoop
+		
+	ret
+	
+checkRightBorder:
+	mov r8, matrix
+	add r8, 9
+	
+	mov al, 1
+	mov r10, 0
+	rightBorderLoop:
+		mov rdx, 0
+		mov rax, qword[currentTetrinomio + 8*r10]
+		sub rax, r8
+		
+		mov r11, 10
+		div r11
+		cmp rdx, 0
+		je cantMove
+		
+		inc r10
+		cmp r10, 4
+		jl rightBorderLoop
+		
+	ret
+	
+checkBottomBorder:
+	mov r8, matrix
+	add r8, 200
+
+	mov al, 1
+	mov r10, 0
+	bottomBorderLoop:
+		mov rax, qword[currentTetrinomio + 8*r10]
+		
+		cmp rax, r8
+		jg cantMove
+		
+		inc r10
+		cmp r10, 4
+		jl bottomBorderLoop
+		
+	ret
+	
+cantMove:
+	mov al, 0
+	ret
 
 
 ;-----------------
 borderCases:
 	;Verifica si el pivote esta en una posicion particular cuando se intenta girar
 	;en caso de que sea asi, modifica los futuros movimientos, para que se verifiquen tambien si son validos
-	mov r8, array
+	mov r8, matrix
 	mov r9, qword[currentTetrinomio + 32] ;pivote
 
 	;Case Left Border
@@ -287,74 +458,13 @@ borderCases:
 	jne oneUp
 		mov rdi, -20
 	oneUp:
-	cmp r9, array+200
+	cmp r9, matrix+200
 	jg saveMove
 
 	ret
-	
-saveMove:
-	mov r10, 0
-	saveMoveLoop:
-		add qword[moves + 8*r10], rdi
-		inc r10
-		cmp r10, 4
-		jle saveMoveLoop
-	ret
 
 
-
-;-----------------------------
-deleteTetrinomio:
-	mov r10, 0
-	deleteLoop:
-		mov r9, qword[currentTetrinomio + 8*r10]
-		mov byte[r9], empty
-		inc r10
-		cmp r10, 4
-		jl deleteLoop
-ret
-
-;-----------------------------
-move:
-	mov r10, 0
-	moveLoop:
-		mov r9, qword[currentTetrinomio + 8*r10]
-		add r9, qword[moves + 8*r10]
-		mov r12b, byte[color]
-		mov byte[r9], r12b
-		mov qword[currentTetrinomio + 8*r10], r9
-		inc r10
-		cmp r10, 4
-		jl moveLoop
-
-		;Actualizar el pivote
-		mov r9, qword[currentTetrinomio + 8*r10]
-		add r9, qword[moves + 8*r10]
-		mov qword[currentTetrinomio + 8*r10], r9
-
-		ret
-
-;Forma Alternativa de mover
-movingRight:
-	mov rdi, 1
-	call cleanMoves
-	call saveMove
-	call move
-	ret
-
-movingLeft:
-	mov rdi, -1
-	call cleanMoves
-	call saveMove
-	call move
-	ret
-
-movingDown:
-	mov rdi, 10
-	call cleanMoves
-	call saveMove
-	ret
-
+;Movimientos
 ;Katherine
 ;movingRight:
 ;	mov r10, 0
@@ -399,57 +509,11 @@ movingDown:
 ;ret
 
 
-validMove:
-	mov r8, 0
-	mov al, 1
-	
-	innerLoop:
-		cmp r8, 4
-		jge return
-		cmp al, 0
-		je return
-		
-		mov r9, qword[currentTetrinomio + 8*r8]
-		add r9, qword[moves + 8*r8]
-		
-		mov r10, 0
-		mov bl, 0 ;encontro la posicion = false
-		
-		findDiferentBlock:
-			cmp r10, 4
-			jge verifyValidMove
-			
-			cmp r9, qword[currentTetrinomio + 8*r10]
-			je encontrada
-			jne nextMove
-			
-			encontrada:
-				mov bl, 1
-				jmp siguiente
-				
-			nextMove:
-				inc r10
-				jmp findDiferentBlock
-			
-			verifyValidMove:
-				cmp bl, 0
-				je isAnEmptyBlock
-		
-			isAnEmptyBlock:
-				cmp byte[r9], empty
-				je siguiente
-				mov al, 0
-		
-			siguiente:
-				inc r8
-				jmp innerLoop
-			
-return:
-ret
-
 
 ;---------------------------
-cleanMoves:
+; AUXILIARES
+;---------------------------
+clearMoves:
 	mov r10, 0
 	mov r11, 0
 	cleanMoveLoop:
@@ -460,6 +524,67 @@ cleanMoves:
 	ret
 	
 	
+clearRows:
+	mov r8, matrix
+	add r8, 10
+	mov r9, 0
+	
+	clearRowsLoop:
+		cmp r9, 200
+		jge return
+		
+		mov rdi, r8
+		add rdi, r9
+		call isAFullRow
+		
+		mov rdi, r8
+		add rdi, r9
+		cmp al, 1
+		je fullRow
+	nextRow:
+		add r9, 10
+		jmp clearRowsLoop
+		
+isAFullRow:
+	mov al, 1
+	mov r10, rdi
+	mov r11, 0
+	isAFullRowLoop:
+		cmp r11, 10
+		jge return
+		cmp al, 0
+		je return
+		
+		cmp byte[r10], empty
+		jne nextBlock
+		mov al, 0
+		
+		nextBlock:
+			inc r10
+			inc r11
+			jmp isAFullRowLoop
+	
+fullRow:
+	call emptyRow
+	jmp nextRow
+	
+emptyRow:
+	mov r10, rdi
+	mov r11, 0
+	emptyRowLoop:
+		cmp r11, 10
+		jge return
+		
+		mov byte[r10], empty
+
+		inc r10
+		inc r11
+		jmp emptyRowLoop
+
+
+
+
+
 
 
 ;---------------------------------------
@@ -478,28 +603,28 @@ rotateI:
 	cmp rdi, 3
 	je I1
 
-I0: ;vuelve a la forma inicial
-	; []
-	; [] -> [][][][]
-	; []
-	; []
-	mov qword[moves], 9
-	mov qword[moves + 8], 0
-	mov qword[moves + 16], -9
-	mov qword[moves + 24], -18
-	jmp return
+	I0: ;vuelve a la forma inicial
+		; []
+		; [] -> [][][][]
+		; []
+		; []
+		mov qword[moves], 9
+		mov qword[moves + 8], 0
+		mov qword[moves + 16], -9
+		mov qword[moves + 24], -18
+		jmp return
 
-I1: ;Movimiento 1
-	; []
-	; [][][][]  -> []
-	; []
-	; []
-	mov qword[moves], -9
-	mov qword[moves + 8], 0
-	mov qword[moves + 16], 9
-	mov qword[moves + 24], 18
-	mov qword[moves + 32], 0
-	jmp return
+	I1: ;Movimiento 1
+		; []
+		; [][][][]  -> []
+		; []
+		; []
+		mov qword[moves], -9
+		mov qword[moves + 8], 0
+		mov qword[moves + 16], 9
+		mov qword[moves + 24], 18
+		mov qword[moves + 32], 0
+		jmp return
 
 
 ;------------------------------------------------
@@ -652,7 +777,6 @@ J3:
 	jmp return
 
 
-
 ;------------------------------------------------
 ;movimientos de la L
 rotateL:
@@ -693,3 +817,6 @@ L3:
 	mov qword[moves + 24], -9
 	jmp return
 
+
+return:
+	ret

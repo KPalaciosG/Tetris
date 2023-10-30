@@ -144,14 +144,17 @@ void Game::pollEvents(){
 
                     if (this->playButton.getGlobalBounds().contains(mousePos)) {
                         //window->clear(sf::Color::Black);
-						Cerebro partida = Cerebro(this->window);
-						while(partida.finishedGame()){
+						Cerebro* partida = new Cerebro(this->window);
+						
+						while(partida->finishedGame()){
 							//Update
-							partida.update();
-							
+							partida->update();
+							sf::sleep(sf::seconds(0.09));
 							//Render
-							partida.render();
+							partida->render();
 						}
+						
+						delete partida;
 						
                         
                     } else if(scoresButton.getGlobalBounds().contains(mousePos)) {

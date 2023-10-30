@@ -22,17 +22,17 @@ class Cerebro{
 		const int columns = 10;
 		const int blockSize = 40;
 		
+		//Tetrinomio things
 		char currentTetrinomio = 'I';
-		int amountOfMoves = 0;
+		int amountOfMoves = 0; //Repretents the amount of rotation that has been done
+	
 		//Score things
 		int currentScore;
-		
-		sf::Font retroFont; 
-		
+		sf::Font retroFont; 	
 		sf::Text score;
 		
 		
-		//Playing 
+		//Bool that says if there's a game being play
 		bool playing;
 		
 		//Iniatialize all
@@ -41,6 +41,7 @@ class Cerebro{
 		
 		void initGameArea();
 		void initScore();
+		
 		
 		//To see the game area
 		void getGameArea();

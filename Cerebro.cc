@@ -8,6 +8,9 @@ extern "C" void moveRight(char);
 extern "C" void moveLeft(char);
 extern "C" void moveDown(char);
 extern "C" bool checkTetrinomioState();
+extern "C" bool checkMatrixState();
+extern "C" void clearRows();
+
 
 /*
 	@return void
@@ -61,7 +64,11 @@ void Cerebro::getGameArea(){
 }
 
 
-//Constructor and Destructor
+/*
+-------------	
+Constructor and Destructor
+-------------	
+*/
 Cerebro::Cerebro(sf::RenderWindow*& window){
 	this->initializeVariables();
 	this->initWindow(window);
@@ -70,10 +77,15 @@ Cerebro::Cerebro(sf::RenderWindow*& window){
 }
 
 Cerebro::~Cerebro(){
-	
+	//To do... clean values form assembly
 }
 
-//Funtions
+
+/*
+-------------	
+Funtions	
+-------------	
+*/
 
 /*
 	@return bool
@@ -165,16 +177,18 @@ void Cerebro::startGame(){
 	}	
 	
 	if(!checkTetrinomioState()){ //Osea no puede seguir bajando
-		getBlock();
+		clearRows();
 		this->amountOfMoves = 0;
-	}
-	else{
-		//sf::sleep(sf::seconds(0.5));
+		getBlock();
 		moveDown(currentTetrinomio);
 	}
+	else{
+		moveDown(currentTetrinomio);
+	}
+	if(this->playing){
+		this->playing = checkMatrixState();
+	}	
 }
-
-//Funcion que limipie la matriz
 
 
 /*
@@ -270,6 +284,10 @@ void Cerebro::drawMatrix(){
 }
 
 
+/*
+	@return void
+	Draws the actual score in the window
+*/
 void Cerebro::drawScore(){
 	this->score.setString("Score: " + std::to_string(currentScore));
 	this->window->draw(score);
