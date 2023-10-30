@@ -146,12 +146,29 @@ void Game::pollEvents(){
                         //window->clear(sf::Color::Black);
 						Cerebro* partida = new Cerebro(this->window);
 						
-						while(partida->finishedGame()){
+						
+						sf::Clock clock;
+						float fallSpeed = 0.2f; //Down speed 
+						float elapsedTotalTime = 0.0f; //Total of the current time
+						
+						while(partida->finishedGame()){ //while there is game being played
+							
+							
+							sf::Time elapsed = clock.restart(); //time since the last iteration
+							elapsedTotalTime += elapsed.asSeconds(); 
+							 
 							//Update
 							partida->update();
 							
+							if (elapsedTotalTime > fallSpeed) {
+								partida->defaultMoves();
+								elapsedTotalTime = 0.0f; 
+							}
+							
 							//Render
 							partida->render();
+							
+							sf::sleep(sf::milliseconds(15));
 							
 						}
 						
@@ -207,7 +224,7 @@ void Game::render(){
 	
 	this->window->draw(this->background);
 	
-	//Draw game
+	//Draw the menu
 	this->window->draw(this->playButton);
 	this->window->draw(this->scoresButton);
 	this->window->draw(this->exitButton);

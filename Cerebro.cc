@@ -102,7 +102,7 @@ bool Cerebro::finishedGame() const{
 	Control the cases for each keyboard event, and call the funtions in assembly to manipulate the matrix that represents the game area
 */
 void Cerebro::startGame(){
-	
+
 	while(this->window->pollEvent(this->event)){
 		
 		switch(this->event.type){ 
@@ -163,37 +163,30 @@ void Cerebro::startGame(){
 				
 		
 		}
-		/*
-		if(checkState(currentTetrinomio) == false){
-			clearRows();
-			dropAllBlocks();
-			currentTetrinomio = nextTetrinomio;
-			nextTetrinomio = getBlock();
-		}
-		else{
-			moveBlock(down, currentTetrinomio);
-		}*/
-		
-		//playing = checkMatriz();
-	}	
+
+	}
+
+}
+
+/*
+	@return void
+	It calls and make the necessary verifications after each update of the matrix
+*/
+void Cerebro::defaultMoves(){
 	
-	if(!checkTetrinomioState()){ //Osea no puede seguir bajando
-		clearRows();
-		dropAllBlocks();
-		this->amountOfMoves = 0;
-		getBlock();
-		moveDown(currentTetrinomio);
-	}
-	else{
-		moveDown(currentTetrinomio);
-	}
-	if(this->playing){
+	if (!checkTetrinomioState()) { //Verify if the current tetrinomio can still go down, if not, create a new one
+		clearRows(); //Delete all the complete rows
+		dropAllBlocks(); //Drop all the block that have down an empty row
+		this->amountOfMoves = 0; //reset the rotations of the new tetrinomio
+		getBlock(); //create the new tetrinomio
+	} 
+	moveDown(currentTetrinomio);
+	
+	if(this->playing){ //If there's a game being played, verify if the player didn't lose
 		this->playing = checkMatrixState();
 	}	
 	
-	
 }
-
 
 /*
 	@return void

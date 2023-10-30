@@ -70,6 +70,8 @@ class Cerebro{
 		void drawScore();
 		
 		void prueba();
+		
+		void defaultMoves();
 };
 
 #endif
