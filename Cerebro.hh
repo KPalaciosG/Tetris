@@ -45,6 +45,7 @@ class Cerebro{
 		
 		//To see the game area
 		void getGameArea();
+		
 
 	public:
 		//Constructor and Destructor

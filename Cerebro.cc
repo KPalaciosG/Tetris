@@ -10,7 +10,7 @@ extern "C" void moveDown(char);
 extern "C" bool checkTetrinomioState();
 extern "C" bool checkMatrixState();
 extern "C" void clearRows();
-
+extern "C" void dropAllBlocks();
 
 /*
 	@return void
@@ -22,6 +22,7 @@ void Cerebro::initializeVariables(){
 	this->currentScore = 0;
 	this->retroFont.loadFromFile("ARCADECLASSIC.ttf");
 	getBlock();
+
 	//this->currentTetrinomio = getBlock()
 	//this->nextTetrinomio = getBlock()
 }
@@ -178,6 +179,7 @@ void Cerebro::startGame(){
 	
 	if(!checkTetrinomioState()){ //Osea no puede seguir bajando
 		clearRows();
+		dropAllBlocks();
 		this->amountOfMoves = 0;
 		getBlock();
 		moveDown(currentTetrinomio);
@@ -188,6 +190,8 @@ void Cerebro::startGame(){
 	if(this->playing){
 		this->playing = checkMatrixState();
 	}	
+	
+	
 }
 
 

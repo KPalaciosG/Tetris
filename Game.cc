@@ -149,9 +149,10 @@ void Game::pollEvents(){
 						while(partida->finishedGame()){
 							//Update
 							partida->update();
-							sf::sleep(sf::seconds(0.09));
+							
 							//Render
 							partida->render();
+							
 						}
 						
 						delete partida;

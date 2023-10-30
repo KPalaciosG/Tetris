@@ -25,6 +25,8 @@ section .text
 	
 	;Auxiliar
 	global clearRows
+	global dropAllBlocks
+	
 	
 ; @return char*
 ; Returns tha matrix that is need it to be display
@@ -185,7 +187,7 @@ rotateTetrinomio:
 	ret
 
 getRotateType:
-	; y el movimiento es la cantidad de movimientos que lleva % 4 (modulo)
+	; y el movimiento es la cantidad de movimientos que lleva % 4
 	mov rdx, 0
 	mov rax, rdi 
 	mov r8, 4
@@ -566,6 +568,7 @@ isAFullRow:
 	
 fullRow:
 	call emptyRow
+	
 	jmp nextRow
 	
 emptyRow:
@@ -582,8 +585,109 @@ emptyRow:
 		jmp emptyRowLoop
 
 
+dropAllBlocks:
+	mov r8, matrix
+	add r8, 10
+	mov r9, 0
+	
+	dropAllBlocksLoop:
+		cmp r9, 200
+		jge isThereEmptyRows
+		
+		mov rdi, r8
+		add rdi, r9
+		call isAnEmptyRow
+		
+		mov rdi, r8
+		add rdi, r9
+		cmp al, 1
+		je dropUpperBlocks
+	nextRow2:
+		add r9, 10
+		jmp dropAllBlocksLoop
+
+isThereEmptyRows:
+	mov r8, matrix
+	mov r9, 0
+	mov al, 0
+	isThereEmptyRowsLoop:
+		cmp r9, 200
+		jge return
+		
+		mov rdi, r8
+		add rdi, r9
+		call isAnEmptyRow
+		cmp al, 1
+		je nextRow3
+		add rdi, 10
+		call isAnEmptyRow
+		cmp al, 1
+		je dropAllBlocks
+		
+	nextRow3:
+		add r9, 10
+		jmp isThereEmptyRowsLoop
+	
+isAnEmptyRow:
+	mov al, 1
+	mov r10, rdi
+	mov r11, 0
+	isAnEmptyRowLoop:
+		cmp r11, 10
+		jge return
+		cmp al, 0
+		je return
+		
+		cmp byte[r10], empty
+		je nextBlock2
+		mov al, 0
+		
+		nextBlock2:
+			inc r10
+			inc r11
+			jmp isAnEmptyRowLoop
 
 
+dropUpperBlocks:
+	mov r10, rdi
+	sub r10, 10
+	
+	mov r11, 0
+	dropUpperBlocksLoop:
+		cmp r11, 10
+		jge dropped
+			
+		mov r12b, byte[r10]
+		mov byte[r10+10], r12b
+		
+		inc r10
+		inc r11
+		jmp dropUpperBlocksLoop
+
+dropped:
+	sub rdi, 10
+	call emptyRow
+	jmp nextRow2
+
+isMatrixEmpty:
+	mov al, 1
+	mov r8, matrix
+	add r8, 10
+	mov r9, 0
+	isMatrixEmptyLoop:
+		cmp r9, 200
+		jge return
+		cmp al, 0
+		je return
+		
+		cmp byte[r8], empty
+		je nextBlock3
+		mov al, 0
+		
+		nextBlock3:
+			inc r8
+			inc r9
+			jmp isMatrixEmptyLoop
 
 
 
