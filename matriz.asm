@@ -185,7 +185,7 @@ rotateTetrinomio:
 	ret
 
 getRotateType:
-	; y el movimiento es la cantidad de movimientos que lleva % 4
+	; y el movimiento es la cantidad de movimientos que lleva % 4 (modulo)
 	mov rdx, 0
 	mov rax, rdi 
 	mov r8, 4
