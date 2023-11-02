@@ -12,12 +12,23 @@
 
 class Cerebro{
 	private:
+		//Bool that says if there's a game being play
+		bool playing;
+	
 		//Window
 		sf::RenderWindow* window;
 		sf::Event event;
 		
+		//Background
+		sf::Sprite background;
+		sf::Texture backgroundTexture;
+		
+		//Buttons and textures
+		sf::RectangleShape pauseButton;
+		sf::Texture pauseButtonTexture;
+		
 		//GameArea
-		char shadowMatrix[20][10]; //It's not real matrix, it is only used to show it in the game easier
+		char shadowMatrix[20][10]; //It's not the real matrix, it is only used to show it in the game easier
 		const int rows = 20;
 		const int columns = 10;
 		const int blockSize = 40;
@@ -32,16 +43,13 @@ class Cerebro{
 		sf::Text score;
 		
 		
-		//Bool that says if there's a game being play
-		bool playing;
-		
 		//Iniatialize all
 		void initializeVariables();
 		void initWindow(sf::RenderWindow*&);
-		
 		void initGameArea();
 		void initScore();
-		
+		void initButtons();
+		void initBackground();
 		
 		//To see the game area
 		void getGameArea();

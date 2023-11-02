@@ -10,28 +10,53 @@
 
 class ScoresScreen{
 	private:
+		//Says if the window is open
+		bool showingScores;
+		
+	
 		//Window
 		sf::RenderWindow* window;
 		sf::Event event;
 		
-		bool playing;
+		//Background
+		sf::Sprite background;
+		sf::Texture backgroundTexture;
 		
+		//Buttons and textures
+		sf::RectangleShape exitButton;
+		sf::Texture exitButtonTexture;
+		
+		//Text things
+		sf::Font retroFont; 	
+		sf::Text scores;
+		
+		
+		std::string topScores;
+		
+		//Iniatialize all
 		void initializeVariables();
 		void initWindow(sf::RenderWindow*&); 
+		void initTopScore();
+		void initButtons();
+		void initBackground();
 		
 	public:
 		//Constructor and Destructor
 		ScoresScreen(sf::RenderWindow*&);
 		virtual ~ScoresScreen();
 		 
-		bool finishedGame() const; 
+		//Gets
+		bool showing() const; 
 		
 		 
 		//Funtions
 		void pollEvents();
+		
 		void update();
 		void render();
 	
+		//Draw Funtions
+		void drawTopScores();
 };
 
 #endif

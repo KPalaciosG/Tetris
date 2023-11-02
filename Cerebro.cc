@@ -39,6 +39,11 @@ void Cerebro::initGameArea(){
 	this->getGameArea();
 }
 
+
+/*
+	@return void
+	Sets the kind of the text that will show the current score.	
+*/
 void Cerebro::initScore(){
 	//Font
 	this->score.setFont(retroFont);
@@ -46,6 +51,42 @@ void Cerebro::initScore(){
 	this->score.setFillColor(sf::Color::White);
 	//Size
 	this->score.setCharacterSize(50);
+}
+
+
+/*
+	@return void
+	Creates all the buttons of the main menu with their sprites:
+		pauseButton -> playButtonTexture
+	
+	Also it handle the errors if there's not a sprite
+*/
+
+void Cerebro::initButtons(){
+	if(!this->pauseButtonTexture.loadFromFile("./Buttons/PlayButton.png")){
+		std::cerr << "Falta imagen de boton de pause" << std::endl;
+		this->window->close();
+	}
+
+	this->pauseButton.setPosition(700.f, 800.f);
+	this->pauseButton.setSize(sf::Vector2f(600.f, 208.f));
+    this->pauseButton.setScale(sf::Vector2f(0.5f, 0.5f));
+    this->pauseButton.setTexture(&pauseButtonTexture);
+	
+}
+
+/*
+	@return void
+	It creates and adds the background sprite
+	Also it handle the error if there's not the sprite
+*/
+void Cerebro::initBackground(){
+	if (!this->backgroundTexture.loadFromFile("./Backgrounds/MenuBackground.jpg")) {
+        std::cerr << "Falta imagen de boton fondo" << std::endl;
+		this->window->close();
+    }
+	
+    this->background.setTexture(backgroundTexture);
 }
 
 /*
@@ -65,6 +106,8 @@ void Cerebro::getGameArea(){
 }
 
 
+
+
 /*
 -------------	
 Constructor and Destructor
@@ -75,11 +118,15 @@ Cerebro::Cerebro(sf::RenderWindow*& window){
 	this->initWindow(window);
 	this->initGameArea();
 	this->initScore();
+	this->initBackground();
+	this->initButtons();
 }
 
 Cerebro::~Cerebro(){
 	//To do... clean values form assembly
 }
+
+
 
 
 /*
@@ -99,7 +146,7 @@ bool Cerebro::finishedGame() const{
 /*
 	@return void
 	It's the main loop of the game.
-	Control the cases for each keyboard event, and call the funtions in assembly to manipulate the matrix that represents the game area
+	Control the cases for each I/O event, and call the funtions in assembly to manipulate the matrix that represents the game area
 */
 void Cerebro::startGame(){
 
@@ -180,6 +227,7 @@ void Cerebro::defaultMoves(){
 		this->amountOfMoves = 0; //reset the rotations of the new tetrinomio
 		getBlock(); //create the new tetrinomio
 	} 
+	
 	moveDown(currentTetrinomio);
 	
 	if(this->playing){ //If there's a game being played, verify if the player didn't lose
@@ -204,9 +252,13 @@ void Cerebro::update(){
 void Cerebro::render(){
 	this->window->clear();
 	//poner background
+	this->window->draw(this->background);
+	this->window->draw(this->pauseButton);
+	
 	//dibujar matriz
 	this->drawScore();
 	this->drawMatrix();
+	
 	this->window->display();
 }
 

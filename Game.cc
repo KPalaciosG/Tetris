@@ -13,8 +13,8 @@ void Game::initializeVariables(){
 /*
 	@return void
 	Creates the window on the center of the desktop window:
-		height: 800
-		width: 700
+		height: 960
+		width: 1000
 		
 */
 void Game::initWindow(){
@@ -143,12 +143,12 @@ void Game::pollEvents(){
                     sf::Vector2f mousePos = sf::Vector2f(sf::Mouse::getPosition(*this->window).x, sf::Mouse::getPosition(*this->window).y);
 
                     if (this->playButton.getGlobalBounds().contains(mousePos)) {
+						
                         //window->clear(sf::Color::Black);
 						Cerebro* partida = new Cerebro(this->window);
 						
-						
 						sf::Clock clock;
-						float fallSpeed = 0.2f; //Down speed 
+						float fallSpeed = 0.5f; //Down speed 
 						float elapsedTotalTime = 0.0f; //Total of the current time
 						
 						while(partida->finishedGame()){ //while there is game being played
@@ -177,7 +177,7 @@ void Game::pollEvents(){
                         
                     } else if(scoresButton.getGlobalBounds().contains(mousePos)) {
                         ScoresScreen scoresScreen = ScoresScreen(this->window);
-						while(scoresScreen.finishedGame()){
+						while(scoresScreen.showing()){
 							//Update
 							scoresScreen.update();
 							

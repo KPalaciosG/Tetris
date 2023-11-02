@@ -101,7 +101,6 @@ moveRight:
 	
 movingRight:
 	mov rdi, 1
-	call clearMoves
 	call saveMove
 	ret
 
@@ -129,7 +128,6 @@ moveLeft:
 
 movingLeft:
 	mov rdi, -1
-	call clearMoves
 	call saveMove
 	ret
 
@@ -141,9 +139,12 @@ movingLeft:
 moveDown:
 	call clearMoves
 	
-	call checkBottomBorder
-	cmp al, 0
-	je return
+	;Keylor
+	;El check bottom border cuando se llama desde la funcion genera un error en la esquina inferior derecha, no sé porque
+	;de igual forma sirve sin llamarla
+	;call checkBottomBorder
+	;cmp al, 0
+	;je return
 	call movingDown
 	call validMove
 	cmp al, 0
@@ -156,7 +157,6 @@ moveDown:
 	
 movingDown:
 	mov rdi, 10
-	call clearMoves
 	call saveMove
 	ret
 	
@@ -394,16 +394,15 @@ checkBottomBorder:
 	mov al, 1
 	mov r10, 0
 	bottomBorderLoop:
+		cmp r10, 4
+		jge return
 		mov rax, qword[currentTetrinomio + 8*r10]
 		
 		cmp rax, r8
 		jg cantMove
 		
 		inc r10
-		cmp r10, 4
-		jl bottomBorderLoop
-		
-	ret
+		jmp bottomBorderLoop
 	
 cantMove:
 	mov al, 0
@@ -446,7 +445,22 @@ borderCases:
 	cmp rdx, 0
 	je saveMove
 	
-
+	;Case for the 'I' when it's one block away from de right border and needs 2 to turn correctly 
+	cmp rsi, 'I'
+	jne skip
+	
+	mov rax, r9
+	add r8, 9
+	sub rax, r8
+	
+	mov rdx, 0
+	mov r10, 10
+	div r10
+	mov rdi, -1
+	cmp rdx, 0
+	je saveMove
+	
+	skip:
 	;Case Up Border
 	;Si el pivote esta en el borde de arriba, para girar necesita bajar el tetrinomio, eso hace
 	cmp r9, r8
@@ -719,10 +733,10 @@ rotateI:
 		jmp return
 
 	I1: ;Movimiento 1
-		; []
-		; [][][][]  -> []
-		; []
-		; []
+		;			  []
+		;[][][][] ->  []
+		;			  []
+		;			  []
 		mov qword[moves], -9
 		mov qword[moves + 8], 0
 		mov qword[moves + 16], 9
