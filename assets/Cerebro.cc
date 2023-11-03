@@ -81,7 +81,7 @@ void Cerebro::initButtons(){
 	Also it handle the error if there's not the sprite
 */
 void Cerebro::initBackground(){
-	if (!this->backgroundTexture.loadFromFile("assets/Backgrounds/InGameBackground.png")) {
+	if (!this->backgroundTexture.loadFromFile("assets/Backgrounds/InGameBackground.jpg")) {
         std::cerr << "Falta imagen de boton fondo" << std::endl;
 		this->window->close();
     }
@@ -338,6 +338,6 @@ void Cerebro::drawMatrix(){
 	Draws the actual score in the window
 */
 void Cerebro::drawScore(){
-	this->score.setString("Score: " + std::to_string(currentScore));
+	this->score.setString("Score  " + std::to_string(currentScore));
 	this->window->draw(score);
 }
