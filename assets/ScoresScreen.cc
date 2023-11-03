@@ -5,7 +5,7 @@ void ScoresScreen::initializeVariables(){
 	this->showingScores = true;
 	this->retroFont.loadFromFile("assets/Fonts/ARCADECLASSIC.TTF");
 	//En lugar de ese texto se deberia de llamar una funcion que agarre los top scores
-	this->topScores = "Hola, esto es una prueba para los top Scores";
+	this->topScores = "Top Scores";
 	
 }
 
@@ -25,6 +25,8 @@ void ScoresScreen::initTopScore(){
 	this->scores.setFillColor(sf::Color::White);
 	//Size
 	this->scores.setCharacterSize(50);
+    //Position
+    this->scores.setPosition(120.f, 25.f);
 }
 
 
@@ -56,7 +58,7 @@ void ScoresScreen::initButtons(){
 	Also it handle the error if there's not the sprite
 */
 void ScoresScreen::initBackground(){
-	if (!this->backgroundTexture.loadFromFile("assets/Backgrounds/MenuBackground.jpg")) {
+	if (!this->backgroundTexture.loadFromFile("assets/Backgrounds/ScoresBackground.jpg")) {
         std::cerr << "Falta imagen de boton fondo" << std::endl;
 		this->window->close();
     }

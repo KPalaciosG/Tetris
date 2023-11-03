@@ -51,6 +51,8 @@ void Cerebro::initScore(){
 	this->score.setFillColor(sf::Color::White);
 	//Size
 	this->score.setCharacterSize(50);
+    //Position
+    this->score.setPosition(30.f, 2.f);
 }
 
 
