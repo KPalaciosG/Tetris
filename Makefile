@@ -7,14 +7,14 @@ ASFLAGS = -f elf64  # Adjust this for your architecture if needed
 
 all: compile
 
-compile: main.cc matriz.o
-	$(CXX) $(CXXFLAGS) main.cc matriz.o Game.cc Cerebro.cc ScoresScreen.cc -o ejecutable $(LIBS)
+compile: assets/main.cc matriz.o
+	$(CXX) $(CXXFLAGS) assets/main.cc MakefileOutputs/matriz.o assets/Game.cc assets/Cerebro.cc assets/ScoresScreen.cc -o MakefileOutputs/ejecutable $(LIBS)
 
-matriz.o: matriz.asm
-	$(AS) $(ASFLAGS) matriz.asm -o matriz.o
+matriz.o: assets/matriz.asm
+	$(AS) $(ASFLAGS) assets/matriz.asm -o MakefileOutputs/matriz.o
 
 execute: 
-	./ejecutable
+	./MakefileOutputs/ejecutable
 
 
 

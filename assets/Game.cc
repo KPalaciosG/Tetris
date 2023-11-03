@@ -45,7 +45,7 @@ void Game::initWindow(){
 	Also it handle the errors if there's not a sprite
 */
 void Game::initButtons(){
-	if(!this->playButtonTexture.loadFromFile("./Buttons/PlayButton.png")){
+	if(!this->playButtonTexture.loadFromFile("assets/Buttons/PlayButton.png")){
 		std::cerr << "Falta imagen de boton de play" << std::endl;
 		this->window->close();
 	}
@@ -56,7 +56,7 @@ void Game::initButtons(){
     this->playButton.setTexture(&playButtonTexture);
 	
 	
-	if(!this->scoresButtonTexture.loadFromFile("./Buttons/MenuButton.png")){
+	if(!this->scoresButtonTexture.loadFromFile("assets/Buttons/MenuButton.png")){
 		std::cerr << "Falta imagen de boton de scores" << std::endl;
 		this->window->close();
 	}
@@ -67,7 +67,7 @@ void Game::initButtons(){
     this->scoresButton.setTexture(&scoresButtonTexture);
 	
 	
-	if(!this->exitButtonTexture.loadFromFile("./Buttons/ExitButton.png")){
+	if(!this->exitButtonTexture.loadFromFile("assets/Buttons/ExitButton.png")){
 		std::cerr << "Falta imagen de boton de exit" << std::endl;
 		this->window->close();
 	}
@@ -85,7 +85,7 @@ void Game::initButtons(){
 	Also it handle the error if there's not the sprite
 */
 void Game::initBackground(){
-	if (!this->backgroundTexture.loadFromFile("./Backgrounds/MenuBackground.jpg")) {
+	if (!this->backgroundTexture.loadFromFile("assets/Backgrounds/MenuBackground.jpg")) {
         std::cerr << "Falta imagen de boton fondo" << std::endl;
 		this->window->close();
     }

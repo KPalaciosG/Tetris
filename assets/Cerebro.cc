@@ -20,7 +20,7 @@ void Cerebro::initializeVariables(){
 	this->window = nullptr;
 	this->playing = true;
 	this->currentScore = 0;
-	this->retroFont.loadFromFile("ARCADECLASSIC.ttf");
+	this->retroFont.loadFromFile("assets/Fonts/ARCADECLASSIC.TTF");
 	getBlock();
 
 	//this->currentTetrinomio = getBlock()
@@ -63,7 +63,7 @@ void Cerebro::initScore(){
 */
 
 void Cerebro::initButtons(){
-	if(!this->pauseButtonTexture.loadFromFile("./Buttons/PlayButton.png")){
+	if(!this->pauseButtonTexture.loadFromFile("assets/Buttons/PlayButton.png")){
 		std::cerr << "Falta imagen de boton de pause" << std::endl;
 		this->window->close();
 	}
@@ -81,7 +81,7 @@ void Cerebro::initButtons(){
 	Also it handle the error if there's not the sprite
 */
 void Cerebro::initBackground(){
-	if (!this->backgroundTexture.loadFromFile("./Backgrounds/MenuBackground.jpg")) {
+	if (!this->backgroundTexture.loadFromFile("assets/Backgrounds/MenuBackground.jpg")) {
         std::cerr << "Falta imagen de boton fondo" << std::endl;
 		this->window->close();
     }
