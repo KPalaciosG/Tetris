@@ -63,7 +63,7 @@ void Cerebro::initScore(){
 */
 
 void Cerebro::initButtons(){
-	if(!this->pauseButtonTexture.loadFromFile("assets/Buttons/PlayButton.png")){
+	if(!this->pauseButtonTexture.loadFromFile("assets/Buttons/PauseButton.png")){
 		std::cerr << "Falta imagen de boton de pause" << std::endl;
 		this->window->close();
 	}
@@ -81,7 +81,7 @@ void Cerebro::initButtons(){
 	Also it handle the error if there's not the sprite
 */
 void Cerebro::initBackground(){
-	if (!this->backgroundTexture.loadFromFile("assets/Backgrounds/MenuBackground.jpg")) {
+	if (!this->backgroundTexture.loadFromFile("assets/Backgrounds/InGameBackground.png")) {
         std::cerr << "Falta imagen de boton fondo" << std::endl;
 		this->window->close();
     }

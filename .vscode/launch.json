@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": false,
-      "cwd": "/home/mario/Desktop/Tetris",
-      "program": "/home/mario/Desktop/Tetris/build/Debug/outDebug",
+      "cwd": "/home/mario/Desktop/Tetris/assets",
+      "program": "/home/mario/Desktop/Tetris/assets/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [
