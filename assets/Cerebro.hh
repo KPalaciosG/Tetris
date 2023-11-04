@@ -45,7 +45,7 @@ class Cerebro{
 		const int blockSize = 40;
 		
 		//Tetrinomio things
-		char currentTetrinomio = 'I';
+		char currentTetrinomio;
 		int amountOfMoves = 0; //Repretents the amount of rotation that has been done
 	
 		//Score things

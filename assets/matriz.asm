@@ -107,6 +107,7 @@ getBlock:
 	inc byte[blockCounter] ;incrementa el contador de bloques
 	;inc al
 	
+	mov al, 'I'
 	ret
 	;-------------------------------
 	blockO:
@@ -131,14 +132,15 @@ getBlock:
 	mov qword[currentTetrinomio+24], r9
 	
 	;pivote
-	;mov r9, matrix
-	;add r9, 5
-	;mov qword[currentTetrinomio+32], r9
+	mov r9, matrix
+	add r9, 5
+	mov qword[currentTetrinomio+32], r9
 
 	mov byte[color], '2' ; save the color of the currentTetrinomio
 	inc byte[blockCounter] ;incrementa el contador de bloques
 	;inc al
 
+	mov al, 'O'
 	ret
 	;----------------------
 	
@@ -164,13 +166,15 @@ getBlock:
 	mov qword[currentTetrinomio+24], r9
 	
 	;pivote
-	;mov r9, matrix
-	;add r9, 5
-	;mov qword[currentTetrinomio+32], r9
+	mov r9, matrix
+	add r9, 15
+	mov qword[currentTetrinomio+32], r9
 
 	mov byte[color], '3' ; save the color of the currentTetrinomio
 	inc byte[blockCounter] ;incrementa el contador de bloques
 	;inc al
+	
+	mov al, 'T'
 	ret
 	
 	;----------------------------
@@ -197,14 +201,15 @@ getBlock:
 	mov qword[currentTetrinomio+24], r9
 	
 	;pivote
-	;mov r9, matrix
-	;add r9, 5
-	;mov qword[currentTetrinomio+32], r9
+	mov r9, matrix
+	add r9, 4
+	mov qword[currentTetrinomio+32], r9
 
 	mov byte[color], '4' ; save the color of the currentTetrinomio
 	inc byte[blockCounter] ;incrementa el contador de bloques
 	;inc al
 
+	mov al, 'S'
 	ret
 	;-----------------------------
 	
@@ -230,14 +235,15 @@ getBlock:
 	mov qword[currentTetrinomio+24], r9
 	
 	;pivote
-	;mov r9, matrix
-	;add r9, 5
-	;mov qword[currentTetrinomio+32], r9
+	mov r9, matrix
+	add r9, 5
+	mov qword[currentTetrinomio+32], r9
 
 	mov byte[color], '5' ; save the color of the currentTetrinomio
 	inc byte[blockCounter] ;incrementa el contador de bloques
 	;inc al
 	
+	mov al, 'Z'
 	ret
 
 	;---------------------------
@@ -264,14 +270,15 @@ getBlock:
 	mov qword[currentTetrinomio+24], r9
 	
 	;pivote
-	;mov r9, matrix
-	;add r9, 5
-	;mov qword[currentTetrinomio+32], r9
+	mov r9, matrix
+	add r9, 15
+	mov qword[currentTetrinomio+32], r9
 
 	mov byte[color], '6' ; save the color of the currentTetrinomio
 	inc byte[blockCounter] ;incrementa el contador de bloques
 	;inc al
 
+	mov al, 'J'
 	ret
 	
 	;-------------------------------
@@ -298,14 +305,15 @@ getBlock:
 	mov qword[currentTetrinomio+24], r9
 	
 	;pivote
-	;mov r9, matrix
-	;add r9, 5
-	;mov qword[currentTetrinomio+32], r9
+	mov r9, matrix
+	add r9, 15
+	mov qword[currentTetrinomio+32], r9
 
 	mov byte[color], '7' ; save the color of the currentTetrinomio
 	inc byte[blockCounter] ;incrementa el contador de bloques
 	;inc al
 
+	mov al, 'L'
 	ret
 	
 	;------------------------------

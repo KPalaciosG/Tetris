@@ -2,7 +2,7 @@
 
 //Funtions from assembly
 extern "C" char* getMatrix();
-extern "C" void getBlock();
+extern "C" char getBlock();
 extern "C" void rotateTetrinomio(int, char);
 extern "C" void moveRight(char);
 extern "C" void moveLeft(char);
@@ -21,7 +21,7 @@ void Cerebro::initializeVariables(){
 	this->playing = true;
 	this->currentScore = 0;
 	this->retroFont.loadFromFile("assets/Fonts/ARCADECLASSIC.TTF");
-	getBlock();
+	currentTetrinomio = getBlock();
 	
 	//this->currentTetrinomio = getBlock()
 	//this->nextTetrinomio = getBlock()
@@ -249,7 +249,7 @@ void Cerebro::defaultMoves(){
 		clearRows(); //Delete all the complete rows
 		dropAllBlocks(); //Drop all the block that have down an empty row
 		this->amountOfMoves = 0; //reset the rotations of the new tetrinomio
-		getBlock(); //create the new tetrinomio
+		currentTetrinomio = getBlock(); //create the new tetrinomio
 	} 
 	
 	moveDown(currentTetrinomio);
