@@ -148,7 +148,7 @@ void Game::pollEvents(){
 						Cerebro* partida = new Cerebro(this->window);
 						
 						sf::Clock clock;
-						float fallSpeed = 0.5f; //Down speed 
+						float fallSpeed = 0.3f; //Down speed 
 						float elapsedTotalTime = 0.0f; //Total of the current time
 						
 						while(partida->finishedGame()){ //while there is game being played

@@ -208,6 +208,12 @@ void Cerebro::startGame(){
 				else if(this->event.key.code == sf::Keyboard::Down){
 					moveDown(currentTetrinomio);
 				}
+				else if(this->event.key.code == sf::Keyboard::Space){
+					
+					while(checkTetrinomioState()){
+						moveDown(currentTetrinomio);
+					}
+				}
 				
 				/*
 					Stop the current game and will come back to the main menu
@@ -269,6 +275,7 @@ void Cerebro::update(){
 */
 void Cerebro::render(){
 	this->window->clear();
+	
 	//poner background
 	this->window->draw(this->background);
 	this->window->draw(this->pauseButton);
