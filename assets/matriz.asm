@@ -16,7 +16,7 @@ section .data
 
 section .text
 	;Gets: lines 29-74
-    	global getMatrix
+    global getMatrix
 	global getBlock
 	
 	;Moves

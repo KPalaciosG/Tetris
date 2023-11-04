@@ -22,7 +22,7 @@ void Cerebro::initializeVariables(){
 	this->currentScore = 0;
 	this->retroFont.loadFromFile("assets/Fonts/ARCADECLASSIC.TTF");
 	getBlock();
-
+	
 	//this->currentTetrinomio = getBlock()
 	//this->nextTetrinomio = getBlock()
 }
@@ -93,6 +93,21 @@ void Cerebro::initBackground(){
 
 /*
 	@return void
+	Adds all the textures for the blocks
+*/
+void Cerebro::initBlockTexture(){
+	this->emptyBlockTexture.loadFromFile("assets/Blocks/emptyBlock.png");
+	this->redBlockTexture.loadFromFile("assets/Blocks/redBlock.png");
+	this->greenBlockTexture.loadFromFile("assets/Blocks/greenBlock.png");
+	this->blueBlockTexture.loadFromFile("assets/Blocks/blueBlock.png");
+	this->yellowBlockTexture.loadFromFile("assets/Blocks/yellowBlock.png");
+	this->purpleBlockTexture.loadFromFile("assets/Blocks/purpleBlock.png");
+	this->cyanBlockTexture.loadFromFile("assets/Blocks/cyanBlock.png");
+	this->orangeBlockTexture.loadFromFile("assets/Blocks/orangeBlock.png");
+}
+
+/*
+	@return void
 	Gets the real matrix, and copy the values in it, to display them.
 */
 void Cerebro::getGameArea(){
@@ -122,6 +137,7 @@ Cerebro::Cerebro(sf::RenderWindow*& window){
 	this->initScore();
 	this->initBackground();
 	this->initButtons();
+	this->initBlockTexture();
 }
 
 Cerebro::~Cerebro(){
@@ -291,40 +307,48 @@ void Cerebro::drawMatrix(){
             switch (this->shadowMatrix[i][j]) {
 				// 0 = empty
                 case '0':
-                    block.setFillColor(sf::Color::White);
+                    //block.setFillColor(sf::Color::White);
+					block.setTexture(&emptyBlockTexture);
                     break;
 				// 1 = red
                 case '1':
-                    block.setFillColor(sf::Color::Red);
+                    //block.setFillColor(sf::Color::Red);
+					block.setTexture(&redBlockTexture);
                     break;
 				// 2 = Green	
                 case '2':
-                    block.setFillColor(sf::Color::Green);
+                    //block.setFillColor(sf::Color::Green);
+					block.setTexture(&greenBlockTexture);
                     break;
 				// 3 = Blue
                 case '3':
-                    block.setFillColor(sf::Color::Blue);
+                    //block.setFillColor(sf::Color::Blue);
+					block.setTexture(&blueBlockTexture);
                     break;
 				// 4 = Yellow
                 case '4':
-                    block.setFillColor(sf::Color::Yellow);
+                    //block.setFillColor(sf::Color::Yellow);
+					block.setTexture(&yellowBlockTexture);
                     break;
 				// 5 = Magenta
                 case '5':
-                    block.setFillColor(sf::Color::Magenta);
+                    //block.setFillColor(sf::Color::Magenta);
+					block.setTexture(&purpleBlockTexture);
                     break;	
 				// 6 = Cyan
                 case '6':
-                    block.setFillColor(sf::Color::Cyan);
+                    //block.setFillColor(sf::Color::Cyan);
+					block.setTexture(&cyanBlockTexture);
                     break;
 				// 7 = orange
                 case '7':
-                    block.setFillColor(sf::Color(255, 165, 0));
+                    //block.setFillColor(sf::Color(255, 165, 0));
+					block.setTexture(&orangeBlockTexture);
                     break;
 					
                 default:
-                    // Color predeterminado
-                    block.setFillColor(sf::Color::White);
+                    //block.setFillColor(sf::Color::White);
+					block.setTexture(&emptyBlockTexture);
                     break;
             }
 			

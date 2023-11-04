@@ -27,6 +27,17 @@ class Cerebro{
 		sf::RectangleShape pauseButton;
 		sf::Texture pauseButtonTexture;
 		
+		//Block Texture
+		sf::Texture emptyBlockTexture;
+		sf::Texture redBlockTexture;
+		sf::Texture greenBlockTexture;
+		sf::Texture blueBlockTexture;
+		sf::Texture yellowBlockTexture;
+		sf::Texture purpleBlockTexture;
+		sf::Texture cyanBlockTexture;
+		sf::Texture orangeBlockTexture;
+		
+		
 		//GameArea
 		char shadowMatrix[20][10]; //It's not the real matrix, it is only used to show it in the game easier
 		const int rows = 20;
@@ -50,6 +61,7 @@ class Cerebro{
 		void initScore();
 		void initButtons();
 		void initBackground();
+		void initBlockTexture();
 		
 		//To see the game area
 		void getGameArea();
