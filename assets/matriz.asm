@@ -71,27 +71,27 @@ getBlock:
 	blockI:
 	;Pivote del Tetrinomio I es el 2 bloque
 	mov r9, matrix
-	add r9, 4 ;Position of the first block
+	add r9, 3 ;Position of the first block
 	mov byte[r9], '1' ;color
 	mov qword[currentTetrinomio], r9 ;save the address
 
 	mov r9, matrix
-	add r9, 5
+	add r9, 4
 	mov byte[r9], '1'
 	mov qword[currentTetrinomio+8], r9
 
 	mov r9, matrix
-	add r9, 6
+	add r9, 5
 	mov byte[r9], '1'
 	mov qword[currentTetrinomio+16], r9
 
 	mov r9, matrix
-	add r9, 7
+	add r9, 6
 	mov byte[r9], '1'
 	mov qword[currentTetrinomio+24], r9
 
 	mov r9, matrix
-	add r9, 5
+	add r9, 4
 	mov qword[currentTetrinomio+32], r9
 
 	mov byte[color], '1' ; save the color of the currentTetrinomio
@@ -101,22 +101,22 @@ getBlock:
 	;-------------------------------
 	blockO:
 	mov r9, matrix
-	add r9, 5 ;Position of the first block
+	add r9, 4 ;Position of the first block
 	mov byte[r9], '2' ;color
 	mov qword[currentTetrinomio], r9 ;save the address
 
 	mov r9, matrix
-	add r9, 6
+	add r9, 5
 	mov byte[r9], '2'
 	mov qword[currentTetrinomio+8], r9
 
 	mov r9, matrix
-	add r9, 15
+	add r9, 14
 	mov byte[r9], '2'
 	mov qword[currentTetrinomio+16], r9
 
 	mov r9, matrix
-	add r9, 16
+	add r9, 15
 	mov byte[r9], '2'
 	mov qword[currentTetrinomio+24], r9
 	
@@ -133,22 +133,22 @@ getBlock:
 	
 	blockT:
 	mov r9, matrix
-	add r9, 6 ;Position of the first block
-	mov byte[r9], '2' ;color
+	add r9, 5 ;Position of the first block
+	mov byte[r9], '3' ;color
 	mov qword[currentTetrinomio], r9 ;save the address
 
 	mov r9, matrix
-	add r9, 15
+	add r9, 14
 	mov byte[r9], '3'
 	mov qword[currentTetrinomio+8], r9
 
 	mov r9, matrix
-	add r9, 16
+	add r9, 15
 	mov byte[r9], '3'
 	mov qword[currentTetrinomio+16], r9
 
 	mov r9, matrix
-	add r9, 17
+	add r9, 16
 	mov byte[r9], '3'
 	mov qword[currentTetrinomio+24], r9
 	
@@ -166,22 +166,22 @@ getBlock:
 	
 	blockS:
 	mov r9, matrix
-	add r9, 5 ;Position of the first block
+	add r9, 4 ;Position of the first block
 	mov byte[r9], '4' ;color
 	mov qword[currentTetrinomio], r9 ;save the address
 
 	mov r9, matrix
-	add r9, 6
+	add r9, 5
 	mov byte[r9], '4'
 	mov qword[currentTetrinomio+8], r9
 
 	mov r9, matrix
-	add r9, 14
+	add r9, 13
 	mov byte[r9], '4'
 	mov qword[currentTetrinomio+16], r9
 
 	mov r9, matrix
-	add r9, 15
+	add r9, 14
 	mov byte[r9], '4'
 	mov qword[currentTetrinomio+24], r9
 	
@@ -198,22 +198,22 @@ getBlock:
 	
 	blockZ:
 	mov r9, matrix
-	add r9, 5 ;Position of the first block
-	mov byte[r9], '2' ;color
+	add r9, 4 ;Position of the first block
+	mov byte[r9], '5' ;color
 	mov qword[currentTetrinomio], r9 ;save the address
 
 	mov r9, matrix
-	add r9, 6
+	add r9, 5
 	mov byte[r9], '5'
 	mov qword[currentTetrinomio+8], r9
 
 	mov r9, matrix
-	add r9, 16
+	add r9, 15
 	mov byte[r9], '5'
 	mov qword[currentTetrinomio+16], r9
 
 	mov r9, matrix
-	add r9, 17
+	add r9, 16
 	mov byte[r9], '5'
 	mov qword[currentTetrinomio+24], r9
 	
@@ -231,22 +231,22 @@ getBlock:
 	
 	blockJ:
 	mov r9, matrix
-	add r9, 5 ;Position of the first block
+	add r9, 4 ;Position of the first block
 	mov byte[r9], '6' ;color
 	mov qword[currentTetrinomio], r9 ;save the address
 
 	mov r9, matrix
-	add r9, 15
+	add r9, 14
 	mov byte[r9], '6'
 	mov qword[currentTetrinomio+8], r9
 
 	mov r9, matrix
-	add r9, 16
+	add r9, 15
 	mov byte[r9], '6'
 	mov qword[currentTetrinomio+16], r9
 
 	mov r9, matrix
-	add r9, 17
+	add r9, 16
 	mov byte[r9], '6'
 	mov qword[currentTetrinomio+24], r9
 	
@@ -264,22 +264,22 @@ getBlock:
 	
 	blockL:
 	mov r9, matrix
-	add r9, 7 ;Position of the first block
-	mov byte[r9], '2' ;color
+	add r9, 6 ;Position of the first block
+	mov byte[r9], '7' ;color
 	mov qword[currentTetrinomio], r9 ;save the address
 
 	mov r9, matrix
-	add r9, 15
+	add r9, 14
 	mov byte[r9], '7'
 	mov qword[currentTetrinomio+8], r9
 
 	mov r9, matrix
-	add r9, 16
+	add r9, 15
 	mov byte[r9], '7'
 	mov qword[currentTetrinomio+16], r9
 
 	mov r9, matrix
-	add r9, 17
+	add r9, 16
 	mov byte[r9], '7'
 	mov qword[currentTetrinomio+24], r9
 	
@@ -1167,4 +1167,3 @@ L3:
 
 return:
 	ret
-
