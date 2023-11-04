@@ -7,6 +7,8 @@ section .data
 	moves: times 5 dq 0
 
 	empty: equ '0'
+	
+	blockCounter db 0 ;contador de bloques
 
 section .text
 	;Gets: lines 29-74
@@ -43,7 +45,29 @@ getMatrix:
 ; This funtion will compare a char that represents the current tetrinomio, and will puts some values in the matrix (a number)
 ; that represents a color and in currentTetrinomio will put the addresses of each block that contains a color
 getBlock:
-
+	
+	mov al, [blockCounter] ;obtiene el valor del contador del bloque actual
+	
+	;usa el valor del contador para determinar el bloque
+	cmp al, 0
+	je blockI
+	cmp al, 1
+	je blockO
+	cmp al, 2
+	je blockT
+	cmp al, 3
+	je blockS
+	cmp al, 4
+	je blockZ
+	cmp al, 5
+	je blockJ
+	cmp al, 6
+	je blockL
+	;Si el contador supera 6, establece el contador en 0
+	cmp al, 7
+	jae resetBlockCounter
+	
+	
 	blockI:
 	;Pivote del Tetrinomio I es el 2 bloque
 	mov r9, matrix
@@ -71,6 +95,8 @@ getBlock:
 	mov qword[currentTetrinomio+32], r9
 
 	mov byte[color], '1' ; save the color of the currentTetrinomio
+	inc blockCounter ;incrementa el contador de bloques
+	
 	ret
 	;-------------------------------
 	blockO:
@@ -100,9 +126,11 @@ getBlock:
 	;mov qword[currentTetrinomio+32], r9
 
 	mov byte[color], '2' ; save the color of the currentTetrinomio
+	inc blockCounter ;incrementa el contador de bloques
 
 	ret
 	;----------------------
+	
 	blockT:
 	mov r9, matrix
 	add r9, 6 ;Position of the first block
@@ -130,8 +158,10 @@ getBlock:
 	;mov qword[currentTetrinomio+32], r9
 
 	mov byte[color], '3' ; save the color of the currentTetrinomio
+	inc blockCounter ;incrementa el contador de bloques
 
 	ret
+	
 	;----------------------------
 	
 	blockS:
@@ -161,6 +191,7 @@ getBlock:
 	;mov qword[currentTetrinomio+32], r9
 
 	mov byte[color], '4' ; save the color of the currentTetrinomio
+	inc blockCounter ;incrementa el contador de bloques
 
 	ret
 	;-----------------------------
@@ -192,6 +223,7 @@ getBlock:
 	;mov qword[currentTetrinomio+32], r9
 
 	mov byte[color], '5' ; save the color of the currentTetrinomio
+	inc blockCounter ;incrementa el contador de bloques
 
 	ret
 
@@ -224,6 +256,7 @@ getBlock:
 	;mov qword[currentTetrinomio+32], r9
 
 	mov byte[color], '6' ; save the color of the currentTetrinomio
+	inc blockCounter ;incrementa el contador de bloques
 
 	ret
 	
@@ -256,9 +289,16 @@ getBlock:
 	;mov qword[currentTetrinomio+32], r9
 
 	mov byte[color], '7' ; save the color of the currentTetrinomio
+	inc blockCounter ;incrementa el contador de bloques
 
 	ret
-
+	
+	;------------------------------
+	;reinicia el contador de bloques en 0
+	resetBlockCounter:
+	mov byte[blockCounter], 0
+	jmp getBlock
+	
 
 
 
