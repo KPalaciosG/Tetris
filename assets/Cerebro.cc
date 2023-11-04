@@ -297,29 +297,29 @@ void Cerebro::drawMatrix(){
                 case '1':
                     block.setFillColor(sf::Color::Red);
                     break;
-				// 2 = blue	
+				// 2 = green
                 case '2':
                     block.setFillColor(sf::Color::Green);
                     break;
-				// 3 = green
+				// 3 = blue
                 case '3':
                     block.setFillColor(sf::Color::Blue);
                     break;
 				// 4 = yellow
                 case '4':
-                    block.setFillColor(sf::Color::Blue);
+                    block.setFillColor(sf::Color::Yellow);
                     break;
-				// 5 = pink
+				// 5 = Magenta
                 case '5':
-                    block.setFillColor(sf::Color::Blue);
+                    block.setFillColor(sf::Color::Magenta);
                     break;	
-				// 6 = purple
+				// 6 = Cyan
                 case '6':
-                    block.setFillColor(sf::Color::Blue);
+                    block.setFillColor(sf::Color::Cyan);
                     break;
-				// 7 = orange
+				// 7 = black
                 case '7':
-                    block.setFillColor(sf::Color::Blue);
+                    block.setFillColor(sf::Color::Black);
                     break;
 					
                 default:
