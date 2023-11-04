@@ -9,10 +9,14 @@ section .data
 	empty: equ '0'
 	
 	blockCounter db 0 ;contador de bloques
+	;array de bloques
+	blockOrder db 0, 1, 2, 3, 4, 5, 6
+	blockOrderSize equ 7
+		
 
 section .text
 	;Gets: lines 29-74
-    global getMatrix
+    	global getMatrix
 	global getBlock
 	
 	;Moves
@@ -46,27 +50,32 @@ getMatrix:
 ; that represents a color and in currentTetrinomio will put the addresses of each block that contains a color
 getBlock:
 	
-	mov al, [blockCounter] ;obtiene el valor del contador del bloque actual
-	
+	mov rbx, blockOrder  ;se guarda la direcciòn de memoria del arreglo de bloques
+	xor rax, rax  ;se limpia el registro
+	mov al, byte[blockCounter] 
+		
+		
 	;usa el valor del contador para determinar el bloque
-	cmp al, 0
-	je blockI
-	cmp al, 1
-	je blockO
-	cmp al, 2
-	je blockT
-	cmp al, 3
-	je blockS
-	cmp al, 4
-	je blockZ
-	cmp al, 5
-	je blockJ
-	cmp al, 6
-	je blockL
+	
 	;Si el contador supera 6, establece el contador en 0
-	cmp al, 7
+	cmp byte[blockCounter], 7
 	jae resetBlockCounter
 	
+	cmp byte[rbx+rax], 0
+	je blockI
+	cmp byte[rbx+rax], 1
+	je blockO
+	cmp byte[rbx+rax], 2
+	je blockT
+	cmp byte[rbx+rax], 3
+	je blockS
+	cmp byte[rbx+rax], 4
+	je blockZ
+	cmp byte[rbx+rax], 5
+	je blockJ
+	cmp byte[rbx+rax], 6
+	je blockL
+		
 	
 	blockI:
 	;Pivote del Tetrinomio I es el 2 bloque
@@ -96,6 +105,7 @@ getBlock:
 
 	mov byte[color], '1' ; save the color of the currentTetrinomio
 	inc byte[blockCounter] ;incrementa el contador de bloques
+	;inc al
 	
 	ret
 	;-------------------------------
@@ -127,6 +137,7 @@ getBlock:
 
 	mov byte[color], '2' ; save the color of the currentTetrinomio
 	inc byte[blockCounter] ;incrementa el contador de bloques
+	;inc al
 
 	ret
 	;----------------------
@@ -159,7 +170,7 @@ getBlock:
 
 	mov byte[color], '3' ; save the color of the currentTetrinomio
 	inc byte[blockCounter] ;incrementa el contador de bloques
-
+	;inc al
 	ret
 	
 	;----------------------------
@@ -192,6 +203,7 @@ getBlock:
 
 	mov byte[color], '4' ; save the color of the currentTetrinomio
 	inc byte[blockCounter] ;incrementa el contador de bloques
+	;inc al
 
 	ret
 	;-----------------------------
@@ -224,7 +236,8 @@ getBlock:
 
 	mov byte[color], '5' ; save the color of the currentTetrinomio
 	inc byte[blockCounter] ;incrementa el contador de bloques
-
+	;inc al
+	
 	ret
 
 	;---------------------------
@@ -257,6 +270,7 @@ getBlock:
 
 	mov byte[color], '6' ; save the color of the currentTetrinomio
 	inc byte[blockCounter] ;incrementa el contador de bloques
+	;inc al
 
 	ret
 	
@@ -290,16 +304,33 @@ getBlock:
 
 	mov byte[color], '7' ; save the color of the currentTetrinomio
 	inc byte[blockCounter] ;incrementa el contador de bloques
+	;inc al
 
 	ret
 	
 	;------------------------------
 	;reinicia el contador de bloques en 0
 	resetBlockCounter:
-	mov byte[blockCounter], 0
-	jmp getBlock
+		mov byte[blockCounter], 0
+		
+		;permutaciòn del arreglo
+		mov r10b, 3 ;contador loop
+		loopChangeBlock:
+			mov r8b, [rbx]
+			mov r9b, [rbx+1]
+			mov [rbx], r9b
+			mov [rbx+1], r8b
+			dec r10b
+			add rbx, 2
+			cmp r10b, 0
+			je endLoopBlock
+			jmp loopChangeBlock
+			
+		
+		endLoopBlock:	
+			jmp getBlock 
+		
 	
-
 
 
 
