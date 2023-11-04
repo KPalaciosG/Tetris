@@ -18,6 +18,7 @@ section .text
 	;Gets: lines 29-74
     global getMatrix
 	global getBlock
+	global getNextTetrinomio
 	
 	;Moves
 	global rotateTetrinomio
@@ -339,7 +340,37 @@ getBlock:
 			jmp getBlock 
 		
 	
+getNextTetrinomio:
+	
+	mov rbx, blockOrder  ;se guarda la direcciòn de memoria del arreglo de bloques
+	xor rax, rax  ;se limpia el registro
+	mov al, byte[blockCounter] 
 
+	add rbx, rax
+	
+	cmp byte[rbx], 0
+	mov al, 'I'
+	je return
+	cmp byte[rbx], 1
+	mov al, 'O'
+	je return
+	cmp byte[rbx], 2
+	mov al, 'T'
+	je return
+	cmp byte[rbx], 3
+	mov al, 'S'
+	je return
+	cmp byte[rbx], 4
+	mov al, 'Z'
+	je return
+	cmp byte[rbx], 5
+	mov al, 'J'
+	je return
+	cmp byte[rbx], 6
+	mov al, 'L'
+	je return
+
+	ret
 
 
 ;---------------------------

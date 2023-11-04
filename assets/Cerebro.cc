@@ -11,6 +11,11 @@ extern "C" bool checkTetrinomioState();
 extern "C" bool checkMatrixState();
 extern "C" void clearRows();
 extern "C" void dropAllBlocks();
+extern "C" char getNextTetrinomio();
+
+extern "C" char* getSubMatrix();
+extern "C" void setNextTetrinomio(char);
+
 
 /*
 	@return void
@@ -21,7 +26,10 @@ void Cerebro::initializeVariables(){
 	this->playing = true;
 	this->currentScore = 0;
 	this->retroFont.loadFromFile("assets/Fonts/ARCADECLASSIC.TTF");
+	
 	currentTetrinomio = getBlock();
+	nextTetrinomio = getNextTetrinomio();
+	setNextTetrinomio(nextTetrinomio);
 	
 	//this->currentTetrinomio = getBlock()
 	//this->nextTetrinomio = getBlock()
@@ -111,18 +119,28 @@ void Cerebro::initBlockTexture(){
 	Gets the real matrix, and copy the values in it, to display them.
 */
 void Cerebro::getGameArea(){
-	char* pmatrix = getMatrix();
+	char* pMatrix = getMatrix();
 
 	int k = 0;
 	for(int i = 0; i < rows; ++i){
 		for(int j = 0; j < columns; ++j){
-			shadowMatrix[i][j] = pmatrix[k];
+			shadowMatrix[i][j] = pMatrix[k];
 			++k;
 		}
 	}
 }
 
+void Cerebro::copyNextTetrinomio(){
+	char* pSubMatrix = getSubMatrix();
 
+	int k = 0;
+	for(int i = 0; i < 4; ++i){
+		for(int j = 0; j < 4; ++j){
+			shadowSubMatrix[i][j] = pSubMatrix[k];
+			++k;
+		}
+	}
+}
 
 
 /*
@@ -250,6 +268,8 @@ void Cerebro::defaultMoves(){
 		dropAllBlocks(); //Drop all the block that have down an empty row
 		this->amountOfMoves = 0; //reset the rotations of the new tetrinomio
 		currentTetrinomio = getBlock(); //create the new tetrinomio
+		nextTetrinomio = getNextTetrinomio();
+		setNextTetrinomio(nextTetrinomio);
 	} 
 	
 	moveDown(currentTetrinomio);
@@ -282,7 +302,9 @@ void Cerebro::render(){
 	
 	//dibujar matriz
 	this->drawScore();
+	this->drawSubMatrix();
 	this->drawMatrix();
+
 	
 	this->window->display();
 }
@@ -294,7 +316,7 @@ void Cerebro::render(){
 */
 void Cerebro::drawMatrix(){
 	//Gets new values of the real matrix
-	getGameArea();
+	this->getGameArea();
 	
 	//Use it to center the game area
 	double centerX = 7.5;
@@ -356,6 +378,77 @@ void Cerebro::drawMatrix(){
                 default:
                     //block.setFillColor(sf::Color::White);
 					block.setTexture(&emptyBlockTexture);
+                    break;
+            }
+			
+			//Adds/Draws each block to the window that will be shown 
+            this->window->draw(block);
+        }
+    }
+}
+
+void Cerebro::drawSubMatrix(){
+	//Gets new values of the real matrix
+	this->copyNextTetrinomio();
+	
+	//Use it to center the game area
+	double centerX = 19;
+	double centerY = 1.5;
+	
+	//Loops to show the shadowMatrix values
+	for (int i = 0; i < 4; ++i) { // CenterX = i + centerX -> height
+        for (int j = 0; j < 4; ++j) { // CenterY = j + centerY -> width 
+
+			//Creates each block
+            sf::RectangleShape block(sf::Vector2f(blockSize, blockSize));
+			
+			//Sets the relative position of each block
+            block.setPosition((j + centerX) * blockSize, (i + centerY) * blockSize);
+
+			//Verify the value of each cell of the matrix to assing the color of the block
+            switch (this->shadowSubMatrix[i][j]) {
+				// 0 = empty
+                case '0':
+                    block.setFillColor(sf::Color::Black);
+                    break;
+				// 1 = red
+                case '1':
+                    //block.setFillColor(sf::Color::Red);
+					block.setTexture(&redBlockTexture);
+                    break;
+				// 2 = Green	
+                case '2':
+                    //block.setFillColor(sf::Color::Green);
+					block.setTexture(&greenBlockTexture);
+                    break;
+				// 3 = Blue
+                case '3':
+                    //block.setFillColor(sf::Color::Blue);
+					block.setTexture(&blueBlockTexture);
+                    break;
+				// 4 = Yellow
+                case '4':
+                    //block.setFillColor(sf::Color::Yellow);
+					block.setTexture(&yellowBlockTexture);
+                    break;
+				// 5 = Magenta
+                case '5':
+                    //block.setFillColor(sf::Color::Magenta);
+					block.setTexture(&purpleBlockTexture);
+                    break;	
+				// 6 = Cyan
+                case '6':
+                    //block.setFillColor(sf::Color::Cyan);
+					block.setTexture(&cyanBlockTexture);
+                    break;
+				// 7 = orange
+                case '7':
+                    //block.setFillColor(sf::Color(255, 165, 0));
+					block.setTexture(&orangeBlockTexture);
+                    break;
+					
+                default:
+                    block.setFillColor(sf::Color::Black);
                     break;
             }
 			

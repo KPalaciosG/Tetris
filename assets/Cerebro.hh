@@ -40,12 +40,14 @@ class Cerebro{
 		
 		//GameArea
 		char shadowMatrix[20][10]; //It's not the real matrix, it is only used to show it in the game easier
+		char shadowSubMatrix[4][4];
 		const int rows = 20;
 		const int columns = 10;
 		const int blockSize = 40;
 		
 		//Tetrinomio things
 		char currentTetrinomio;
+		char nextTetrinomio;
 		int amountOfMoves = 0; //Repretents the amount of rotation that has been done
 	
 		//Score things
@@ -65,6 +67,7 @@ class Cerebro{
 		
 		//To see the game area
 		void getGameArea();
+		void copyNextTetrinomio();
 		
 
 	public:
@@ -87,6 +90,7 @@ class Cerebro{
 		
 		//Draw funtions
 		void drawMatrix();
+		void drawSubMatrix();
 		void drawScore();
 		
 		void prueba();
