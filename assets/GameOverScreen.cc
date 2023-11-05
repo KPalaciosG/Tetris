@@ -8,7 +8,7 @@ void GameOverScreen::initializeVariables(){
 	this->window = nullptr;
 	this->inPause = true;
 	this->inputActive = true;
-	this->retroFont.loadFromFile("assets/Fonts/ARCADECLASSIC.TTF");
+	this->retroFont.loadFromFile("assets/Fonts/retro.TTF");
 }
 
 

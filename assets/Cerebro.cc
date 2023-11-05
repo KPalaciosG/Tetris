@@ -75,14 +75,14 @@ void Cerebro::initScore(){
 */
 
 void Cerebro::initButtons(){
-	if(!this->pauseButtonTexture.loadFromFile("assets/Buttons/PauseButton.png")){
+	if(!this->pauseButtonTexture.loadFromFile("assets/Buttons/PauseButton2.png")){
 		std::cerr << "Falta imagen de boton de pause" << std::endl;
 		this->window->close();
 	}
 
-	this->pauseButton.setPosition(700.f, 800.f);
-	this->pauseButton.setSize(sf::Vector2f(600.f, 208.f));
-    this->pauseButton.setScale(sf::Vector2f(0.5f, 0.5f));
+	this->pauseButton.setPosition(750.f, 800.f);
+	this->pauseButton.setSize(sf::Vector2f(100.f, 100.f));
+    this->pauseButton.setScale(sf::Vector2f(1.0f, 1.0f));
     this->pauseButton.setTexture(&pauseButtonTexture);
 	
 }
@@ -507,6 +507,6 @@ void Cerebro::drawSubMatrix(){
 	Draws the actual score in the window
 */
 void Cerebro::drawScore(){
-	this->score.setString("Score  " + std::to_string(currentScore));
+	this->score.setString("Score  \n" + std::to_string(currentScore));
 	this->window->draw(score);
 }
