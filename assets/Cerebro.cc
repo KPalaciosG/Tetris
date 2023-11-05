@@ -179,13 +179,14 @@ bool Cerebro::finishedGame() const{
 	return this->playing;
 }
 
+
 /*
 	@return void
 	It's the main loop of the game.
 	Control the cases for each I/O event, and call the funtions in assembly to manipulate the matrix that represents the game area
 */
-void Cerebro::startGame(){
-
+void Cerebro::update(){
+	//this->startGame();
 	while(this->window->pollEvent(this->event)){
 		
 		switch(this->event.type){ 
@@ -194,6 +195,17 @@ void Cerebro::startGame(){
 				this->window->close();
 				break;
 			
+			//Keyboard Cases
+			case sf::Event::KeyReleased:
+				/*
+					This call the funtion that's going to turn to right the current Tetrinomio
+				*/
+				if(this->event.key.code == sf::Keyboard::Up){
+					++this->amountOfMoves;
+					rotateTetrinomio(amountOfMoves, currentTetrinomio);
+				}
+			
+				break;
 			//Keyboard Cases
 			case sf::Event::KeyPressed:
 			
@@ -213,19 +225,15 @@ void Cerebro::startGame(){
 				}
 				
 				/*
-					This call the funtion that's going to turn to right the current Tetrinomio
-				*/
-				else if(this->event.key.code == sf::Keyboard::Up){
-					++this->amountOfMoves;
-					rotateTetrinomio(amountOfMoves, currentTetrinomio);
-				}
-				
-				/*
 					This call the funtion that's going to get down faster the Tetrinomio
 				*/
 				else if(this->event.key.code == sf::Keyboard::Down){
-					moveDown(currentTetrinomio);
+					moveDown(currentTetrinomio);	
 				}
+				
+				/*
+					This call the funtion that's going to move the current Tetrinomio to down, until the tetrinomio can't move anymore
+				*/
 				else if(this->event.key.code == sf::Keyboard::Space){
 					
 					while(checkTetrinomioState()){
@@ -254,7 +262,6 @@ void Cerebro::startGame(){
 		}
 
 	}
-
 }
 
 /*
@@ -278,14 +285,6 @@ void Cerebro::defaultMoves(){
 		this->playing = checkMatrixState();
 	}	
 	
-}
-
-/*
-	@return void
-	This call the funtion that handle all the cases posible in the game.
-*/
-void Cerebro::update(){
-	this->startGame();
 }
 
 

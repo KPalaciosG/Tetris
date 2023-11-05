@@ -80,10 +80,6 @@ class Cerebro{
 		bool finishedGame() const; 
 		
 		//Run game
-		//Main loop for the game
-		void startGame();
-		
-		
 		//Principal interface funtions
 		void update();
 		void render();
