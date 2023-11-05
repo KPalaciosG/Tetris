@@ -11,6 +11,8 @@
 #include <SFML/System/Time.hpp>
 
 #include "PauseScreen.hh"
+#include "GameOverScreen.hh"
+
 
 class Cerebro{
 	private:
@@ -79,6 +81,7 @@ class Cerebro{
 		
 		//Funtions
 		void pause();
+		void gameOver();
 		//Gets
 		bool finishedGame() const; 
 		

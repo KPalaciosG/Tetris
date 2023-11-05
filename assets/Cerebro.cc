@@ -11,7 +11,7 @@ extern "C" void moveLeft(char);
 extern "C" void moveDown(char);
 extern "C" bool checkTetrinomioState();
 extern "C" bool checkMatrixState();
-extern "C" void clearRows();
+extern "C" int clearRows();
 extern "C" void dropAllBlocks();
 extern "C" char getNextTetrinomio();
 
@@ -228,7 +228,8 @@ void Cerebro::update(){
 					This call the funtion that's going to get down faster the Tetrinomio
 				*/
 				else if(this->event.key.code == sf::Keyboard::Down){
-					moveDown(currentTetrinomio);	
+					moveDown(currentTetrinomio);
+					this->currentScore += 1;
 				}
 				
 				/*
@@ -238,7 +239,9 @@ void Cerebro::update(){
 					
 					while(checkTetrinomioState()){
 						moveDown(currentTetrinomio);
+						this->currentScore += 1;
 					}
+					
 				}
 				
 				/*
@@ -279,7 +282,7 @@ void Cerebro::update(){
 void Cerebro::defaultMoves(){
 	
 	if (!checkTetrinomioState()) { //Verify if the current tetrinomio can still go down, if not, create a new one
-		clearRows(); //Delete all the complete rows
+		this->currentScore += clearRows(); //Delete all the complete rows
 		dropAllBlocks(); //Drop all the block that have down an empty row
 		this->amountOfMoves = 0; //reset the rotations of the new tetrinomio
 		currentTetrinomio = getBlock(); //create the new tetrinomio
@@ -291,6 +294,11 @@ void Cerebro::defaultMoves(){
 	
 	if(this->playing){ //If there's a game being played, verify if the player didn't lose
 		this->playing = checkMatrixState();
+		
+		if(!this->playing){
+			this->gameOver();
+		}
+		
 	}	
 	
 }
@@ -311,6 +319,17 @@ void Cerebro::pause(){
 		sf::sleep(sf::seconds(2));
 	}
 
+}
+
+void Cerebro::gameOver() {
+	GameOverScreen gameOverScreen = GameOverScreen(this->window);
+	while(gameOverScreen.stopped()){
+		//Update
+		gameOverScreen.update();
+		
+		//Render
+		gameOverScreen.render(this->currentScore);
+	}
 }
 
 /*

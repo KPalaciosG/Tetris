@@ -156,7 +156,6 @@ void Game::pollEvents(){
 						
 						while(partida->finishedGame()){ //while there is game being played
 							
-							
 							sf::Time elapsed = clock.restart(); //time since the last iteration
 							elapsedTotalTime += elapsed.asSeconds(); 
 							 

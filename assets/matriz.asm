@@ -881,8 +881,10 @@ clearRows:
 	add r8, 10
 	mov r9, 0
 	
+	mov r15, 0
 	clearRowsLoop:
 		cmp r9, 200
+		mov rax, r15
 		jge return
 		
 		mov rdi, r8
@@ -918,7 +920,7 @@ isAFullRow:
 	
 fullRow:
 	call emptyRow
-	
+	add r15, 100
 	jmp nextRow
 	
 emptyRow:
