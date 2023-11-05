@@ -10,6 +10,8 @@
 #include <SFML/System/Clock.hpp>
 #include <SFML/System/Time.hpp>
 
+#include "PauseScreen.hh"
+
 class Cerebro{
 	private:
 		//Bool that says if there's a game being play

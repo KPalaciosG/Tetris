@@ -166,8 +166,9 @@ void Game::pollEvents(){
 							}
 							
 							//Render
-							partida->render();
-							
+							if(partida->finishedGame()){
+								partida->render();
+							}
 							//sf::sleep(sf::milliseconds(10));
 							
 						}

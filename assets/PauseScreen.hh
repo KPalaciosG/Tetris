@@ -1,5 +1,5 @@
-#ifndef GAME_HH
-#define GAME_HH
+#ifndef PAUSESCREEN_HH
+#define PAUSESCREEN_HH
 
 #include <iostream>
 #include <SFML/Graphics.hpp>
@@ -8,11 +8,10 @@
 #include <SFML/Audio.hpp>
 #include <SFML/Network.hpp>
 
-#include "Cerebro.hh"
-#include "ScoresScreen.hh"
-
-class Game{
+class PauseScreen{
 	private:
+		bool inPause;
+		
 		//Window
 		sf::RenderWindow* window;
 		sf::VideoMode videoMode;
@@ -23,30 +22,28 @@ class Game{
 		sf::Texture backgroundTexture;
 		
 		//Buttons and textures
-		sf::RectangleShape playButton;
-		sf::Texture playButtonTexture;
-		sf::RectangleShape scoresButton;
-		sf::Texture scoresButtonTexture;
+		sf::RectangleShape resumeButton;
+		sf::Texture resumeButtonTexture;
 		sf::RectangleShape exitButton;
 		sf::Texture exitButtonTexture;
 		
 		//Iniatialize all
 		void initializeVariables();
-		void initWindow(); 
+		void initWindow(sf::RenderWindow*&); 
 		void initButtons();
 		void initBackground();
 		
 	public:
 		//Constructor and Destructor
-		Game();
-		virtual ~Game();
+		PauseScreen(sf::RenderWindow*&);
+		virtual ~PauseScreen();
 		
 		//Gets
-		bool windowOpen() const; 
+		bool stopped() const; 
 		
 		//Funtions
 		void pollEvents();
-		void update();
+		void update(bool&);
 		void render();
 	
 };

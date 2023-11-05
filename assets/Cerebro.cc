@@ -251,8 +251,27 @@ void Cerebro::update(){
 			
 			//Mouse Cases
 			case sf::Event::MouseButtonPressed:
+			
 				if(this->event.mouseButton.button == sf::Mouse::Left) {
+				sf::Vector2f mousePos = sf::Vector2f(sf::Mouse::getPosition(*this->window).x, sf::Mouse::getPosition(*this->window).y);
+				
+					if(pauseButton.getGlobalBounds().contains(mousePos)) {
+						PauseScreen pauseScreen = PauseScreen(this->window);
+						while(pauseScreen.stopped()){
+							//Update
+							pauseScreen.update(this->playing);
+							
+							//Render
+							pauseScreen.render();
+						}
+					}
+					if(this->playing){
+						this->render();
+						sf::sleep(sf::seconds(2));
+					}
+					
 				}
+					
 				break;
 				
 			default:
