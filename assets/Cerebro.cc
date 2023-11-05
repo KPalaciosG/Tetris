@@ -1,6 +1,8 @@
 #include "Cerebro.hh"
 
 //Funtions from assembly
+extern "C" void clearAll();
+
 extern "C" char* getMatrix();
 extern "C" char getBlock();
 extern "C" void rotateTetrinomio(int, char);
@@ -23,16 +25,16 @@ extern "C" void setNextTetrinomio(char);
 */
 void Cerebro::initializeVariables(){
 	this->window = nullptr;
+	
 	this->playing = true;
 	this->currentScore = 0;
+	this->amountOfMoves = 0;
 	this->retroFont.loadFromFile("assets/Fonts/ARCADECLASSIC.TTF");
 	
 	currentTetrinomio = getBlock();
 	nextTetrinomio = getNextTetrinomio();
 	setNextTetrinomio(nextTetrinomio);
-	
-	//this->currentTetrinomio = getBlock()
-	//this->nextTetrinomio = getBlock()
+
 }
 
 /*
@@ -160,11 +162,8 @@ Cerebro::Cerebro(sf::RenderWindow*& window){
 }
 
 Cerebro::~Cerebro(){
-	
+	clearAll();
 }
-
-
-
 
 /*
 -------------	
@@ -311,6 +310,7 @@ void Cerebro::pause(){
 		this->render();
 		sf::sleep(sf::seconds(2));
 	}
+
 }
 
 /*

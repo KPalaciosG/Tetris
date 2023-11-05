@@ -108,13 +108,13 @@ void PauseScreen::update(bool& playing){
 		switch(this->event.type){
 			
 			case sf::Event::Closed:
-				this->window->close();
+				this->inPause = false;
 				break;
 				
 			//Close the PauseScreen and delete the window
 			case sf::Event::KeyPressed:
 				if(this->event.key.code == sf::Keyboard::Escape){
-					this->window->close();
+					this->inPause = false;
 				}
 				break;	
 				
