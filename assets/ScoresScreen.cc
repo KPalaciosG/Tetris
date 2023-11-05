@@ -26,7 +26,7 @@ void ScoresScreen::initTopScore(){
 	//Size
 	this->scores.setCharacterSize(50);
     //Position
-    this->scores.setPosition(120.f, 25.f);
+    this->scores.setPosition(350.f, 200.f);
 }
 
 
@@ -156,11 +156,30 @@ void ScoresScreen::render(){
 	@return void
 	Draws the top scores in the window
 */
-void ScoresScreen::drawTopScores(){
+void ScoresScreen::drawTopScores() {
+	this->topScores = readScores();
 	this->scores.setString(topScores);
 	this->window->draw(scores);
 }
 
+std::string ScoresScreen::readScores() {
+    std::ifstream scores ("scores.txt");
+    std::string theScores = "";
+    if (scores.is_open()) {
+        std::string line;
+        int count = 0;
+        while (getline(scores, line)) {
+            if (count >= 1) {
+                theScores = theScores + "\n" + line;
+            } else {
+                theScores = line;
+            }
+            count++;
+        }
+        scores.close(); 
+    }
+    return theScores;
+}
 
 
 

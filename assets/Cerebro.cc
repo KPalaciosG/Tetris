@@ -330,6 +330,9 @@ void Cerebro::gameOver() {
 		//Render
 		gameOverScreen.render(this->currentScore);
 	}
+	std::string gameOverScore = gameOverScreen.getPlayer();
+	gameOverScore += " " + std::to_string(this->currentScore);
+	gameOverScreen.checkScores(gameOverScore);
 }
 
 /*

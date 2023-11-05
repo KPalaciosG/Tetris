@@ -1,8 +1,10 @@
 #include <iostream>
 #include "Game.hh"
-
+extern "C" void create();
 int main(){
 	//
+	//to do... si no esta creado crearlo, sino abrir
+	//create();
 	Game tetris;
 	
 	while(tetris.windowOpen()){
@@ -16,25 +18,3 @@ int main(){
 	
 	return 0;
 }
-
-/*mainMenu() {
-|	//crear ventana y definir dimensiones
-|	//crear y preparar boton de jugar
-|	//crear y preparar boton de scores
-|	window.display();
-|	while( window.isOpen() ) {
-|	|
-    	|	|	if ( click en jugar ) {
-		|	|		window.clear(black);
-|	|		Cerebro.startGame(window);
-|	|	}
-|	|
-|	|	if( click en scores ) {
-|	|		window.clear(black);
-|	|		showScores(window);
-|	|	}
-|	|	if( event::closed() ) {
-|	|		window.close();
-|	|    	}
-|	}
-}*/

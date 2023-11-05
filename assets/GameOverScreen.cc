@@ -184,8 +184,98 @@ void GameOverScreen::drawText(int score){
 	}
 	else{
 		this->text.setString(player + "\nYOUR SCORE: " + std::to_string(score) + "\nPRESS ESC TO EXIT\n" );
-	}	
+	}
 	this->window->draw(text);
+	/*std::string gameOverScore = player + " " + std::to_string(score);
+	std::cout << gameOverScore;
+	checkScores(gameOverScore);*/
+}
+
+/**
+ * @brief Recibe un puntaje junto al nombre de usuario y verifica si el puntaje
+ * es suficientemente alto para remplazar a alguno en caso de que hayan otros
+ * puntajes en el archivo de puntajes.
+*/
+void GameOverScreen::checkScores(std::string score_p) {
+    std::ifstream scores ("scores.txt");
+    std::vector<std::string> scoresV;
+    if (scores.is_open()) {
+        std::string line;
+        while (getline(scores, line)) {
+            scoresV.push_back(line);
+        }
+        scores.close();
+        //std::cout << "Hay " << scoresV.size() << " scores en el vector" << std::endl;
+    }
+    if (scoresV.size() != 0) {
+        std::regex numberRegex("\\d+"); // Busca numeros en string
+        std::smatch match;
+        std::vector<int64_t> numScores;
+        for (int64_t i = 0; i < (int64_t)scoresV.size(); i++) {
+            // regex guarda los numeros en su posicion correspondiente del vector numScores
+            std::regex_search(scoresV[i], match, numberRegex);
+            std::string matchString = match.str();
+            numScores.push_back(std::stoi(matchString));
+        }
+        // mete el valor del parametro en el vector
+        std::regex_search(score_p, match, numberRegex);
+        std::string matchString = match.str();
+        numScores.push_back(std::stoi(matchString));
+        // mete el valor del parametro de una en el vector de scores
+        scoresV.push_back(score_p);
+        // para ordenar los scores
+        for (int64_t i = 0; i < (int64_t)scoresV.size(); i++) {
+            int64_t posMayor = i;
+            for (int64_t j = i; j < (int64_t)scoresV.size(); j++) {
+                if (numScores[j] > numScores[posMayor]) {
+                    posMayor = j;
+                }
+            }
+            std::string temp = scoresV[i];
+            scoresV[i] = scoresV[posMayor];
+            scoresV[posMayor] = temp;
+            int64_t tempScore = numScores[i];
+            numScores[i] = numScores[posMayor];
+            numScores[posMayor] = tempScore;
+        }
+    } else if (scoresV.size() == 0) {
+        scoresV.push_back(score_p);
+        for (int64_t i = 0; i < (int64_t)scoresV.size(); i++) {
+            //std::cout << scoresV[i] << std::endl;
+        }
+    }
+    writeScores(scoresV);
+}
+
+void GameOverScreen::writeScores(std::vector<std::string> scores) {
+    // abre archivo para sobreescribir los valores guardados en el archivo.
+    std::ofstream outputFile("scores.txt", std::ios::trunc);
+
+    if (outputFile.is_open()) {
+        // Write new data to the file
+        if (scores.size() <= 3) {
+            for (int64_t i = 0; i < (int64_t)scores.size(); i++) {
+                if (i == (int64_t)scores.size() - 1) {
+                    outputFile << scores[i];
+                } else {
+                    outputFile << scores[i] << "\n";
+                }
+            }
+        } else {
+            for (int64_t i = 0; i < 3; i++) {
+                if (i == 2) {
+                    outputFile << scores[i];
+                } else {
+                    outputFile << scores[i] << "\n";
+                }
+            }
+        }
+        outputFile.close();
+    }
+}
+
+std::string GameOverScreen::getPlayer(){
+	return this->player;
 }
 
 

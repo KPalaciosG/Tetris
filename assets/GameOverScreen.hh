@@ -2,6 +2,9 @@
 #define GAMEOVERSCREEN_HH
 
 #include <iostream>
+#include <fstream>
+#include <vector>
+#include <regex>
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
 #include <SFML/Window.hpp>
@@ -47,6 +50,7 @@ class GameOverScreen{
 		
 		//Gets
 		bool stopped() const; 
+		std::string getPlayer();
 		
 		//Funtions
 		void pollEvents();
@@ -54,6 +58,22 @@ class GameOverScreen{
 		void render(int);
 		
 		void drawText(int);
+
+	/**
+	* @brief Recibe un puntaje junto al nombre de usuario y verifica si el puntaje
+	* es suficientemente alto para remplazar a alguno en caso de que hayan otros
+	* puntajes en el archivo de puntajes.
+	*
+	* @param score_p puntaje y nombre de usuario de la partida acabada.
+	*/
+	void checkScores(std::string score_p);
+
+	/**
+	 * @brief Escribe los mayores puntajes en el archivo de puntajes
+	 * @param scores Vector con los puntajes.
+	 * 
+	*/
+	void writeScores(std::vector<std::string> scores);
 	
 };
 

@@ -2,6 +2,7 @@
 #define SCORESSCREEN_HH
 
 #include <iostream>
+#include <fstream>
 #include <SFML/Graphics.hpp>
 #include <SFML/System.hpp>
 #include <SFML/Window.hpp>
@@ -57,6 +58,9 @@ class ScoresScreen{
 	
 		//Draw Funtions
 		void drawTopScores();
+
+		// shows the top scores
+		std::string readScores();
 };
 
 #endif
