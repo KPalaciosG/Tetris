@@ -128,6 +128,7 @@ void Cerebro::getGameArea(){
 			++k;
 		}
 	}
+
 }
 
 void Cerebro::copyNextTetrinomio(){
@@ -159,7 +160,7 @@ Cerebro::Cerebro(sf::RenderWindow*& window){
 }
 
 Cerebro::~Cerebro(){
-	//To do... clean values form assembly
+	
 }
 
 
@@ -192,7 +193,7 @@ void Cerebro::update(){
 		switch(this->event.type){ 
 			//Close the window
 			case sf::Event::Closed:
-				this->window->close();
+				this->playing = false;
 				break;
 			
 			//Keyboard Cases
@@ -245,7 +246,7 @@ void Cerebro::update(){
 					Stop the current game and will come back to the main menu
 				*/
 				else if(this->event.key.code == sf::Keyboard::Escape){
-					this->playing = false;
+					this->pause();
 				}
 				break;
 			
@@ -256,18 +257,7 @@ void Cerebro::update(){
 				sf::Vector2f mousePos = sf::Vector2f(sf::Mouse::getPosition(*this->window).x, sf::Mouse::getPosition(*this->window).y);
 				
 					if(pauseButton.getGlobalBounds().contains(mousePos)) {
-						PauseScreen pauseScreen = PauseScreen(this->window);
-						while(pauseScreen.stopped()){
-							//Update
-							pauseScreen.update(this->playing);
-							
-							//Render
-							pauseScreen.render();
-						}
-					}
-					if(this->playing){
-						this->render();
-						sf::sleep(sf::seconds(2));
+						this->pause();
 					}
 					
 				}
@@ -306,6 +296,22 @@ void Cerebro::defaultMoves(){
 	
 }
 
+
+void Cerebro::pause(){
+	PauseScreen pauseScreen = PauseScreen(this->window);
+	while(pauseScreen.stopped()){
+		//Update
+		pauseScreen.update(this->playing);
+		
+		//Render
+		pauseScreen.render();
+	}
+	
+	if(this->playing){
+		this->render();
+		sf::sleep(sf::seconds(2));
+	}
+}
 
 /*
 	@return void

@@ -78,6 +78,7 @@ class Cerebro{
 		virtual ~Cerebro();
 		
 		//Funtions
+		void pause();
 		//Gets
 		bool finishedGame() const; 
 		

@@ -104,7 +104,10 @@ Game::Game(){
 }
 
 Game::~Game(){
-	delete this->window;
+	  if (this->window != nullptr) {
+        delete this->window;
+        this->window = nullptr;
+    }
 }
 
 
@@ -145,10 +148,10 @@ void Game::pollEvents(){
                     if (this->playButton.getGlobalBounds().contains(mousePos)) {
 						
                         //window->clear(sf::Color::Black);
-						Cerebro* partida = new Cerebro(this->window);
+						std::unique_ptr<Cerebro> partida(new Cerebro(this->window));
 						
 						sf::Clock clock;
-						float fallSpeed = 0.4f; //Down speed 
+						float fallSpeed = 0.3f; //Down speed 
 						float elapsedTotalTime = 0.0f; //Total of the current time
 						
 						while(partida->finishedGame()){ //while there is game being played
@@ -169,11 +172,9 @@ void Game::pollEvents(){
 							if(partida->finishedGame()){
 								partida->render();
 							}
-							//sf::sleep(sf::milliseconds(10));
+							sf::sleep(sf::milliseconds(10));
 							
 						}
-						
-						delete partida;
 						
                         
                     } else if(scoresButton.getGlobalBounds().contains(mousePos)) {
