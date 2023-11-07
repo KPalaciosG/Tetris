@@ -30,7 +30,7 @@ void PauseScreen::initWindow(sf::RenderWindow*& window){
 	Also it handle the errors if there's not a sprite
 */
 void PauseScreen::initButtons(){
-	if(!this->resumeButtonTexture.loadFromFile("assets/Buttons/PlayButton.png")){
+	if(!this->resumeButtonTexture.loadFromFile("assets/Buttons/ContinueButton.png")){
 		std::cerr << "Falta imagen de boton de play" << std::endl;
 		this->window->close();
 	}
@@ -59,7 +59,7 @@ void PauseScreen::initButtons(){
 	Also it handle the error if there's not the sprite
 */
 void PauseScreen::initBackground(){
-	if (!this->backgroundTexture.loadFromFile("assets/Backgrounds/MenuBackground.jpg")) {
+	if (!this->backgroundTexture.loadFromFile("assets/Backgrounds/PauseBackground.jpg")) {
         std::cerr << "Falta imagen de boton fondo" << std::endl;
 		this->window->close();
     }
