@@ -59,7 +59,7 @@ void PauseScreen::initButtons(){
 	Also it handle the error if there's not the sprite
 */
 void PauseScreen::initBackground(){
-	if (!this->backgroundTexture.loadFromFile("assets/Backgrounds/PauseBackground.jpg")) {
+	if (!this->backgroundTexture.loadFromFile("assets/Backgrounds/PauseBackground.png")) {
         std::cerr << "Falta imagen de boton fondo" << std::endl;
 		this->window->close();
     }
@@ -148,10 +148,17 @@ void PauseScreen::update(bool& playing){
 	Prepares all the things that will be shown in the window
 */
 void PauseScreen::render(){
-	this->window->clear();
+	// this->window->clear();
 	
 	this->window->draw(this->background);
 	
+    // A White filter
+    int whiteFilterOpacity = 7;
+    sf::RectangleShape whiteFilter(sf::Vector2f(window->getSize().x, window->getSize().y));
+    whiteFilter.setFillColor(sf::Color(255, 255, 255, whiteFilterOpacity));
+    this->window->draw(whiteFilter);
+
+
 	//Draw the menu
 	this->window->draw(this->resumeButton);
 	this->window->draw(this->exitButton);
