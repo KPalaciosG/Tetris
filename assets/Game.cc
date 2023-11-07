@@ -56,7 +56,7 @@ void Game::initButtons(){
     this->playButton.setTexture(&playButtonTexture);
 	
 	
-	if(!this->scoresButtonTexture.loadFromFile("assets/Buttons/MenuButton.png")){
+	if(!this->scoresButtonTexture.loadFromFile("assets/Buttons/ScoreButton.png")){
 		std::cerr << "Falta imagen de boton de scores" << std::endl;
 		this->window->close();
 	}

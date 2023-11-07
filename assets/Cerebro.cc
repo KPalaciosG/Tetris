@@ -75,12 +75,12 @@ void Cerebro::initScore(){
 */
 
 void Cerebro::initButtons(){
-	if(!this->pauseButtonTexture.loadFromFile("assets/Buttons/PauseButton2.png")){
+	if(!this->pauseButtonTexture.loadFromFile("assets/Buttons/PauseButton.png")){
 		std::cerr << "Falta imagen de boton de pause" << std::endl;
 		this->window->close();
 	}
 
-	this->pauseButton.setPosition(750.f, 800.f);
+	this->pauseButton.setPosition(800.f, 800.f);
 	this->pauseButton.setSize(sf::Vector2f(100.f, 100.f));
     this->pauseButton.setScale(sf::Vector2f(1.0f, 1.0f));
     this->pauseButton.setTexture(&pauseButtonTexture);
