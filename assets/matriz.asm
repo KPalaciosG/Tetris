@@ -47,13 +47,24 @@ getMatrix:
 newArray:
 	extern arrayShuffle
 	call arrayShuffle
-	
 	mov rbx, blockOrder  ;se guarda la direcciòn de memoria del arreglo de bloques
 	mov r8b, [rbx]
 	mov r9b, [rbx+rax]
 	mov [rbx], r9b
 	mov [rbx+rax], r8b
 	
+	call arrayShuffle
+	mov r8b, [rbx]
+	mov r9b, [rbx+rax]
+	mov [rbx], r9b
+	mov [rbx+rax], r8b
+	
+	call arrayShuffle
+	mov r8b, [rbx]
+	mov r9b, [rbx+rax]
+	mov [rbx], r9b
+	mov [rbx+rax], r8b
+		
 	ret
 	
 
