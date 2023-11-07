@@ -1,8 +1,6 @@
 #include "Cerebro.hh"
 
 //Funtions from assembly
-extern "C" void clearAll();
-
 extern "C" char* getMatrix();
 extern "C" char getBlock();
 extern "C" void rotateTetrinomio(int, char);
@@ -11,12 +9,19 @@ extern "C" void moveLeft(char);
 extern "C" void moveDown(char);
 extern "C" bool checkTetrinomioState();
 extern "C" bool checkMatrixState();
-extern "C" int clearRows();
+extern "C" void clearRows();
 extern "C" void dropAllBlocks();
 extern "C" char getNextTetrinomio();
 
 extern "C" char* getSubMatrix();
 extern "C" void setNextTetrinomio(char);
+extern "C" void newArray();
+extern "C" int arrayShuffle();
+
+int arrayShuffle(){
+	std::srand(static_cast<unsigned int>(std::time(0)));
+	return (std::rand()%5)+1;
+}
 
 
 /*
@@ -25,16 +30,17 @@ extern "C" void setNextTetrinomio(char);
 */
 void Cerebro::initializeVariables(){
 	this->window = nullptr;
-	
 	this->playing = true;
 	this->currentScore = 0;
-	this->amountOfMoves = 0;
 	this->retroFont.loadFromFile("assets/Fonts/ARCADECLASSIC.TTF");
 	
+	newArray();
 	currentTetrinomio = getBlock();
 	nextTetrinomio = getNextTetrinomio();
 	setNextTetrinomio(nextTetrinomio);
-
+	
+	//this->currentTetrinomio = getBlock()
+	//this->nextTetrinomio = getBlock()
 }
 
 /*
@@ -80,9 +86,9 @@ void Cerebro::initButtons(){
 		this->window->close();
 	}
 
-	this->pauseButton.setPosition(800.f, 800.f);
-	this->pauseButton.setSize(sf::Vector2f(100.f, 100.f));
-    this->pauseButton.setScale(sf::Vector2f(1.0f, 1.0f));
+	this->pauseButton.setPosition(700.f, 800.f);
+	this->pauseButton.setSize(sf::Vector2f(600.f, 208.f));
+    this->pauseButton.setScale(sf::Vector2f(0.5f, 0.5f));
     this->pauseButton.setTexture(&pauseButtonTexture);
 	
 }
@@ -162,8 +168,11 @@ Cerebro::Cerebro(sf::RenderWindow*& window){
 }
 
 Cerebro::~Cerebro(){
-	clearAll();
+	
 }
+
+
+
 
 /*
 -------------	
@@ -228,8 +237,7 @@ void Cerebro::update(){
 					This call the funtion that's going to get down faster the Tetrinomio
 				*/
 				else if(this->event.key.code == sf::Keyboard::Down){
-					moveDown(currentTetrinomio);
-					this->currentScore += 1;
+					moveDown(currentTetrinomio);	
 				}
 				
 				/*
@@ -239,9 +247,7 @@ void Cerebro::update(){
 					
 					while(checkTetrinomioState()){
 						moveDown(currentTetrinomio);
-						this->currentScore += 1;
 					}
-					
 				}
 				
 				/*
@@ -282,7 +288,7 @@ void Cerebro::update(){
 void Cerebro::defaultMoves(){
 	
 	if (!checkTetrinomioState()) { //Verify if the current tetrinomio can still go down, if not, create a new one
-		this->currentScore += clearRows(); //Delete all the complete rows
+		clearRows(); //Delete all the complete rows
 		dropAllBlocks(); //Drop all the block that have down an empty row
 		this->amountOfMoves = 0; //reset the rotations of the new tetrinomio
 		currentTetrinomio = getBlock(); //create the new tetrinomio
@@ -294,11 +300,6 @@ void Cerebro::defaultMoves(){
 	
 	if(this->playing){ //If there's a game being played, verify if the player didn't lose
 		this->playing = checkMatrixState();
-		
-		if(!this->playing){
-			this->gameOver();
-		}
-		
 	}	
 	
 }
@@ -318,21 +319,6 @@ void Cerebro::pause(){
 		this->render();
 		sf::sleep(sf::seconds(2));
 	}
-
-}
-
-void Cerebro::gameOver() {
-	GameOverScreen gameOverScreen = GameOverScreen(this->window);
-	while(gameOverScreen.stopped()){
-		//Update
-		gameOverScreen.update();
-		
-		//Render
-		gameOverScreen.render(this->currentScore);
-	}
-	std::string gameOverScore = gameOverScreen.getPlayer();
-	gameOverScore += " " + std::to_string(this->currentScore);
-	gameOverScreen.checkScores(gameOverScore);
 }
 
 /*
@@ -510,6 +496,6 @@ void Cerebro::drawSubMatrix(){
 	Draws the actual score in the window
 */
 void Cerebro::drawScore(){
-	this->score.setString("Score  \n" + std::to_string(currentScore));
+	this->score.setString("Score  " + std::to_string(currentScore));
 	this->window->draw(score);
 }
