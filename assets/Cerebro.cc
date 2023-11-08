@@ -1,6 +1,8 @@
 #include "Cerebro.hh"
 
 //Funtions from assembly
+extern "C" void clearAll();
+
 extern "C" char* getMatrix();
 extern "C" char getBlock();
 extern "C" void rotateTetrinomio(int, char);
@@ -9,57 +11,58 @@ extern "C" void moveLeft(char);
 extern "C" void moveDown(char);
 extern "C" bool checkTetrinomioState();
 extern "C" bool checkMatrixState();
-extern "C" void clearRows();
+extern "C" int clearRows();
 extern "C" void dropAllBlocks();
 extern "C" char getNextTetrinomio();
 
 extern "C" char* getSubMatrix();
 extern "C" void setNextTetrinomio(char);
-extern "C" void newArray();
-extern "C" int arrayShuffle();
-
-int arrayShuffle(){
-	std::srand(static_cast<unsigned int>(std::time(0)));
-	return (std::rand()%5)+1;
-}
 
 
 /*
-	@return void
-	Initializes all the variables of the class
-*/
+ * @brief Esta función inicializa todas los atributos de la clase.
+ * @param 
+ * @return void
+ */
 void Cerebro::initializeVariables(){
 	this->window = nullptr;
-	this->playing = true;
-	this->currentScore = 0;
-	this->retroFont.loadFromFile("assets/Fonts/ARCADECLASSIC.TTF");
 	
-	newArray();
+	this->playing = true;
+	
+	this->currentScore = 0;
+	this->amountOfRotations = 0;
+	
 	currentTetrinomio = getBlock();
 	nextTetrinomio = getNextTetrinomio();
 	setNextTetrinomio(nextTetrinomio);
 	
-	//this->currentTetrinomio = getBlock()
-	//this->nextTetrinomio = getBlock()
+	this->retroFont.loadFromFile("assets/Fonts/ARCADECLASSIC.TTF");
 }
 
+
 /*
-	@return void
-	Set the current window as the window used in the main menu, to avoid creating multiple windows.	
-*/
+ * @brief Hace que la ventana, sea la misma que la del menu, para no crear multiples ventanas.
+ * @param sf::RenderWindow*& window
+ * @return void
+ */
 void Cerebro::initWindow(sf::RenderWindow*& window){
 	this->window = window;	
 }
 
+/*
+ * @brief Obtiene los valores iniciales de la matriz, para mostrarla.
+ * @param 
+ * @return void
+ */
 void Cerebro::initGameArea(){
 	this->getGameArea();
 }
 
-
 /*
-	@return void
-	Sets the kind of the text that will show the current score.	
-*/
+ * @brief Configura el texto que va a mostrar el score en la pantalla.
+ * @param 
+ * @return void
+ */
 void Cerebro::initScore(){
 	//Font
 	this->score.setFont(retroFont);
@@ -71,24 +74,21 @@ void Cerebro::initScore(){
     this->score.setPosition(30.f, 2.f);
 }
 
-
 /*
-	@return void
-	Creates all the buttons of the main menu with their sprites:
+ * @brief Crea y configura los botones que se muestran en la partida y maneja los errores con las texturas.
 		pauseButton -> playButtonTexture
-	
-	Also it handle the errors if there's not a sprite
-*/
-
+ * @param 
+ * @return void
+ */
 void Cerebro::initButtons(){
 	if(!this->pauseButtonTexture.loadFromFile("assets/Buttons/PauseButton.png")){
 		std::cerr << "Falta imagen de boton de pause" << std::endl;
 		this->window->close();
 	}
 
-	this->pauseButton.setPosition(700.f, 800.f);
-	this->pauseButton.setSize(sf::Vector2f(600.f, 208.f));
-    this->pauseButton.setScale(sf::Vector2f(0.5f, 0.5f));
+	this->pauseButton.setPosition(750.f, 800.f);
+	this->pauseButton.setSize(sf::Vector2f(100.f, 100.f));
+    this->pauseButton.setScale(sf::Vector2f(1.0f, 1.0f));
     this->pauseButton.setTexture(&pauseButtonTexture);
 	
 }
@@ -98,9 +98,16 @@ void Cerebro::initButtons(){
 	It creates and adds the background sprite
 	Also it handle the error if there's not the sprite
 */
+
+/*
+ * @brief Crea y configura el fondo que se muestra en la partida.
+		background -> backgroundTexture
+ * @param 
+ * @return void
+ */
 void Cerebro::initBackground(){
 	if (!this->backgroundTexture.loadFromFile("assets/Backgrounds/InGameBackground.jpg")) {
-        std::cerr << "Falta imagen de boton fondo" << std::endl;
+        std::cerr << "Falta imagen de background" << std::endl;
 		this->window->close();
     }
 	
@@ -111,6 +118,14 @@ void Cerebro::initBackground(){
 	@return void
 	Adds all the textures for the blocks
 */
+
+/*
+ * @brief Crea y agrega todas las texturas de los bloques que componen los tetrinomios.
+ * @param 
+ * @return void
+ */
+ 
+ //To do... agregar las verificaciones
 void Cerebro::initBlockTexture(){
 	this->emptyBlockTexture.loadFromFile("assets/Blocks/emptyBlock.png");
 	this->redBlockTexture.loadFromFile("assets/Blocks/redBlock.png");
@@ -123,9 +138,10 @@ void Cerebro::initBlockTexture(){
 }
 
 /*
-	@return void
-	Gets the real matrix, and copy the values in it, to display them.
-*/
+ * @brief Obtiene un puntero a la verdadera matriz de ensamblador, copia los valores en shadowMatrix, que es la matriz que se utiliza para graficar en el juego.
+ * @param 
+ * @return void
+ */
 void Cerebro::getGameArea(){
 	char* pMatrix = getMatrix();
 
@@ -139,6 +155,12 @@ void Cerebro::getGameArea(){
 
 }
 
+
+/*
+ * @brief Obtiene un puntero a la matriz de ensamblador que contiene el siguiente tetrinomio, copia los valores en shadowSubMatrix, que es la matriz que se utiliza para graficar en el juego.
+ * @param 
+ * @return void
+ */
 void Cerebro::copyNextTetrinomio(){
 	char* pSubMatrix = getSubMatrix();
 
@@ -157,6 +179,12 @@ void Cerebro::copyNextTetrinomio(){
 Constructor and Destructor
 -------------	
 */
+
+/*
+ * @brief Constructor.
+ * @param sf::RenderWindow*& window
+ * @return void
+ */
 Cerebro::Cerebro(sf::RenderWindow*& window){
 	this->initializeVariables();
 	this->initWindow(window);
@@ -167,11 +195,14 @@ Cerebro::Cerebro(sf::RenderWindow*& window){
 	this->initBlockTexture();
 }
 
+/*
+ * @brief Destructor.
+ * @param sf::RenderWindow*& window
+ * @return void
+ */
 Cerebro::~Cerebro(){
-	
+	clearAll(); // Limpia todas las variables utilizadas en ensamblador
 }
-
-
 
 
 /*
@@ -181,78 +212,83 @@ Funtions
 */
 
 /*
-	@return bool
-	Return if the current game is finished or if the user once to finish the program.
-*/
+ * @brief Devuelve un bool que dice si ya termino la partida.
+ * @param 
+ * @return bool
+ */
 bool Cerebro::finishedGame() const{
 	return this->playing;
 }
 
 
 /*
-	@return void
-	It's the main loop of the game.
-	Control the cases for each I/O event, and call the funtions in assembly to manipulate the matrix that represents the game area
-*/
+ * @brief Loop principal del juego que maneja los eventos del teclado.
+ * @param 
+ * @return void
+ */
 void Cerebro::update(){
-	//this->startGame();
+	
 	while(this->window->pollEvent(this->event)){
 		
 		switch(this->event.type){ 
-			//Close the window
+			// X -> Termina la partida
 			case sf::Event::Closed:
 				this->playing = false;
 				break;
 			
 			//Keyboard Cases
 			case sf::Event::KeyReleased:
-				/*
-					This call the funtion that's going to turn to right the current Tetrinomio
-				*/
+				// Flecha hacia arriba
+				// LLama a la funcion de ensamblador que gira el Tetrinomio, lo gira hacia la derecha
 				if(this->event.key.code == sf::Keyboard::Up){
-					++this->amountOfMoves;
-					rotateTetrinomio(amountOfMoves, currentTetrinomio);
+					++this->amountOfRotations;
+					rotateTetrinomio(amountOfRotations, currentTetrinomio);
 				}
 			
 				break;
+				
 			//Keyboard Cases
 			case sf::Event::KeyPressed:
 			
-				/*
-					This call the funtion that's going to move the current Tetrinomio to the Left
-				*/
+				// Flecha hacia la derecha
+				// LLama a la funcion de ensamblador que mueve el tetrinomio hacia la derecha
 				if(this->event.key.code == sf::Keyboard::Right){	
 					moveRight(currentTetrinomio);	
 				}
 				
-				/*
-					This call the funtion that's going to move the current Tetrinomio to the Right
-				*/
+				// Flecha hacia la izquierda
+				// LLama a la funcion de ensamblador que mueve el tetrinomio hacia la izquierda
 				else if(this->event.key.code == sf::Keyboard::Left){
 					//++this->currentScore;
 					moveLeft(currentTetrinomio);
 				}
 				
 				/*
-					This call the funtion that's going to get down faster the Tetrinomio
+					Flecha hacia abajo
+					LLama a la funcion de ensamblador que mueve el tetrinomio hacia abajo.
+					Moverlo por cuenta propia da 1 pt
 				*/
 				else if(this->event.key.code == sf::Keyboard::Down){
-					moveDown(currentTetrinomio);	
+					moveDown(currentTetrinomio);
+					this->currentScore += 1;
 				}
 				
 				/*
-					This call the funtion that's going to move the current Tetrinomio to down, until the tetrinomio can't move anymore
+					Espacio
+					LLama a la funcion de ensamblador que mueve el tetrinomio hacia abajo, hasta que no puede bajar mas.
+					Da 1 pt por cada fila que bajo de golpe.
 				*/
 				else if(this->event.key.code == sf::Keyboard::Space){
 					
 					while(checkTetrinomioState()){
 						moveDown(currentTetrinomio);
+						this->currentScore += 1;
 					}
+					
 				}
 				
-				/*
-					Stop the current game and will come back to the main menu
-				*/
+				
+				// Pone la partida actual en pausa
 				else if(this->event.key.code == sf::Keyboard::Escape){
 					this->pause();
 				}
@@ -262,8 +298,8 @@ void Cerebro::update(){
 			case sf::Event::MouseButtonPressed:
 			
 				if(this->event.mouseButton.button == sf::Mouse::Left) {
-				sf::Vector2f mousePos = sf::Vector2f(sf::Mouse::getPosition(*this->window).x, sf::Mouse::getPosition(*this->window).y);
-				
+					sf::Vector2f mousePos = sf::Vector2f(sf::Mouse::getPosition(*this->window).x, sf::Mouse::getPosition(*this->window).y);
+					// Presiona el boton de pausa -> Pone la partida actual en pausa
 					if(pauseButton.getGlobalBounds().contains(mousePos)) {
 						this->pause();
 					}
@@ -281,32 +317,57 @@ void Cerebro::update(){
 	}
 }
 
+
 /*
-	@return void
-	It calls and make the necessary verifications after each update of the matrix
-*/
+ * @brief Movimientos y verificaciones que se deben hacer siempre despues de leer la entrada de datos.
+		Si ya no puede bajar el Tetrinomio acutal
+			1. Trata de limpiar las filas
+			2. Baja los bloques que puedan
+			3. Obtiene el nuevo tetrinomio
+			4. Obtiene el siguiente tetrinomio
+			5. Pone las rotaciones en 0
+			
+		Baja el tetrinomio actual
+			
+		Verifica si ya perdio
+			Si ya perdio muestra la pantalla de GameOver
+ * @param 
+ * @return void
+ */
 void Cerebro::defaultMoves(){
 	
-	if (!checkTetrinomioState()) { //Verify if the current tetrinomio can still go down, if not, create a new one
-		clearRows(); //Delete all the complete rows
-		dropAllBlocks(); //Drop all the block that have down an empty row
-		this->amountOfMoves = 0; //reset the rotations of the new tetrinomio
-		currentTetrinomio = getBlock(); //create the new tetrinomio
-		nextTetrinomio = getNextTetrinomio();
+	if (!checkTetrinomioState()) { // Verifica si el tetrinomio puede seguir bajando
+		this->currentScore += clearRows(); // Limpia las filas completas y asigna los puntos
+		dropAllBlocks(); // Baja los bloques que puedan
+		currentTetrinomio = getBlock(); // obtiene el nuevo tetrinomio
+		nextTetrinomio = getNextTetrinomio(); // obtiene el siguiente tetrinomio
 		setNextTetrinomio(nextTetrinomio);
+		this->amountOfRotations = 0; // pone las rotaciones en 0
 	} 
 	
-	moveDown(currentTetrinomio);
+	moveDown(currentTetrinomio); // Baja el tetrinomio
 	
-	if(this->playing){ //If there's a game being played, verify if the player didn't lose
+	if(this->playing){ // Verifica si ya perdio
 		this->playing = checkMatrixState();
+		
+		if(!this->playing){
+			this->gameOver();
+		}
+		
 	}	
 	
 }
 
 
+/*
+ * @brief Crea una ventana de pausa, y espera la interaccion con el usuario.
+		  Si el usuario decide continuar con la partida se espera 1seg para seguir moviendo el tetrinomio
+ * @param 
+ * @return void
+ */
 void Cerebro::pause(){
 	PauseScreen pauseScreen = PauseScreen(this->window);
+	
 	while(pauseScreen.stopped()){
 		//Update
 		pauseScreen.update(this->playing);
@@ -317,14 +378,39 @@ void Cerebro::pause(){
 	
 	if(this->playing){
 		this->render();
-		sf::sleep(sf::seconds(2));
+		sf::sleep(sf::seconds(1);
 	}
+
 }
 
 /*
-	@return void
-	Prepares all the things that will be shown in the window
-*/
+ * @brief Crea una ventana de GameOver, y espera la interaccion con el usuario.
+		  Pide el nombre del jugador, y llama a la funcion que guarda los scores
+ * @param 
+ * @return void
+ */
+void Cerebro::gameOver() {
+	GameOverScreen gameOverScreen = GameOverScreen(this->window);
+	
+	while(gameOverScreen.stopped()){
+		//Update
+		gameOverScreen.update();
+		
+		//Render
+		gameOverScreen.render(this->currentScore);
+	}
+	
+	
+	std::string gameOverScore = gameOverScreen.getPlayer(); //Lee el nombre del jugador
+	gameOverScore += " " + std::to_string(this->currentScore); // Crea el string
+	gameOverScreen.checkScores(gameOverScore); // Verifica si esta en el top y lo guarda
+}
+
+/*
+ * @brief Grafica toda partida
+ * @param 
+ * @return void
+ */
 void Cerebro::render(){
 	this->window->clear();
 	
@@ -341,103 +427,101 @@ void Cerebro::render(){
 	this->window->display();
 }
 
-
 /*
-	@return void
-	It handles the update of the shadowMatrix that shows the real matrix of the game area, this is useful because it lets to the user watch the game, and it easier to control.
-*/
+ * @brief Llama a la funcion que obtiene los valores de la matriz verdadera, dependiendo de cada valor (numeros del 0-7) 
+		  agrega una textura cada bloque y lo dibuja en la ventana
+ * @param 
+ * @return void
+ */
 void Cerebro::drawMatrix(){
-	//Gets new values of the real matrix
-	this->getGameArea();
+	this->getGameArea(); // Obtiene los valores de la verdadera matriz
 	
-	//Use it to center the game area
-	double centerX = 7.5;
+	// Puntos desde los que se comienzan a graficar los bloques
+	double centerX = 7.5; 
 	double centerY = 2;
 	
-	//Loops to show the shadowMatrix values
+	// Loops para ir recorriendo la matriz y graficarla
 	for (int i = 0; i < rows; ++i) { // CenterX = i + centerX -> height
         for (int j = 0; j < columns; ++j) { // CenterY = j + centerY -> width 
 
-			//Creates each block
+			//Crea un rectangulo que representa el bloque
             sf::RectangleShape block(sf::Vector2f(blockSize, blockSize));
 			
-			//Sets the relative position of each block
+			//Posiciona el bloque
             block.setPosition((j + centerX) * blockSize, (i + centerY) * blockSize);
 
-			//Verify the value of each cell of the matrix to assing the color of the block
+			// Verifica el valor de cada celda de la matriz y agrega la respectiva textura
             switch (this->shadowMatrix[i][j]) {
 				// 0 = empty
                 case '0':
-                    //block.setFillColor(sf::Color::White);
 					block.setTexture(&emptyBlockTexture);
                     break;
 				// 1 = red
                 case '1':
-                    //block.setFillColor(sf::Color::Red);
 					block.setTexture(&redBlockTexture);
                     break;
 				// 2 = Green	
                 case '2':
-                    //block.setFillColor(sf::Color::Green);
 					block.setTexture(&greenBlockTexture);
                     break;
 				// 3 = Blue
                 case '3':
-                    //block.setFillColor(sf::Color::Blue);
 					block.setTexture(&blueBlockTexture);
                     break;
 				// 4 = Yellow
                 case '4':
-                    //block.setFillColor(sf::Color::Yellow);
 					block.setTexture(&yellowBlockTexture);
                     break;
 				// 5 = Magenta
                 case '5':
-                    //block.setFillColor(sf::Color::Magenta);
 					block.setTexture(&purpleBlockTexture);
                     break;	
 				// 6 = Cyan
                 case '6':
-                    //block.setFillColor(sf::Color::Cyan);
 					block.setTexture(&cyanBlockTexture);
                     break;
 				// 7 = orange
                 case '7':
-                    //block.setFillColor(sf::Color(255, 165, 0));
 					block.setTexture(&orangeBlockTexture);
                     break;
 					
                 default:
-                    //block.setFillColor(sf::Color::White);
 					block.setTexture(&emptyBlockTexture);
                     break;
             }
 			
-			//Adds/Draws each block to the window that will be shown 
+			// Agrega y dibuja cada bloque en la ventana
             this->window->draw(block);
         }
     }
 }
 
+
+
+/*
+ * @brief Llama a la funcion que obtiene los valores de la subMatriz que contiene el siguiente bloque, dependiendo de cada valor (numeros del 0-7) 
+		  agrega una textura cada bloque y lo dibuja en la ventana
+ * @param 
+ * @return void
+ */
 void Cerebro::drawSubMatrix(){
-	//Gets new values of the real matrix
-	this->copyNextTetrinomio();
+	this->copyNextTetrinomio();  // Obtiene los valores de la verdadera matriz
 	
-	//Use it to center the game area
+	// Puntos desde los que se comienzan a graficar los bloques
 	double centerX = 19;
 	double centerY = 1.5;
 	
-	//Loops to show the shadowMatrix values
+	// Loops para ir recorriendo la matriz y graficarla
 	for (int i = 0; i < 4; ++i) { // CenterX = i + centerX -> height
         for (int j = 0; j < 4; ++j) { // CenterY = j + centerY -> width 
 
-			//Creates each block
+			//Crea un rectangulo que representa el bloque
             sf::RectangleShape block(sf::Vector2f(blockSize, blockSize));
 			
-			//Sets the relative position of each block
+			//Posiciona el bloque
             block.setPosition((j + centerX) * blockSize, (i + centerY) * blockSize);
 
-			//Verify the value of each cell of the matrix to assing the color of the block
+			// Verifica el valor de cada celda de la matriz y agrega la respectiva textura
             switch (this->shadowSubMatrix[i][j]) {
 				// 0 = empty
                 case '0':
@@ -445,37 +529,30 @@ void Cerebro::drawSubMatrix(){
                     break;
 				// 1 = red
                 case '1':
-                    //block.setFillColor(sf::Color::Red);
 					block.setTexture(&redBlockTexture);
                     break;
 				// 2 = Green	
                 case '2':
-                    //block.setFillColor(sf::Color::Green);
 					block.setTexture(&greenBlockTexture);
                     break;
 				// 3 = Blue
                 case '3':
-                    //block.setFillColor(sf::Color::Blue);
 					block.setTexture(&blueBlockTexture);
                     break;
 				// 4 = Yellow
                 case '4':
-                    //block.setFillColor(sf::Color::Yellow);
 					block.setTexture(&yellowBlockTexture);
                     break;
 				// 5 = Magenta
                 case '5':
-                    //block.setFillColor(sf::Color::Magenta);
 					block.setTexture(&purpleBlockTexture);
                     break;	
 				// 6 = Cyan
                 case '6':
-                    //block.setFillColor(sf::Color::Cyan);
 					block.setTexture(&cyanBlockTexture);
                     break;
 				// 7 = orange
                 case '7':
-                    //block.setFillColor(sf::Color(255, 165, 0));
 					block.setTexture(&orangeBlockTexture);
                     break;
 					
@@ -484,7 +561,7 @@ void Cerebro::drawSubMatrix(){
                     break;
             }
 			
-			//Adds/Draws each block to the window that will be shown 
+			// Agrega y dibuja cada bloque en la ventana
             this->window->draw(block);
         }
     }
@@ -492,10 +569,11 @@ void Cerebro::drawSubMatrix(){
 
 
 /*
-	@return void
-	Draws the actual score in the window
-*/
+ * @brief Dibuja el score en la ventana
+ * @param 
+ * @return void
+ */
 void Cerebro::drawScore(){
-	this->score.setString("Score  " + std::to_string(currentScore));
+	this->score.setString("Score  \n" + std::to_string(currentScore));
 	this->window->draw(score);
 }

@@ -30,7 +30,6 @@ class ScoresScreen{
 		//Text things
 		sf::Font retroFont; 	
 		sf::Text scores;
-        sf::Text scoreMsg;
 		
 		
 		std::string topScores;
@@ -59,7 +58,6 @@ class ScoresScreen{
 	
 		//Draw Funtions
 		void drawTopScores();
-        void drawScoreMsg();
 
 		// shows the top scores
 		std::string readScores();

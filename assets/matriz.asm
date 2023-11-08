@@ -15,11 +15,13 @@ section .data
 		
 
 section .text
+	;"Delete"
+	global clearAll
+
 	;Gets: lines 29-74
     global getMatrix
 	global getBlock
 	global getNextTetrinomio
-	global newArray
 	
 	;Moves
 	global rotateTetrinomio
@@ -36,6 +38,40 @@ section .text
 	global dropAllBlocks
 	
 	
+	
+clearAll:
+	call clearMatrix
+	call clearCurrentTetrinomio
+	call clearMoves
+	;call resetBlockCounter
+	
+clearMatrix:
+	mov r8, matrix
+	mov r9, 0
+	
+		clearMatrixLoop:
+			cmp r9, 210
+			jge return	
+			
+			mov byte[r8], '0'
+			inc r8
+			inc r9
+			jmp clearMatrixLoop
+			
+clearCurrentTetrinomio:
+	mov r8, matrix
+	mov r9, 0
+	
+		clearCurrentTetrinomioLoop:
+			cmp r9, 5
+			jge return	
+			
+			mov byte[r8], '0'
+			inc r8
+			inc r9
+			jmp clearCurrentTetrinomioLoop
+	
+	
 ; @return char*
 ; Returns the matrix that is need it to be display
 getMatrix:
@@ -43,30 +79,6 @@ getMatrix:
 	add r8, 10
 	mov rax, r8  
 	ret
-	
-newArray:
-	extern arrayShuffle
-	call arrayShuffle
-	mov rbx, blockOrder  ;se guarda la direcciòn de memoria del arreglo de bloques
-	mov r8b, [rbx]
-	mov r9b, [rbx+rax]
-	mov [rbx], r9b
-	mov [rbx+rax], r8b
-	
-	call arrayShuffle
-	mov r8b, [rbx]
-	mov r9b, [rbx+rax]
-	mov [rbx], r9b
-	mov [rbx+rax], r8b
-	
-	call arrayShuffle
-	mov r8b, [rbx]
-	mov r9b, [rbx+rax]
-	mov [rbx], r9b
-	mov [rbx+rax], r8b
-		
-	ret
-	
 
 ;to do..
 ; @param rdi = char
@@ -104,244 +116,244 @@ getBlock:
 		
 	
 	blockI:
-	;Pivote del Tetrinomio I es el 2 bloque
-	mov r9, matrix
-	add r9, 3 ;Position of the first block
-	mov byte[r9], '1' ;color
-	mov qword[currentTetrinomio], r9 ;save the address
+		;Pivote del Tetrinomio I es el 2 bloque
+		mov r9, matrix
+		add r9, 3 ;Position of the first block
+		mov byte[r9], '1' ;color
+		mov qword[currentTetrinomio], r9 ;save the address
 
-	mov r9, matrix
-	add r9, 4
-	mov byte[r9], '1'
-	mov qword[currentTetrinomio+8], r9
+		mov r9, matrix
+		add r9, 4
+		mov byte[r9], '1'
+		mov qword[currentTetrinomio+8], r9
 
-	mov r9, matrix
-	add r9, 5
-	mov byte[r9], '1'
-	mov qword[currentTetrinomio+16], r9
+		mov r9, matrix
+		add r9, 5
+		mov byte[r9], '1'
+		mov qword[currentTetrinomio+16], r9
 
-	mov r9, matrix
-	add r9, 6
-	mov byte[r9], '1'
-	mov qword[currentTetrinomio+24], r9
+		mov r9, matrix
+		add r9, 6
+		mov byte[r9], '1'
+		mov qword[currentTetrinomio+24], r9
 
-	mov r9, matrix
-	add r9, 4
-	mov qword[currentTetrinomio+32], r9
+		mov r9, matrix
+		add r9, 4
+		mov qword[currentTetrinomio+32], r9
 
-	mov byte[color], '1' ; save the color of the currentTetrinomio
-	inc byte[blockCounter] ;incrementa el contador de bloques
-	;inc al
-	
-	mov al, 'I'
-	ret
+		mov byte[color], '1' ; save the color of the currentTetrinomio
+		inc byte[blockCounter] ;incrementa el contador de bloques
+		;inc al
+		
+		mov al, 'I'
+		ret
 	;-------------------------------
 	blockO:
-	mov r9, matrix
-	add r9, 4 ;Position of the first block
-	mov byte[r9], '2' ;color
-	mov qword[currentTetrinomio], r9 ;save the address
+		mov r9, matrix
+		add r9, 4 ;Position of the first block
+		mov byte[r9], '2' ;color
+		mov qword[currentTetrinomio], r9 ;save the address
 
-	mov r9, matrix
-	add r9, 5
-	mov byte[r9], '2'
-	mov qword[currentTetrinomio+8], r9
+		mov r9, matrix
+		add r9, 5
+		mov byte[r9], '2'
+		mov qword[currentTetrinomio+8], r9
 
-	mov r9, matrix
-	add r9, 14
-	mov byte[r9], '2'
-	mov qword[currentTetrinomio+16], r9
+		mov r9, matrix
+		add r9, 14
+		mov byte[r9], '2'
+		mov qword[currentTetrinomio+16], r9
 
-	mov r9, matrix
-	add r9, 15
-	mov byte[r9], '2'
-	mov qword[currentTetrinomio+24], r9
-	
-	;pivote
-	mov r9, matrix
-	add r9, 5
-	mov qword[currentTetrinomio+32], r9
+		mov r9, matrix
+		add r9, 15
+		mov byte[r9], '2'
+		mov qword[currentTetrinomio+24], r9
+		
+		;pivote
+		mov r9, matrix
+		add r9, 5
+		mov qword[currentTetrinomio+32], r9
 
-	mov byte[color], '2' ; save the color of the currentTetrinomio
-	inc byte[blockCounter] ;incrementa el contador de bloques
-	;inc al
+		mov byte[color], '2' ; save the color of the currentTetrinomio
+		inc byte[blockCounter] ;incrementa el contador de bloques
+		;inc al
 
-	mov al, 'O'
-	ret
+		mov al, 'O'
+		ret
 	;----------------------
 	
 	blockT:
-	mov r9, matrix
-	add r9, 5 ;Position of the first block
-	mov byte[r9], '3' ;color
-	mov qword[currentTetrinomio], r9 ;save the address
+		mov r9, matrix
+		add r9, 5 ;Position of the first block
+		mov byte[r9], '3' ;color
+		mov qword[currentTetrinomio], r9 ;save the address
 
-	mov r9, matrix
-	add r9, 14
-	mov byte[r9], '3'
-	mov qword[currentTetrinomio+8], r9
+		mov r9, matrix
+		add r9, 14
+		mov byte[r9], '3'
+		mov qword[currentTetrinomio+8], r9
 
-	mov r9, matrix
-	add r9, 15
-	mov byte[r9], '3'
-	mov qword[currentTetrinomio+16], r9
+		mov r9, matrix
+		add r9, 15
+		mov byte[r9], '3'
+		mov qword[currentTetrinomio+16], r9
 
-	mov r9, matrix
-	add r9, 16
-	mov byte[r9], '3'
-	mov qword[currentTetrinomio+24], r9
-	
-	;pivote
-	mov r9, matrix
-	add r9, 15
-	mov qword[currentTetrinomio+32], r9
+		mov r9, matrix
+		add r9, 16
+		mov byte[r9], '3'
+		mov qword[currentTetrinomio+24], r9
+		
+		;pivote
+		mov r9, matrix
+		add r9, 15
+		mov qword[currentTetrinomio+32], r9
 
-	mov byte[color], '3' ; save the color of the currentTetrinomio
-	inc byte[blockCounter] ;incrementa el contador de bloques
-	;inc al
-	
-	mov al, 'T'
-	ret
+		mov byte[color], '3' ; save the color of the currentTetrinomio
+		inc byte[blockCounter] ;incrementa el contador de bloques
+		;inc al
+		
+		mov al, 'T'
+		ret
 	
 	;----------------------------
 	
 	blockS:
-	mov r9, matrix
-	add r9, 4 ;Position of the first block
-	mov byte[r9], '4' ;color
-	mov qword[currentTetrinomio], r9 ;save the address
+		mov r9, matrix
+		add r9, 4 ;Position of the first block
+		mov byte[r9], '4' ;color
+		mov qword[currentTetrinomio], r9 ;save the address
 
-	mov r9, matrix
-	add r9, 5
-	mov byte[r9], '4'
-	mov qword[currentTetrinomio+8], r9
+		mov r9, matrix
+		add r9, 5
+		mov byte[r9], '4'
+		mov qword[currentTetrinomio+8], r9
 
-	mov r9, matrix
-	add r9, 13
-	mov byte[r9], '4'
-	mov qword[currentTetrinomio+16], r9
+		mov r9, matrix
+		add r9, 13
+		mov byte[r9], '4'
+		mov qword[currentTetrinomio+16], r9
 
-	mov r9, matrix
-	add r9, 14
-	mov byte[r9], '4'
-	mov qword[currentTetrinomio+24], r9
-	
-	;pivote
-	mov r9, matrix
-	add r9, 4
-	mov qword[currentTetrinomio+32], r9
+		mov r9, matrix
+		add r9, 14
+		mov byte[r9], '4'
+		mov qword[currentTetrinomio+24], r9
+		
+		;pivote
+		mov r9, matrix
+		add r9, 4
+		mov qword[currentTetrinomio+32], r9
 
-	mov byte[color], '4' ; save the color of the currentTetrinomio
-	inc byte[blockCounter] ;incrementa el contador de bloques
-	;inc al
+		mov byte[color], '4' ; save the color of the currentTetrinomio
+		inc byte[blockCounter] ;incrementa el contador de bloques
+		;inc al
 
-	mov al, 'S'
-	ret
+		mov al, 'S'
+		ret
 	;-----------------------------
 	
 	blockZ:
-	mov r9, matrix
-	add r9, 4 ;Position of the first block
-	mov byte[r9], '5' ;color
-	mov qword[currentTetrinomio], r9 ;save the address
+		mov r9, matrix
+		add r9, 4 ;Position of the first block
+		mov byte[r9], '5' ;color
+		mov qword[currentTetrinomio], r9 ;save the address
 
-	mov r9, matrix
-	add r9, 5
-	mov byte[r9], '5'
-	mov qword[currentTetrinomio+8], r9
+		mov r9, matrix
+		add r9, 5
+		mov byte[r9], '5'
+		mov qword[currentTetrinomio+8], r9
 
-	mov r9, matrix
-	add r9, 15
-	mov byte[r9], '5'
-	mov qword[currentTetrinomio+16], r9
+		mov r9, matrix
+		add r9, 15
+		mov byte[r9], '5'
+		mov qword[currentTetrinomio+16], r9
 
-	mov r9, matrix
-	add r9, 16
-	mov byte[r9], '5'
-	mov qword[currentTetrinomio+24], r9
-	
-	;pivote
-	mov r9, matrix
-	add r9, 5
-	mov qword[currentTetrinomio+32], r9
+		mov r9, matrix
+		add r9, 16
+		mov byte[r9], '5'
+		mov qword[currentTetrinomio+24], r9
+		
+		;pivote
+		mov r9, matrix
+		add r9, 5
+		mov qword[currentTetrinomio+32], r9
 
-	mov byte[color], '5' ; save the color of the currentTetrinomio
-	inc byte[blockCounter] ;incrementa el contador de bloques
-	;inc al
-	
-	mov al, 'Z'
-	ret
+		mov byte[color], '5' ; save the color of the currentTetrinomio
+		inc byte[blockCounter] ;incrementa el contador de bloques
+		;inc al
+		
+		mov al, 'Z'
+		ret
 
 	;---------------------------
 	
 	blockJ:
-	mov r9, matrix
-	add r9, 4 ;Position of the first block
-	mov byte[r9], '6' ;color
-	mov qword[currentTetrinomio], r9 ;save the address
+		mov r9, matrix
+		add r9, 4 ;Position of the first block
+		mov byte[r9], '6' ;color
+		mov qword[currentTetrinomio], r9 ;save the address
 
-	mov r9, matrix
-	add r9, 14
-	mov byte[r9], '6'
-	mov qword[currentTetrinomio+8], r9
+		mov r9, matrix
+		add r9, 14
+		mov byte[r9], '6'
+		mov qword[currentTetrinomio+8], r9
 
-	mov r9, matrix
-	add r9, 15
-	mov byte[r9], '6'
-	mov qword[currentTetrinomio+16], r9
+		mov r9, matrix
+		add r9, 15
+		mov byte[r9], '6'
+		mov qword[currentTetrinomio+16], r9
 
-	mov r9, matrix
-	add r9, 16
-	mov byte[r9], '6'
-	mov qword[currentTetrinomio+24], r9
-	
-	;pivote
-	mov r9, matrix
-	add r9, 15
-	mov qword[currentTetrinomio+32], r9
+		mov r9, matrix
+		add r9, 16
+		mov byte[r9], '6'
+		mov qword[currentTetrinomio+24], r9
+		
+		;pivote
+		mov r9, matrix
+		add r9, 15
+		mov qword[currentTetrinomio+32], r9
 
-	mov byte[color], '6' ; save the color of the currentTetrinomio
-	inc byte[blockCounter] ;incrementa el contador de bloques
-	;inc al
+		mov byte[color], '6' ; save the color of the currentTetrinomio
+		inc byte[blockCounter] ;incrementa el contador de bloques
+		;inc al
 
-	mov al, 'J'
-	ret
+		mov al, 'J'
+		ret
 	
 	;-------------------------------
 	
 	blockL:
-	mov r9, matrix
-	add r9, 6 ;Position of the first block
-	mov byte[r9], '7' ;color
-	mov qword[currentTetrinomio], r9 ;save the address
+		mov r9, matrix
+		add r9, 6 ;Position of the first block
+		mov byte[r9], '7' ;color
+		mov qword[currentTetrinomio], r9 ;save the address
 
-	mov r9, matrix
-	add r9, 14
-	mov byte[r9], '7'
-	mov qword[currentTetrinomio+8], r9
+		mov r9, matrix
+		add r9, 14
+		mov byte[r9], '7'
+		mov qword[currentTetrinomio+8], r9
 
-	mov r9, matrix
-	add r9, 15
-	mov byte[r9], '7'
-	mov qword[currentTetrinomio+16], r9
+		mov r9, matrix
+		add r9, 15
+		mov byte[r9], '7'
+		mov qword[currentTetrinomio+16], r9
 
-	mov r9, matrix
-	add r9, 16
-	mov byte[r9], '7'
-	mov qword[currentTetrinomio+24], r9
-	
-	;pivote
-	mov r9, matrix
-	add r9, 15
-	mov qword[currentTetrinomio+32], r9
+		mov r9, matrix
+		add r9, 16
+		mov byte[r9], '7'
+		mov qword[currentTetrinomio+24], r9
+		
+		;pivote
+		mov r9, matrix
+		add r9, 15
+		mov qword[currentTetrinomio+32], r9
 
-	mov byte[color], '7' ; save the color of the currentTetrinomio
-	inc byte[blockCounter] ;incrementa el contador de bloques
-	;inc al
+		mov byte[color], '7' ; save the color of the currentTetrinomio
+		inc byte[blockCounter] ;incrementa el contador de bloques
+		;inc al
 
-	mov al, 'L'
-	ret
-	
+		mov al, 'L'
+		ret
+		
 	;------------------------------
 	;reinicia el contador de bloques en 0
 	resetBlockCounter:
@@ -856,11 +868,11 @@ borderCases:
 clearMoves:
 	mov r10, 0
 	mov r11, 0
-	cleanMoveLoop:
+	clearMoveLoop:
 		mov qword[moves + 8*r10], r11
 		inc r10
 		cmp r10, 4
-		jle cleanMoveLoop
+		jle clearMoveLoop
 	ret
 	
 	
@@ -869,8 +881,10 @@ clearRows:
 	add r8, 10
 	mov r9, 0
 	
+	mov r15, 0
 	clearRowsLoop:
 		cmp r9, 200
+		mov rax, r15
 		jge return
 		
 		mov rdi, r8
@@ -906,7 +920,7 @@ isAFullRow:
 	
 fullRow:
 	call emptyRow
-	
+	add r15, 100
 	jmp nextRow
 	
 emptyRow:

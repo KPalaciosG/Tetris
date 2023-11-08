@@ -16,8 +16,22 @@
 
 class Cerebro{
 	private:
-		//Bool that says if there's a game being play
+		//Bool que dice si hay una partida en este momento siendo jugada
 		bool playing;
+		
+		//Tetrinomio
+		char currentTetrinomio;
+		char nextTetrinomio;
+		int amountOfRotations; //Cuenta la cantidad de veces que se ha rotado el tetrinomio
+		
+		//GameArea
+		char shadowMatrix[20][10]; //No es la matriz real, se utiliza solo para la  graficacion
+		char shadowSubMatrix[4][4]; //Matriz para graficar el siguiente tetrinomio
+		
+		const int rows = 20;
+		const int columns = 10;
+		const int blockSize = 40;
+		
 	
 		//Window
 		sf::RenderWindow* window;
@@ -31,7 +45,7 @@ class Cerebro{
 		sf::RectangleShape pauseButton;
 		sf::Texture pauseButtonTexture;
 		
-		//Block Texture
+		//Blocks Textures
 		sf::Texture emptyBlockTexture;
 		sf::Texture redBlockTexture;
 		sf::Texture greenBlockTexture;
@@ -40,27 +54,18 @@ class Cerebro{
 		sf::Texture purpleBlockTexture;
 		sf::Texture cyanBlockTexture;
 		sf::Texture orangeBlockTexture;
-		
-		
-		//GameArea
-		char shadowMatrix[20][10]; //It's not the real matrix, it is only used to show it in the game easier
-		char shadowSubMatrix[4][4];
-		const int rows = 20;
-		const int columns = 10;
-		const int blockSize = 40;
-		
-		//Tetrinomio things
-		char currentTetrinomio;
-		char nextTetrinomio;
-		int amountOfMoves = 0; //Repretents the amount of rotation that has been done
 	
-		//Score things
+		//Score
 		int currentScore;
 		sf::Font retroFont; 	
 		sf::Text score;
 		
+		//Para Graficar
+		void getGameArea();
+		void copyNextTetrinomio();
 		
-		//Iniatialize all
+		
+		//Inicializaciones
 		void initializeVariables();
 		void initWindow(sf::RenderWindow*&);
 		void initGameArea();
@@ -68,10 +73,6 @@ class Cerebro{
 		void initButtons();
 		void initBackground();
 		void initBlockTexture();
-		
-		//To see the game area
-		void getGameArea();
-		void copyNextTetrinomio();
 		
 
 	public:
@@ -81,11 +82,12 @@ class Cerebro{
 		
 		//Funtions
 		void pause();
-		void gameOver();
+		void gameOver();		
+		void defaultMoves();
+		
 		//Gets
 		bool finishedGame() const; 
 		
-		//Run game
 		//Principal interface funtions
 		void update();
 		void render();
@@ -94,10 +96,6 @@ class Cerebro{
 		void drawMatrix();
 		void drawSubMatrix();
 		void drawScore();
-		
-		void prueba();
-		
-		void defaultMoves();
 };
 
 #endif
