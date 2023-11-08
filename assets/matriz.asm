@@ -19,9 +19,10 @@ section .text
 	global clearAll
 
 	;Gets: lines 29-74
-    global getMatrix
+        global getMatrix
 	global getBlock
 	global getNextTetrinomio
+	global newArray
 	
 	;Moves
 	global rotateTetrinomio
@@ -80,12 +81,35 @@ getMatrix:
 	mov rax, r8  
 	ret
 
-;to do..
+;desordena el arreglo principal de bloques en cada inicio de juego
+newArray:
+	extern arrayShuffle
+	mov rcx, 3
+	
+	;loop para desordenar el array de bloques
+	loopNewArray:
+		call arrayShuffle
+		mov rbx, blockOrder  ;se guarda la direcciòn de memoria del arreglo de bloques
+		mov r8b, [rbx]
+		mov r9b, [rbx+rax]
+		mov [rbx], r9b
+		mov [rbx+rax], r8b
+		dec rcx
+		cmp rcx, 0
+		je finishLoopArray
+		jmp loopNewArray
+	
+	finishLoopArray:
+	ret	
+
+
+
 ; @param rdi = char
 ; @return void
 ;
-; This funtion will compare a char that represents the current tetrinomio, and will puts some values in the matrix (a number)
-; that represents a color and in currentTetrinomio will put the addresses of each block that contains a color
+; Esta funcion compara el char que representa el tetrinomio actual, y pone el valor correspondiente en la matriz(un numero) 
+; que representa el color y en currentTetrinomio pone las direcciones de cada bloque que contiene un color
+
 getBlock:
 	
 	mov rbx, blockOrder  ;se guarda la direcciòn de memoria del arreglo de bloques
@@ -94,7 +118,6 @@ getBlock:
 		
 		
 	;usa el valor del contador para determinar el bloque
-	
 	;Si el contador supera 6, establece el contador en 0
 	cmp byte[blockCounter], 7
 	jae resetBlockCounter
@@ -114,13 +137,14 @@ getBlock:
 	cmp byte[rbx+rax], 6
 	je blockL
 		
-	
+;---------- codigo de bloques ------------
+
 	blockI:
 		;Pivote del Tetrinomio I es el 2 bloque
 		mov r9, matrix
-		add r9, 3 ;Position of the first block
+		add r9, 3 ;Posicion del primer bloque
 		mov byte[r9], '1' ;color
-		mov qword[currentTetrinomio], r9 ;save the address
+		mov qword[currentTetrinomio], r9 ;guarda la direccion
 
 		mov r9, matrix
 		add r9, 4
@@ -141,7 +165,7 @@ getBlock:
 		add r9, 4
 		mov qword[currentTetrinomio+32], r9
 
-		mov byte[color], '1' ; save the color of the currentTetrinomio
+		mov byte[color], '1' ; guarda el color del currentTetrinomio
 		inc byte[blockCounter] ;incrementa el contador de bloques
 		;inc al
 		
