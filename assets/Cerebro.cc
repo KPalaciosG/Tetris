@@ -17,7 +17,18 @@ extern "C" char getNextTetrinomio();
 
 extern "C" char* getSubMatrix();
 extern "C" void setNextTetrinomio(char);
+extern "C" void newArray();
+extern "C" int arrayShuffle();
 
+/* funcion para reordenar el arreglo principal en cada juego 
+* y devuelve un numero entero aleatorio entre 0 y 5
+* @param
+* @return int
+*/
+int arrayShuffle(){
+	std::srand(static_cast<unsigned int>(std::time(0)));
+	return (std::rand()%5)+1;
+}
 
 /*
  * @brief Esta función inicializa todas los atributos de la clase.
@@ -32,6 +43,7 @@ void Cerebro::initializeVariables(){
 	this->currentScore = 0;
 	this->amountOfRotations = 0;
 	
+	newArray();
 	currentTetrinomio = getBlock();
 	nextTetrinomio = getNextTetrinomio();
 	setNextTetrinomio(nextTetrinomio);
