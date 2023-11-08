@@ -75,7 +75,7 @@ void GameOverScreen::initButtons(){
 	Also it handle the error if there's not the sprite
 */
 void GameOverScreen::initBackground(){
-	if (!this->backgroundTexture.loadFromFile("assets/Backgrounds/MenuBackground.jpg")) {
+	if (!this->backgroundTexture.loadFromFile("assets/Backgrounds/GameOverBackground.png")) {
         std::cerr << "Falta imagen de boton fondo" << std::endl;
 		this->window->close();
     }
@@ -163,9 +163,16 @@ void GameOverScreen::update(){
 	Prepares all the things that will be shown in the window
 */
 void GameOverScreen::render(int score){
-	this->window->clear();
+
+	// this->window->clear();
 	
 	this->window->draw(this->background);
+
+    // A red filter
+    int redFilterOpacity = 7;
+    sf::RectangleShape whiteFilter(sf::Vector2f(window->getSize().x, window->getSize().y));
+    whiteFilter.setFillColor(sf::Color(106, 41, 70, redFilterOpacity));
+    this->window->draw(whiteFilter);
 	
 	//Draw the menu
 	//this->window->draw(this->resumeButton);

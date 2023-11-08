@@ -86,7 +86,7 @@ void Cerebro::initButtons(){
 		this->window->close();
 	}
 
-	this->pauseButton.setPosition(750.f, 800.f);
+	this->pauseButton.setPosition(800.f, 800.f);
 	this->pauseButton.setSize(sf::Vector2f(100.f, 100.f));
     this->pauseButton.setScale(sf::Vector2f(1.0f, 1.0f));
     this->pauseButton.setTexture(&pauseButtonTexture);
@@ -378,7 +378,7 @@ void Cerebro::pause(){
 	
 	if(this->playing){
 		this->render();
-		sf::sleep(sf::seconds(1);
+		sf::sleep(sf::seconds(1));
 	}
 
 }

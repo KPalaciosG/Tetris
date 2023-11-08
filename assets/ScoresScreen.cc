@@ -146,10 +146,30 @@ void ScoresScreen::render(){
 	//Draw the menu
 	this->window->draw(this->exitButton);
 	
+    this->drawScoreMsg();
+
 	this->drawTopScores();
 	
-	
 	this->window->display();
+}
+
+/*
+	@return void
+	Draws a messagge in the top of the window
+*/
+void ScoresScreen::drawScoreMsg(){
+    //Font
+	this->scoreMsg.setFont(retroFont);
+	//Color
+	this->scoreMsg.setFillColor(sf::Color::White);
+	//Size
+	this->scoreMsg.setCharacterSize(50);
+    //Position
+    this->scoreMsg.setPosition(105.f, 25.f);
+
+    //The msg to show
+	this->scoreMsg.setString("TOP SCORES!");
+	this->window->draw(scoreMsg);
 }
 
 /*
