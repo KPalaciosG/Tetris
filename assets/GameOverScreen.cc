@@ -9,6 +9,8 @@ void GameOverScreen::initializeVariables(){
 	this->window = nullptr;
 	this->inPause = true;
 	this->inputActive = true;
+	this->refresh = false;
+
 	this->retroFont.loadFromFile("assets/Fonts/ARCADECLASSIC.TTF");
 }
 
@@ -35,7 +37,7 @@ void GameOverScreen::initText(){
 	//Size
 	this->text.setCharacterSize(60);
     //Position
-    this->text.setPosition(100.f, 400.f);
+    this->text.setPosition(100.f, 450.f);
 }
 
 /*
@@ -117,7 +119,10 @@ void GameOverScreen::update(){
 				}
 				//Enter -> Deshabilita la entrada por teclado, es decir, ya se introdujo el nombre 
 				else if(this->event.key.code == sf::Keyboard::Enter){
-					this->inputActive = false;
+					if(inputActive){
+						this->inputActive = false;
+						this->refresh = true;
+					}
 				}
 				
 				break;	
@@ -159,7 +164,7 @@ void GameOverScreen::render(int score){
     sf::RectangleShape redFilter(sf::Vector2f(window->getSize().x, window->getSize().y));
     redFilter.setFillColor(sf::Color(106, 41, 70, redFilterOpacity));
     this->window->draw(redFilter);
-	
+
 	//Draw
 	this->drawText(score);
 	this->window->display();
@@ -176,11 +181,11 @@ void GameOverScreen::drawText(int score){
 	//Si aun no ha terminado de escribir, pide su nombre y muestra el nombre que ha escrito hasta el momento
 	//Esta capacidad de escribir se termina cuando presiona enter
 	if(inputActive){
-		this->text.setString("ENTER YOUR NAME: \n" + player + "\nPRESS ENTER WHEN YOU'RE DONE\n" );
+		this->text.setString("ENTER YOUR NAME: \n" + player + "\n\nPRESS ENTER WHEN YOU'RE DONE" );
 	}
 	//Si ya termino de escribir su nombre, le muestra el nombre que digito y su score
 	else{
-		this->text.setString(player + "\nYOUR SCORE: " + std::to_string(score) + "\nPRESS ESC TO EXIT\n" );
+		this->text.setString("\t\t\t\t" + player + "\n\t\t\t\tSCORE: " + std::to_string(score) + "\n\n\t\t\t\tPRESS ESC TO EXIT" );
 	}
 	
 	this->window->draw(text);
@@ -280,6 +285,15 @@ void GameOverScreen::writeScores(std::vector<std::string> scores) {
  */
 std::string GameOverScreen::getPlayer(){
 	return this->player;
+}
+
+bool GameOverScreen::getRefresh(){
+	return this->refresh;
+}
+
+void GameOverScreen::setRefresh(bool refresh){
+	this->refresh = refresh;
+	return;
 }
 
 

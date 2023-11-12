@@ -15,7 +15,8 @@ class GameOverScreen{
 	private:
 		bool inPause; //Indica si se esta mostrando la pantalla
 		bool inputActive; //Puede escribir su nombre
-		
+		bool refresh;
+
 		std::string player; //Almacena el nombre del jugador
 		
 		//Window
@@ -45,6 +46,9 @@ class GameOverScreen{
 		//Gets
 		bool stopped() const; 
 		std::string getPlayer();
+		bool getRefresh();
+		void setRefresh(bool);
+
 		
 		//Funtions
 		void update();

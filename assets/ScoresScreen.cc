@@ -36,7 +36,7 @@ void ScoresScreen::initTopScore(){
 	//Size
 	this->scores.setCharacterSize(50);
     //Position
-    this->scores.setPosition(350.f, 200.f);
+    this->scores.setPosition(250.f, 200.f);
 	
 	//Font
 	this->scoreMsg.setFont(retroFont);

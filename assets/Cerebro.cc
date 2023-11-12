@@ -124,17 +124,46 @@ void Cerebro::initBackground(){
  * @param 
  * @return void
  */
- 
- //To do... agregar las verificaciones
 void Cerebro::initBlockTexture(){
-	this->emptyBlockTexture.loadFromFile("assets/Blocks/emptyBlock.png");
-	this->redBlockTexture.loadFromFile("assets/Blocks/redBlock.png");
-	this->greenBlockTexture.loadFromFile("assets/Blocks/greenBlock.png");
-	this->blueBlockTexture.loadFromFile("assets/Blocks/blueBlock.png");
-	this->yellowBlockTexture.loadFromFile("assets/Blocks/yellowBlock.png");
-	this->purpleBlockTexture.loadFromFile("assets/Blocks/purpleBlock.png");
-	this->cyanBlockTexture.loadFromFile("assets/Blocks/cyanBlock.png");
-	this->orangeBlockTexture.loadFromFile("assets/Blocks/orangeBlock.png");
+	if (!this->emptyBlockTexture.loadFromFile("assets/Blocks/emptyBlock.png")) {
+        std::cerr << "Falta imagen del bloque vacio" << std::endl;
+		this->window->close();
+    }
+
+	if (!this->redBlockTexture.loadFromFile("assets/Blocks/redBlock.png")) {
+        std::cerr << "Falta imagen del bloque rojo" << std::endl;
+		this->window->close();
+    }
+	
+	if (!this->greenBlockTexture.loadFromFile("assets/Blocks/greenBlock.png")) {
+        std::cerr << "Falta imagen del bloque verde" << std::endl;
+		this->window->close();
+    }
+	
+	if (!this->blueBlockTexture.loadFromFile("assets/Blocks/blueBlock.png")) {
+        std::cerr << "Falta imagen del bloque azul" << std::endl;
+		this->window->close();
+    }
+	
+	if (!this->yellowBlockTexture.loadFromFile("assets/Blocks/yellowBlock.png")) {
+        std::cerr << "Falta imagen del bloque amarillo" << std::endl;
+		this->window->close();
+    }
+	
+	if (!this->purpleBlockTexture.loadFromFile("assets/Blocks/purpleBlock.png")) {
+        std::cerr << "Falta imagen del bloque morado" << std::endl;
+		this->window->close();
+    }
+	
+	if (!this->cyanBlockTexture.loadFromFile("assets/Blocks/cyanBlock.png")) {
+        std::cerr << "Falta imagen del bloque cyan" << std::endl;
+		this->window->close();
+    }
+	
+	if (!this->orangeBlockTexture.loadFromFile("assets/Blocks/orangeBlock.png")) {
+        std::cerr << "Falta imagen del bloque anaranjado" << std::endl;
+		this->window->close();
+    }
 }
 
 /*
@@ -390,6 +419,12 @@ void Cerebro::gameOver() {
 	GameOverScreen gameOverScreen = GameOverScreen(this->window);
 	
 	while(gameOverScreen.stopped()){
+		
+		if(gameOverScreen.getRefresh()){
+			this->render();
+			gameOverScreen.setRefresh(false);
+		}
+		
 		//Update
 		gameOverScreen.update();
 		
