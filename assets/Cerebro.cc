@@ -24,6 +24,9 @@ extern "C" int clearRows();
 extern "C" void dropAllBlocks();
 //Graphic
 extern "C" void setNextTetrinomio(char);
+//Auxiliar
+extern "C" void shuffleTetrinomioOrder();
+extern "C" int getRandomInt(int*);
 
 
 /*
@@ -39,6 +42,7 @@ void Cerebro::initializeVariables(){
 	this->currentScore = 0;
 	this->amountOfRotations = 0;
 	
+	shuffleTetrinomioOrder();
 	currentTetrinomio = getTetrinomio();
 	nextTetrinomio = getNextTetrinomio();
 	setNextTetrinomio(nextTetrinomio);
@@ -569,4 +573,45 @@ void Cerebro::drawSubMatrix(){
 void Cerebro::drawScore(){
 	this->score.setString("Score  \n" + std::to_string(currentScore));
 	this->window->draw(score);
+}
+
+
+/*
+	--------	
+	Auxiliar	
+	--------
+*/
+
+/*
+ * @brief Retorna un numero random entre 1-7, que ademas no se encuentre en el arreglo recibido como parametro
+ * @param int*
+ * @return int
+ */
+int getRandomInt(int* order){
+    int randomInt;
+	bool keepLooking = true;
+	
+    srand(static_cast<unsigned>(time(nullptr)));
+
+    do {
+        randomInt = 1 + (rand() % 7); //genera un numero aleatorio
+		int i = 0;
+		bool found = false;
+		
+		while(!found && i < 7) {
+			if(order[i] == randomInt ){
+				found = true; //el numero ya se encuentra en el array
+			}
+			++i;
+		}
+		
+		if(!found){
+			keepLooking = false;
+		}
+		
+    } while(keepLooking); //Sigue hasta que genere un numero que no este en el array
+
+	//std::cout << randomInt << std::endl;
+  
+    return randomInt;
 }

@@ -97,6 +97,7 @@ class Cerebro{
 		void drawMatrix();
 		void drawSubMatrix();
 		void drawScore();
+		
 };
 
 #endif

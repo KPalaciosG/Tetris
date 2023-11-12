@@ -10,10 +10,10 @@ section .data
 	
 	tetrinomioCounter db 0 ;contador del orden de salida de los tetrinomios futuros
 	;array con el orden de salida de los tetrinomios
-	tetrinomioOrder db 1, 2, 3, 4, 5, 6, 7
+	tetrinomioOrder dd 1, 2, 3, 4, 5, 6, 7
 	tetrinomioOrderSize equ 7
 		
-
+	auxInt: dd 0
 section .text
 	;"Delete"
 	global clearAll
@@ -22,7 +22,7 @@ section .text
     global getMatrix
 	global getTetrinomio
 	global getNextTetrinomio
-	
+	global newArray
 	;Moves
 	global rotateTetrinomio
 	global moveRight
@@ -36,8 +36,9 @@ section .text
 	;Auxiliar
 	global clearRows
 	global dropAllBlocks
-	
-	
+	global shuffleTetrinomioOrder
+	extern getRandomInt ; funcion de c++
+
 
 ; @brief Pone todos los valores como al inicio, en caso de que inicie una nueva partida	
 ; @param 
@@ -46,8 +47,6 @@ clearAll:
 	call clearMatrix
 	call clearCurrentTetrinomio
 	call clearMoves
-	;call resetTetrinomioCounter
-	
 
 ; @brief Pone todas los bytes de la matriz con el valor '0', para decir que vuelve a estar vacia	
 ; @param 
@@ -82,7 +81,7 @@ clearCurrentTetrinomio:
 			jmp clearCurrentTetrinomioLoop
 	
 	
-; @brief Retorna un puntero al primer byte del array de la matriz principal del juego
+; @brief Retorna un puntero al primer byte de la matriz principal del juego
 ; @param 
 ; @return char*
 getMatrix:
@@ -104,23 +103,21 @@ getTetrinomio:
 		
 	;usa el valor del contador para determinar el bloque
 	;Si el contador supera 6, establece el contador en 0
-	cmp byte[tetrinomioCounter], 7
-	jae resetTetrinomioCounter
 	
-	cmp byte[rbx+rax], 1
-	je blockI
-	cmp byte[rbx+rax], 2
-	je blockO
-	cmp byte[rbx+rax], 3
-	je blockT
-	cmp byte[rbx+rax], 4
-	je blockS
-	cmp byte[rbx+rax], 5
-	je blockZ
-	cmp byte[rbx+rax], 6
-	je blockJ
-	cmp byte[rbx+rax], 7
-	je blockL
+	cmp dword[rbx + rax*4], 1
+	je tetriI
+	cmp dword[rbx + rax*4], 2
+	je tetriO
+	cmp dword[rbx + rax*4], 3
+	je tetriT
+	cmp dword[rbx + rax*4], 4
+	je tetriS
+	cmp dword[rbx + rax*4], 5
+	je tetriZ
+	cmp dword[rbx + rax*4], 6
+	je tetriJ
+	cmp dword[rbx + rax*4], 7
+	je tetriL
 		
 		
 ; @brief Pone '1' que corresponde al color del tetrinomio en la matriz del juego en ciertas posiciones para ubicar el tetrinomio que se va a usar
@@ -129,7 +126,7 @@ getTetrinomio:
 ;		 Retorna un char que corresponde al cual tetrinomio se va a usar
 ; @param 
 ; @return char 
-blockI:
+tetriI:
 	; forma inicial
 	; [1][2][3][4] -> 2 pivote
 	
@@ -172,7 +169,7 @@ blockI:
 ;		 Retorna un char que corresponde al cual tetrinomio se va a usar
 ; @param 
 ; @return char 
-blockO:
+tetriO:
 	; forma inicial
 	; [1][2] -> 2 pivote
 	; [3][4] 
@@ -216,7 +213,7 @@ blockO:
 ;		 Retorna un char que corresponde al cual tetrinomio se va a usar
 ; @param 
 ; @return char 
-blockT:
+tetriT:
 	; forma inicial
 	;    [1] 	-> 3 pivote
 	; [2][3][4] 
@@ -260,7 +257,7 @@ blockT:
 ;		 Retorna un char que corresponde al cual tetrinomio se va a usar
 ; @param 
 ; @return char 
-blockS:
+tetriS:
 	; forma inicial
 	;    [1][2]	-> 1 pivote
 	; [3][4] 
@@ -304,7 +301,7 @@ blockS:
 ;		 Retorna un char que corresponde al cual tetrinomio se va a usar
 ; @param 
 ; @return char 
-blockZ:
+tetriZ:
 	; forma inicial
 	; [1][2]	-> 2 pivote
 	;    [3][4] 
@@ -348,7 +345,7 @@ blockZ:
 ;		 Retorna un char que corresponde al cual tetrinomio se va a usar
 ; @param 
 ; @return char 
-blockJ:
+tetriJ:
 	; forma inicial
 	; [1]		-> 3 pivote
 	; [2][3][4] 
@@ -392,7 +389,7 @@ blockJ:
 ;		 Retorna un char que corresponde al cual tetrinomio se va a usar
 ; @param 
 ; @return char 
-blockL:
+tetriL:
 	; forma inicial
 	;       [1]	 -> 3 pivote
 	; [2][3][4] 
@@ -430,65 +427,121 @@ blockL:
 	ret
 		
 ;------------------------------	
-; @brief Cambia el orden de salida de los tetrinomios
-; @param 
-; @return 
-;to do....
-resetTetrinomioCounter:
-	mov byte[tetrinomioCounter], 0
 	
-	;permutaciòn del arreglo
-	mov r10b, 3 ;contador loop
-	loopChangeBlock:
-		mov r8b, [rbx]
-		mov r9b, [rbx+1]
-		mov [rbx], r9b
-		mov [rbx+1], r8b
-		dec r10b
-		add rbx, 2
-		cmp r10b, 0
-		je endLoopBlock
-		jmp loopChangeBlock
-		
-	
-	endLoopBlock:	
-		jmp getTetrinomio 
-		
-; @brief Toma el array del orden de salida de los tetrinomios y toma el contador que dice el siguiente tetrinomio
+; @brief Retorna un char que corresponde al siguiente tetrinomio
+;		 Verifica si ya se recorrio todo el orden de salida de los tetrinomios para reiniciarlo
+;		 Toma el array del orden de salida de los tetrinomios y toma el contador que dice el siguiente tetrinomio
 ;		 Se suma la direccion inicial del array y el contador y se sabe que cual sera el siguiente tetrinomio que se graficara
-;		 Se retorna un char que corresponde al siguiente tetrinomio
 ; @param 
 ; @return char
 getNextTetrinomio:
+	mov bl, byte[tetrinomioCounter] ; Toma el contador que dice el ultimo tetrinomio mostrado
+	cmp bl, 7 ; verifica si ya fue el ultimo del array
+	jge getNewTetrinomioOrder ; si ya fue el ultimo, crea un nuevo orden aleatorio y reinicia el contador
+	
 	mov rbx, tetrinomioOrder  ;se guarda la direcciòn de memoria del array del orden de salida de los tetrinomios
 	xor rax, rax  ;se limpia el registro
-	mov al, byte[tetrinomioCounter] ;contador del orden
+	xor rcx, rcx
+	mov cl, byte[tetrinomioCounter] ;contador del orden
 
-	add rbx, rax ;obtiene la direccion del valor que contiene el siguiente tetrinomio
-	
-	cmp byte[rbx], 1
+	cmp dword[rbx + rcx*4], 1
 	mov al, 'I'
 	je return
-	cmp byte[rbx], 2
+	cmp dword[rbx + rcx*4], 2
 	mov al, 'O'
 	je return
-	cmp byte[rbx], 3
+	cmp dword[rbx + rcx*4], 3
 	mov al, 'T'
 	je return
-	cmp byte[rbx], 4
+	cmp dword[rbx + rcx*4], 4
 	mov al, 'S'
 	je return
-	cmp byte[rbx], 5
+	cmp dword[rbx + rcx*4], 5
 	mov al, 'Z'
 	je return
-	cmp byte[rbx], 6
+	cmp dword[rbx + rcx*4], 6
 	mov al, 'J'
 	je return
-	cmp byte[rbx], 7
+	cmp dword[rbx + rcx*4], 7
 	mov al, 'L'
 	je return
 
 	ret
+	
+
+; @brief Cambia el orden de salida de los tetrinomios
+; @param 
+; @return void
+getNewTetrinomioOrder:
+	call shuffleTetrinomioOrder
+	jmp getNextTetrinomio
+
+
+; @brief Cambia el array que contiene el orden de salida de los tetrinomios y reincia el contador
+;	 	 Pone en 0 todo el array y luego lo comienza a llenar de nuevo
+;		 Llama a una funcion en c++ que le retorna un int random entre 1-7 y que ademas aun no este en el array y lo pone en el array
+; @param 
+; @return void 
+shuffleTetrinomioOrder:
+	mov byte[tetrinomioCounter], 0 ; reinicia el contador de los tetrinomios
+	
+	call resetTetrinomioOrder ; pone en 0 el arreglo de los tetrinomios
+	
+	mov r8, 0 ; contador y offset
+	shuffleTetrinomioOrderLoop:
+		cmp r8, 7 ; verifica si ya agrego los siguientes 7 tetrinomios
+		jge return
+		push r8 ; guarda el contador
+		
+		mov rdi, tetrinomioOrder ; pasa como parametro los numeros alamacenados hasta el momento
+		call getRandomInt ; llama a la funcion que retorna un numero random
+		
+		pop r8 ; regresa el valor de r8 como estaba
+		mov dword[tetrinomioOrder + r8*4], eax ; guarda el numero random recibido
+		
+		inc r8 ; incrementa el contador
+		jmp shuffleTetrinomioOrderLoop 
+		 
+
+; @brief Pone el array con el orden de salida de los tetrinomios en 0
+; @param 
+; @return void
+resetTetrinomioOrder:
+	mov r8, 0 ;contador y offset
+	
+	resetTetrinomioOrderLoop:
+		cmp r8, 7 ; verifica si ya limpio todo el array
+		jge return
+		
+		mov dword[tetrinomioOrder + r8*4], 0 ; pone en 0 cada numero alamacenado
+		
+		inc r8 ; incrementa el contador
+		jmp resetTetrinomioOrderLoop
+
+
+; @brief Recorre un array buscando un int que se le pasa por parametro y retorna un bool que dice si el numero se encuentra en el array recibido
+; @param rdi direccion del array
+;		 esi int del elemento que se busca
+; @return bool
+;rdi dire	
+;esi int
+isInTheArray:
+	mov r9, 0 ;contador y offset
+	mov al, 0 ; bool que dice si se encuentra el int
+	
+	isInTheArrayLoop:
+		cmp r9, 7 ; verifica si ya se recorrio todo el array
+		jge return
+		
+		cmp dword[rdi + r9*4], esi ; verifica cada elemento del array buscando el int
+		je equal ; se encontro el int
+		inc r9 ; incrementa el contador
+		jmp isInTheArrayLoop
+	
+	equal:
+		mov al, 1 ; se encontro el int
+		jmp return
+	
 
 
 ;---------------------------
