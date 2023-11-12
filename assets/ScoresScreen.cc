@@ -207,7 +207,10 @@ void ScoresScreen::drawTopScores() {
 	this->window->draw(scores);
 }
 
-
+/*
+* @brief Lee los puntajes guardados en el archivo y los devuelve como 1 solo string.
+* @return el string con los puntajes leidos.
+*/
 std::string ScoresScreen::readScores() {
     std::ifstream scores ("scores.txt");
     std::string theScores = "";

@@ -190,6 +190,8 @@ void GameOverScreen::drawText(int score){
  * @brief Recibe un puntaje junto al nombre de usuario y verifica si el puntaje
  * es suficientemente alto para remplazar a alguno en caso de que hayan otros
  * puntajes en el archivo de puntajes.
+ * 
+ * @param string con el score de la partida jugada.
 */
 void GameOverScreen::checkScores(std::string score_p) {
     std::ifstream scores ("scores.txt");
@@ -218,7 +220,7 @@ void GameOverScreen::checkScores(std::string score_p) {
         numScores.push_back(std::stoi(matchString));
         // mete el valor del parametro de una en el vector de scores
         scoresV.push_back(score_p);
-        // para ordenar los scores
+        // ordena los valores de mayor a menor
         for (int64_t i = 0; i < (int64_t)scoresV.size(); i++) {
             int64_t posMayor = i;
             for (int64_t j = i; j < (int64_t)scoresV.size(); j++) {
@@ -233,21 +235,23 @@ void GameOverScreen::checkScores(std::string score_p) {
             numScores[i] = numScores[posMayor];
             numScores[posMayor] = tempScore;
         }
-    } else if (scoresV.size() == 0) {
+    } else if (scoresV.size() == 0) { // si el archivo esta vacio
         scoresV.push_back(score_p);
-        for (int64_t i = 0; i < (int64_t)scoresV.size(); i++) {
-            //std::cout << scoresV[i] << std::endl;
-        }
     }
     writeScores(scoresV);
 }
 
+/**
+ * @brief Escribe los mejores puntajes en el archivo.
+ * 
+ * @param scores vector con los puntajes y el nombre del jugador.
+*/
 void GameOverScreen::writeScores(std::vector<std::string> scores) {
     // abre archivo para sobreescribir los valores guardados en el archivo.
     std::ofstream outputFile("scores.txt", std::ios::trunc);
 
     if (outputFile.is_open()) {
-        // Write new data to the file
+        // Escribe los mejores puntajes en el archivo.
         if (scores.size() <= 3) {
             for (int64_t i = 0; i < (int64_t)scores.size(); i++) {
                 if (i == (int64_t)scores.size() - 1) {
