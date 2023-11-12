@@ -1,9 +1,10 @@
 #include "GameOverScreen.hh"
 
 /*
-	@return void
-	Initializes all the variables of the class
-*/
+ * @brief Esta función inicializa todas los atributos de la clase.
+ * @param 
+ * @return void
+ */
 void GameOverScreen::initializeVariables(){
 	this->window = nullptr;
 	this->inPause = true;
@@ -13,20 +14,19 @@ void GameOverScreen::initializeVariables(){
 
 
 /*
-	@return void
-	Creates the window on the center of the desktop window:
-		height: 960
-		width: 1000
-		
-*/
+ * @brief Hace que la ventana, sea la misma que la de la partida, para no crear multiples ventanas.
+ * @param sf::RenderWindow*& window
+ * @return void
+ */
 void GameOverScreen::initWindow(sf::RenderWindow*& window){
 	this->window = window;	
 }
 
 /*
-	@return void
-	Sets the kind of the text that will show the current text.	
-*/
+ * @brief Configura el texto que va a mostrar el game over en la pantalla.
+ * @param 
+ * @return void
+ */
 void GameOverScreen::initText(){
 	//Font
 	this->text.setFont(retroFont);
@@ -39,44 +39,14 @@ void GameOverScreen::initText(){
 }
 
 /*
-	@return void
-	Creates all the buttons of the main menu with their sprites:
-		resumeButton -> resumeButtonTexture
-		exitButton -> exitButtonTexture
-	Also it handle the errors if there's not a sprite
-
-void GameOverScreen::initButtons(){
-	if(!this->resumeButtonTexture.loadFromFile("assets/Buttons/playButton.png")){
-		std::cerr << "Falta imagen de boton de play" << std::endl;
-		this->window->close();
-	}
-
-	this->resumeButton.setPosition(350.f, 450.f);
-	this->resumeButton.setSize(sf::Vector2f(600.f, 208.f));
-    this->resumeButton.setScale(sf::Vector2f(0.5f, 0.5f));
-    this->resumeButton.setTexture(&resumeButtonTexture);
-	
-	
-	if(!this->exitButtonTexture.loadFromFile("assets/Buttons/ExitButton.png")){
-		std::cerr << "Falta imagen de boton de exit" << std::endl;
-		this->window->close();
-	}
-
-	this->exitButton.setPosition(350.f, 750.f);
-	this->exitButton.setSize(sf::Vector2f(600.f, 208.f));
-    this->exitButton.setScale(sf::Vector2f(0.5f, 0.5f));
-    this->exitButton.setTexture(&exitButtonTexture);
-	
-}*/
-
-/*
-	@return void
-	It creates and adds the background sprite
-	Also it handle the error if there's not the sprite
-*/
+ * @brief Crea y configura el fondo que se muestra en la partida.
+		background -> backgroundTexture
+ * @param 
+ * @return void
+ */
 void GameOverScreen::initBackground(){
 	if (!this->backgroundTexture.loadFromFile("assets/Backgrounds/GameOverBackground.png")) {
-        std::cerr << "Falta imagen de boton fondo" << std::endl;
+        std::cerr << "Falta imagen de background de GameOver" << std::endl;
 		this->window->close();
     }
 	
@@ -84,72 +54,88 @@ void GameOverScreen::initBackground(){
 }
 
 
+/*
+	--------------------------	
+	Constructor and Destructor
+	--------------------------		
+*/
 
-//Constructor and Destructor
+/*
+ * @brief Constructor.
+ * @param sf::RenderWindow*& window
+ */
 GameOverScreen::GameOverScreen(sf::RenderWindow*& window){
 	this->initializeVariables();
 	this->initWindow(window);
-	//this->initButtons();
 	this->initBackground();
 	this->initText();
 }
 
+/*
+ * @brief Destructor.
+ * @param 
+ */
 GameOverScreen::~GameOverScreen(){
-	//delete this->window;
 }
 
 
 
-//Funtions
 /*
-	@return bool
-	Verify if the window is still open
+	--------	
+	Funtions	
+	--------
 */
+
+/*
+ * @brief Devuelve un bool que dice si esta mostrando el GameOver.
+ * @param 
+ * @return bool
+ */
 bool GameOverScreen::stopped() const{
 	return this->inPause;
 }
 
-//Principal Menu Loop
-void GameOverScreen::pollEvents(){
-		
-}
-
-//Funtions
-
 /*
-	@return void
-	This call the funtion that handle all the cases posible in the GameOverScreen.
-*/
+ * @brief Loop principal del GameOver que maneja los eventos del I/O.
+ * @param 
+ * @return void
+ */
 void GameOverScreen::update(){
 	while(this->window->pollEvent(this->event)){
 		switch(this->event.type){
-			
+			//Cierra la ventana de GameOver
 			case sf::Event::Closed:
 				this->inPause = false;
+				
 				break;
 				
-			//Close the GameOverScreen and delete the window
+			//Casos de Teclado
 			case sf::Event::KeyPressed:
+				//Escape -> cierra la ventana de GameOver
 				if(this->event.key.code == sf::Keyboard::Escape){
 					this->inPause = false;
 				}
+				//Enter -> Deshabilita la entrada por teclado, es decir, ya se introdujo el nombre 
 				else if(this->event.key.code == sf::Keyboard::Enter){
 					this->inputActive = false;
 				}
-				break;	
 				
+				break;	
+			//Caso de entrada de teclas alfa-numericas
 			case sf::Event::TextEntered:
-				 if (inputActive && event.text.unicode < 128){
-					
-                    if (event.text.unicode == 8){
-                        if (!player.empty())
-                            player.pop_back();
-                    }
-                    else{
-                        player += static_cast<char>(event.text.unicode);
-                    }
-
+				//Mientras que la entrada de texto este activa, y sea un caracter valido, permite escribir
+				if (inputActive && event.text.unicode < 128){
+					//Verifica si es un espacio
+					if (event.text.unicode == 8){
+						if (!player.empty()){
+							player.pop_back();
+						}
+					}
+					else{
+						player += static_cast<char>(event.text.unicode);
+					}
 				}
+				
 				break;
 			default:
 				break;
@@ -159,43 +145,45 @@ void GameOverScreen::update(){
 
 
 /*
-	@return void
-	Prepares all the things that will be shown in the window
-*/
+ * @brief Grafica los elementos de la ventana de GameOver
+ * @param int score
+ * @return void
+ */
 void GameOverScreen::render(int score){
 
 	// this->window->clear();
-	
 	this->window->draw(this->background);
 
     // A red filter
-    int redFilterOpacity = 7;
-    sf::RectangleShape whiteFilter(sf::Vector2f(window->getSize().x, window->getSize().y));
-    whiteFilter.setFillColor(sf::Color(106, 41, 70, redFilterOpacity));
-    this->window->draw(whiteFilter);
+    int redFilterOpacity = 5;
+    sf::RectangleShape redFilter(sf::Vector2f(window->getSize().x, window->getSize().y));
+    redFilter.setFillColor(sf::Color(106, 41, 70, redFilterOpacity));
+    this->window->draw(redFilter);
 	
-	//Draw the menu
-	//this->window->draw(this->resumeButton);
-	//this->window->draw(this->exitButton);
+	//Draw
 	this->drawText(score);
 	this->window->display();
 }
 
 /*
-	@return void
-	Draws the actual text in the window
-*/
+ * @brief Los textos que se muestran en la pantalla de GameOver
+		  Primero muestra un texto que indica al jugador que digite su nombre	
+		  Segundo las instrucciones para salir
+ * @param int score
+ * @return void
+ */
 void GameOverScreen::drawText(int score){
+	//Si aun no ha terminado de escribir, pide su nombre y muestra el nombre que ha escrito hasta el momento
+	//Esta capacidad de escribir se termina cuando presiona enter
 	if(inputActive){
 		this->text.setString("ENTER YOUR NAME: \n" + player + "\nPRESS ENTER WHEN YOU'RE DONE\n" );
 	}
+	//Si ya termino de escribir su nombre, le muestra el nombre que digito y su score
 	else{
 		this->text.setString(player + "\nYOUR SCORE: " + std::to_string(score) + "\nPRESS ESC TO EXIT\n" );
 	}
+	
 	this->window->draw(text);
-	/*std::string gameOverScore = player + " " + std::to_string(score);
-	std::cout << gameOverScore;
-	checkScores(gameOverScore);*/
 }
 
 /**
@@ -281,6 +269,11 @@ void GameOverScreen::writeScores(std::vector<std::string> scores) {
     }
 }
 
+/*
+ * @brief Retorna el nombre del jugador almacenado
+ * @param 
+ * @return std::string
+ */
 std::string GameOverScreen::getPlayer(){
 	return this->player;
 }

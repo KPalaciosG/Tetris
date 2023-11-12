@@ -1,34 +1,30 @@
 #include "Cerebro.hh"
 
-//Funtions from assembly
-extern "C" void clearAll();
+/*--------------------------
+	Funtions from assembly
+  --------------------------*/
 
+//"Delete"
+extern "C" void clearAll();
+//Gets
 extern "C" char* getMatrix();
-extern "C" char getBlock();
+extern "C" char* getSubMatrix();
+extern "C" char getTetrinomio();
+extern "C" char getNextTetrinomio();
+//Moves
 extern "C" void rotateTetrinomio(int, char);
 extern "C" void moveRight(char);
 extern "C" void moveLeft(char);
 extern "C" void moveDown(char);
+//State
 extern "C" bool checkTetrinomioState();
 extern "C" bool checkMatrixState();
+//Default
 extern "C" int clearRows();
 extern "C" void dropAllBlocks();
-extern "C" char getNextTetrinomio();
-
-extern "C" char* getSubMatrix();
+//Graphic
 extern "C" void setNextTetrinomio(char);
-extern "C" void newArray();
-extern "C" int arrayShuffle();
 
-/* funcion para reordenar el arreglo principal en cada juego 
-* y devuelve un numero entero aleatorio entre 0 y 5
-* @param
-* @return int
-*/
-int arrayShuffle(){
-	std::srand(static_cast<unsigned int>(std::time(0)));
-	return (std::rand()%5)+1;
-}
 
 /*
  * @brief Esta función inicializa todas los atributos de la clase.
@@ -43,8 +39,7 @@ void Cerebro::initializeVariables(){
 	this->currentScore = 0;
 	this->amountOfRotations = 0;
 	
-	newArray();
-	currentTetrinomio = getBlock();
+	currentTetrinomio = getTetrinomio();
 	nextTetrinomio = getNextTetrinomio();
 	setNextTetrinomio(nextTetrinomio);
 	
@@ -106,12 +101,6 @@ void Cerebro::initButtons(){
 }
 
 /*
-	@return void
-	It creates and adds the background sprite
-	Also it handle the error if there's not the sprite
-*/
-
-/*
  * @brief Crea y configura el fondo que se muestra en la partida.
 		background -> backgroundTexture
  * @param 
@@ -119,17 +108,12 @@ void Cerebro::initButtons(){
  */
 void Cerebro::initBackground(){
 	if (!this->backgroundTexture.loadFromFile("assets/Backgrounds/InGameBackground.jpg")) {
-        std::cerr << "Falta imagen de background" << std::endl;
+        std::cerr << "Falta imagen de background de la partida" << std::endl;
 		this->window->close();
     }
 	
     this->background.setTexture(backgroundTexture);
 }
-
-/*
-	@return void
-	Adds all the textures for the blocks
-*/
 
 /*
  * @brief Crea y agrega todas las texturas de los bloques que componen los tetrinomios.
@@ -187,15 +171,14 @@ void Cerebro::copyNextTetrinomio(){
 
 
 /*
--------------	
-Constructor and Destructor
--------------	
+	--------------------------	
+	Constructor and Destructor
+	--------------------------		
 */
 
 /*
  * @brief Constructor.
  * @param sf::RenderWindow*& window
- * @return void
  */
 Cerebro::Cerebro(sf::RenderWindow*& window){
 	this->initializeVariables();
@@ -209,8 +192,7 @@ Cerebro::Cerebro(sf::RenderWindow*& window){
 
 /*
  * @brief Destructor.
- * @param sf::RenderWindow*& window
- * @return void
+ * @param 
  */
 Cerebro::~Cerebro(){
 	clearAll(); // Limpia todas las variables utilizadas en ensamblador
@@ -218,9 +200,9 @@ Cerebro::~Cerebro(){
 
 
 /*
--------------	
-Funtions	
--------------	
+	--------	
+	Funtions	
+	--------
 */
 
 /*
@@ -234,7 +216,7 @@ bool Cerebro::finishedGame() const{
 
 
 /*
- * @brief Loop principal del juego que maneja los eventos del teclado.
+ * @brief Loop principal del juego que maneja los eventos de I/O.
  * @param 
  * @return void
  */
@@ -299,7 +281,6 @@ void Cerebro::update(){
 					
 				}
 				
-				
 				// Pone la partida actual en pausa
 				else if(this->event.key.code == sf::Keyboard::Escape){
 					this->pause();
@@ -351,7 +332,7 @@ void Cerebro::defaultMoves(){
 	if (!checkTetrinomioState()) { // Verifica si el tetrinomio puede seguir bajando
 		this->currentScore += clearRows(); // Limpia las filas completas y asigna los puntos
 		dropAllBlocks(); // Baja los bloques que puedan
-		currentTetrinomio = getBlock(); // obtiene el nuevo tetrinomio
+		currentTetrinomio = getTetrinomio(); // obtiene el nuevo tetrinomio
 		nextTetrinomio = getNextTetrinomio(); // obtiene el siguiente tetrinomio
 		setNextTetrinomio(nextTetrinomio);
 		this->amountOfRotations = 0; // pone las rotaciones en 0
@@ -555,7 +536,7 @@ void Cerebro::drawSubMatrix(){
                 case '4':
 					block.setTexture(&yellowBlockTexture);
                     break;
-				// 5 = Magenta
+				// 5 = Purple
                 case '5':
 					block.setTexture(&purpleBlockTexture);
                     break;	

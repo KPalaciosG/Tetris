@@ -28,6 +28,7 @@ class Cerebro{
 		char shadowMatrix[20][10]; //No es la matriz real, se utiliza solo para la  graficacion
 		char shadowSubMatrix[4][4]; //Matriz para graficar el siguiente tetrinomio
 		
+		//Graphics
 		const int rows = 20;
 		const int columns = 10;
 		const int blockSize = 40;

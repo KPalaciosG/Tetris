@@ -1,6 +1,7 @@
 #include <iostream>
 #include "Game.hh"
 extern "C" void create();
+
 int main(){
 	//
 	//to do... si no esta creado crearlo, sino abrir

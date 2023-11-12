@@ -14,7 +14,6 @@ class ScoresScreen{
 		//Says if the window is open
 		bool showingScores;
 		
-	
 		//Window
 		sf::RenderWindow* window;
 		sf::Event event;
@@ -32,7 +31,6 @@ class ScoresScreen{
 		sf::Text scores;
         sf::Text scoreMsg;
 		
-		
 		std::string topScores;
 		
 		//Iniatialize all
@@ -49,11 +47,8 @@ class ScoresScreen{
 		 
 		//Gets
 		bool showing() const; 
-		
 		 
-		//Funtions
-		void pollEvents();
-		
+		//Funtions		
 		void update();
 		void render();
 	
@@ -61,7 +56,7 @@ class ScoresScreen{
 		void drawTopScores();
         void drawScoreMsg();
 
-		// shows the top scores
+		//shows the top scores
 		std::string readScores();
 };
 

@@ -1,37 +1,35 @@
 #include "PauseScreen.hh"
 
 /*
-	@return void
-	Initializes all the variables of the class
-*/
+ * @brief Esta función inicializa todas los atributos de la clase.
+ * @param 
+ * @return void
+ */
 void PauseScreen::initializeVariables(){
 	this->window = nullptr;
 	this->inPause = true;
 }
 
-
 /*
-	@return void
-	Creates the window on the center of the desktop window:
-		height: 960
-		width: 1000
-		
-*/
+ * @brief Hace que la ventana, sea la misma que la de la partida, para no crear multiples ventanas.
+ * @param sf::RenderWindow*& window
+ * @return void
+ */
 void PauseScreen::initWindow(sf::RenderWindow*& window){
 	this->window = window;	
 }
 
-
 /*
-	@return void
-	Creates all the buttons of the main menu with their sprites:
+ * @brief Crea y configura los botones que se muestran en la ventana de pausa y maneja los errores con las texturas.
 		resumeButton -> resumeButtonTexture
 		exitButton -> exitButtonTexture
-	Also it handle the errors if there's not a sprite
-*/
+ * @param 
+ * @return void
+ */
 void PauseScreen::initButtons(){
+	//Boton de continuar
 	if(!this->resumeButtonTexture.loadFromFile("assets/Buttons/ContinueButton.png")){
-		std::cerr << "Falta imagen de boton de play" << std::endl;
+		std::cerr << "Falta imagen de boton de continue" << std::endl;
 		this->window->close();
 	}
 
@@ -40,7 +38,7 @@ void PauseScreen::initButtons(){
     this->resumeButton.setScale(sf::Vector2f(0.5f, 0.5f));
     this->resumeButton.setTexture(&resumeButtonTexture);
 	
-	
+	//Boton de Salir
 	if(!this->exitButtonTexture.loadFromFile("assets/Buttons/ExitButton.png")){
 		std::cerr << "Falta imagen de boton de exit" << std::endl;
 		this->window->close();
@@ -54,13 +52,14 @@ void PauseScreen::initButtons(){
 }
 
 /*
-	@return void
-	It creates and adds the background sprite
-	Also it handle the error if there's not the sprite
-*/
+ * @brief Crea y configura el fondo que se muestra en la partida.
+		background -> backgroundTexture
+ * @param 
+ * @return void
+ */
 void PauseScreen::initBackground(){
 	if (!this->backgroundTexture.loadFromFile("assets/Backgrounds/PauseBackground.png")) {
-        std::cerr << "Falta imagen de boton fondo" << std::endl;
+        std::cerr << "Falta imagen de background de pause" << std::endl;
 		this->window->close();
     }
 	
@@ -68,8 +67,16 @@ void PauseScreen::initBackground(){
 }
 
 
+/*
+	--------------------------	
+	Constructor and Destructor
+	--------------------------		
+*/
 
-//Constructor and Destructor
+/*
+ * @brief Constructor.
+ * @param sf::RenderWindow*& window
+ */
 PauseScreen::PauseScreen(sf::RenderWindow*& window){
 	this->initializeVariables();
 	this->initWindow(window);
@@ -77,58 +84,59 @@ PauseScreen::PauseScreen(sf::RenderWindow*& window){
 	this->initBackground();
 }
 
+/*
+ * @brief Destructor.
+ * @param 
+ */
 PauseScreen::~PauseScreen(){
-	//delete this->window;
 }
 
 
-
-//Funtions
 /*
-	@return bool
-	Verify if the window is still open
+	--------	
+	Funtions	
+	--------
 */
+
+/*
+ * @brief Devuelve un bool que dice si esta en pausa.
+ * @param 
+ * @return bool
+ */
 bool PauseScreen::stopped() const{
 	return this->inPause;
 }
 
-//Principal Menu Loop
-void PauseScreen::pollEvents(){
-		
-}
-
-//Funtions
-
 /*
-	@return void
-	This call the funtion that handle all the cases posible in the PauseScreen.
-*/
+ * @brief Loop principal de pause que maneja los eventos del teclado.
+ * @param bool& playing 
+ * @return void
+ */
 void PauseScreen::update(bool& playing){
 	while(this->window->pollEvent(this->event)){
 		switch(this->event.type){
-			
+			//Cierra la ventana de Pause
 			case sf::Event::Closed:
 				this->inPause = false;
 				break;
 				
-			//Close the PauseScreen and delete the window
+			//Casos de I/O
 			case sf::Event::KeyPressed:
+				//Escape -> Cierra la ventana de Pause
 				if(this->event.key.code == sf::Keyboard::Escape){
 					this->inPause = false;
 				}
 				break;	
 				
-			/*
-				Cases for the menu
-				when it's pressed it gets the position x and y of left mouse button and compared with bounds of each button to verify if the user want to to another screen.
-			*/
 			case sf::Event::MouseButtonPressed:
                 if(this->event.mouseButton.button == sf::Mouse::Left) {
                     sf::Vector2f mousePos = sf::Vector2f(sf::Mouse::getPosition(*this->window).x, sf::Mouse::getPosition(*this->window).y);
-
+					
+					//resumeButton -> continua la partida actual
                     if (this->resumeButton.getGlobalBounds().contains(mousePos)) {
 						this->inPause = false;
                    
+					//exitButton -> se sale de la partida actual y la elimina
                     } else if (exitButton.getGlobalBounds().contains(mousePos)) {
                         this->inPause = false;
 						playing = false;
@@ -144,12 +152,12 @@ void PauseScreen::update(bool& playing){
 
 
 /*
-	@return void
-	Prepares all the things that will be shown in the window
-*/
+ * @brief Grafica los elementos de la ventana de GameOver
+ * @param 
+ * @return void
+ */
 void PauseScreen::render(){
 	// this->window->clear();
-	
 	this->window->draw(this->background);
 	
     // A White filter
@@ -158,7 +166,7 @@ void PauseScreen::render(){
     whiteFilter.setFillColor(sf::Color(255, 255, 255, whiteFilterOpacity));
     this->window->draw(whiteFilter);
 	
-	//Draw the menu
+	//Draw
 	this->window->draw(this->resumeButton);
 	this->window->draw(this->exitButton);
 	
