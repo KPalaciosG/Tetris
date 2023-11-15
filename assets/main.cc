@@ -14,7 +14,7 @@ int main(){
 	}
 
 	Game tetris;
-	
+	tetris.initMenuMusic();
 	while(tetris.windowOpen()){
 		//Update
 		tetris.update();
@@ -22,7 +22,6 @@ int main(){
 		//Render
 		tetris.render();
 	}
-	
-	
+	tetris.stopMenuMusic();
 	return 0;
 }

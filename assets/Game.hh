@@ -35,8 +35,9 @@ class Game{
 		void initWindow(); 
 		void initButtons();
 		void initBackground();
-		
+		sf::Music PlayingMusic;
 	public:
+		sf::Music MenuMusic;
 		//Constructor and Destructor
 		Game();
 		virtual ~Game();
@@ -48,6 +49,8 @@ class Game{
 		void pollEvents();
 		void update();
 		void render();
+		void initMenuMusic();
+		void stopMenuMusic();
 	
 };
 

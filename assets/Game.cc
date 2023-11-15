@@ -156,11 +156,13 @@ void Game::pollEvents(){
 			// X -> cierra la ventana
 			case sf::Event::Closed:
 				this->window->close();
+				MenuMusic.stop();
 				break;
 				
 			case sf::Event::KeyPressed:
 				// Cierra la ventana
 				if(this->event.key.code == sf::Keyboard::Escape){
+					MenuMusic.stop();
 					this->window->close();
 				}
 				break;	
@@ -179,11 +181,17 @@ void Game::pollEvents(){
                     if (this->playButton.getGlobalBounds().contains(mousePos)) {
 						//Construye una partida, pasando la ventana actual como parametro
 						std::unique_ptr<Cerebro> partida(new Cerebro(this->window));
-						
 						//Clock things
 						sf::Clock clock;
 						float fallSpeed = 0.3f; //Down speed 
 						float elapsedTotalTime = 0.0f; //Total of the time elapsed
+						PlayingMusic.openFromFile("Music/TETRIS PHONK.ogg");
+						// para que cuando se acabe vuelva a empezar
+						PlayingMusic.setLoop(true);
+						// Parar la musica del menu
+						MenuMusic.stop();
+						// que empieze a sonar la musica de la partida
+						PlayingMusic.play();
 						
 						while(partida->finishedGame()){ //while there is game being played
 							
@@ -208,6 +216,10 @@ void Game::pollEvents(){
 							sf::sleep(sf::milliseconds(10));
 							
 						}
+						// parar la musica de partida
+						PlayingMusic.stop();
+						// volver a empezar la del menu
+						MenuMusic.play();
 						
                     //Caso del boton de score
                     } else if(scoresButton.getGlobalBounds().contains(mousePos)) {
@@ -270,4 +282,23 @@ void Game::render(){
 	this->window->draw(this->exitButton);
 	
 	this->window->display();
+}
+
+/**
+ * @brief Inicializa y empieza la musica del menu principal.
+*/
+void Game::initMenuMusic() {
+	// abre el archivo de la musica
+	this->MenuMusic.openFromFile("Music/Volando.ogg");
+	// para que cuando se acabe vuelva a empezar
+	this->MenuMusic.setLoop(true);
+	// que empieze a sonar la musica
+	this->MenuMusic.play();
+}
+
+/**
+ * @brief Para la musica del menu principal.
+*/
+void Game::stopMenuMusic() {
+	this->MenuMusic.stop();
 }

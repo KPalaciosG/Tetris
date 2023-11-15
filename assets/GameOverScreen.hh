@@ -10,7 +10,7 @@
 #include <SFML/Window.hpp>
 #include <SFML/Audio.hpp>
 #include <SFML/Network.hpp>
-
+extern "C" void writeToScores(char* , int);
 class GameOverScreen{
 	private:
 		bool inPause; //Indica si se esta mostrando la pantalla
@@ -64,14 +64,6 @@ class GameOverScreen{
 		* @param score_p puntaje y nombre de usuario de la partida acabada.
 		*/
 		void checkScores(std::string score_p);
-
-		/**
-		 * @brief Escribe los mayores puntajes en el archivo de puntajes
-		 * @param scores Vector con los puntajes.
-		 * 
-		*/
-		void writeScores(std::vector<std::string> scores);
-	
 };
 
 #endif

@@ -1,7 +1,9 @@
+section .bss
+	headerbuffer: resb    54
+	pixel_buffer: resb 3 ;bytes por color
+
 section .data
 path:       db      "Scores.txt", 0 ; null-terminated
-headerbuffer:	    resb    54
-pixel_buffer: resb 3 ;bytes por color
 LF equ 10 ; cambio de linea
 	NULL equ 0 ; caracter de final de string
 	TRUE equ 1
@@ -40,6 +42,7 @@ LF equ 10 ; cambio de linea
 	len dq 0
 	writeDone db "Write Completed.", LF, NULL
 	newFileDesc dq 0
+	fileDesc dq 0
     originalImageFileDesc: dq 0
 	errMsgOpen db "Error opening file.", LF, NULL
 	errMsgWrite db "Error writing to file.", LF, NULL
@@ -54,6 +57,30 @@ create:
 		    syscall; crea archivo
             jmp Exit
 
+global writeToScores:
+writeToScores:
+	mov rdx, rsi; pasa el tamano del string a leng
+	mov r10, rdi; pasa texto a r10 temporalmente
+	; antes hay que pasar el texto a algun registro
+	mov rax, SYS_creat	; abrir/crear el archivo
+	mov rdi, fileName
+	mov rsi, S_IRUSR | S_IWUSR ; permitir lectura/escritura
+	syscall
+
+		
+	mov qword[fileDesc], rax
+
+	mov rax, SYS_write; para escribir
+	mov rdi, qword[fileDesc]; recupera el fileDesc
+	mov rsi, r10; el string a imprimir
+	sub rdx, 1
+	mov rdx, rdx
+	syscall
+
+	;cierra el archivo
+	mov rax, SYS_close
+	mov rdi, qword[fileDesc]
+	syscall
 
 Exit:
     ret

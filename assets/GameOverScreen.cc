@@ -243,39 +243,36 @@ void GameOverScreen::checkScores(std::string score_p) {
     } else if (scoresV.size() == 0) { // si el archivo esta vacio
         scoresV.push_back(score_p);
     }
-    writeScores(scoresV);
-}
-
-/**
- * @brief Escribe los mejores puntajes en el archivo.
- * 
- * @param scores vector con los puntajes y el nombre del jugador.
-*/
-void GameOverScreen::writeScores(std::vector<std::string> scores) {
-    // abre archivo para sobreescribir los valores guardados en el archivo.
-    std::ofstream outputFile("scores.txt", std::ios::trunc);
-
-    if (outputFile.is_open()) {
-        // Escribe los mejores puntajes en el archivo.
-        if (scores.size() <= 3) {
-            for (int64_t i = 0; i < (int64_t)scores.size(); i++) {
-                if (i == (int64_t)scores.size() - 1) {
-                    outputFile << scores[i];
+	// para pasarle el string con todos los scores a ensambla
+    std::string scoresString = "";
+    if (scoresV.size() <= 3) {
+            for (int64_t i = 0; i < (int64_t)scoresV.size(); i++) {
+                if (i == (int64_t)scoresV.size() - 1) {
+                    scoresString = scoresString + scoresV[i];
                 } else {
-                    outputFile << scores[i] << "\n";
+                    scoresString = scoresString + scoresV[i] + "\n";
                 }
             }
         } else {
             for (int64_t i = 0; i < 3; i++) {
                 if (i == 2) {
-                    outputFile << scores[i];
+                    scoresString = scoresString + scoresV[i];
                 } else {
-                    outputFile << scores[i] << "\n";
+                    scoresString = scoresString + scoresV[i] + "\n";
                 }
             }
-        }
-        outputFile.close();
     }
+    // calcula el tamano del string
+    int sizeOfString = scoresString.length() + 1;
+    // arreglo de chars donde se va a guardar el string
+    char stringToChar[sizeOfString];
+    // guarda el string
+    for (int i = 0; i < sizeOfString - 1; i++) {
+        stringToChar[i] = scoresString.at(i);
+    }
+    stringToChar[sizeOfString - 1] = '\0';
+	// llama a funcion en ensambla para escribir en archivo de scores
+    writeToScores(stringToChar, sizeOfString);
 }
 
 /*
